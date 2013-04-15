@@ -4,3 +4,7 @@ If you are interested in working on this project, or forking this code, don't he
 contact imw@thefnf.org
 
 Released provisionally under the terms of the Gnu Public License Version 3
+
+Authors:
+Isaac Wilder
+James Yox
