@@ -1,4 +1,4 @@
-{% extends "map.html" %}
+{% extends "base.html" %}
 {% block body %}
   {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
@@ -15,7 +15,7 @@
   {% endif %}
   <ul class=nodes>
   {% for node in nodes %}
-    <li><h2>{{ node.name }}</h2>{{ node.lon|safe }}{{ node.lat|safe}}
+    <li><h2>{{ node.name }}</h2><li>{{ node.lon }}<li>{{ node.lat }}
   {% else %}
     <li><em>Unbelievable.  No nodes here so far</em>
   {% endfor %}

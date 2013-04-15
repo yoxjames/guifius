@@ -55,36 +55,117 @@ border-bottom: 1px solid #ccc;
 font-weight: bold;
 }
 
-.metanavwrapper{
+.masthead{
+height:100px;
+width:70%;
+margin:auto;
+padding:35px;
+}
+
+.logo{
+margin:auto;
+}
+
+.lnav{
+height:35px;
+width:60px;
+background:#efefef;
+float:left;
+display:block;
+}
+
+.rnav{
+height:35px;
+width:60px;
+background:#efefef;
+float:right;
+display:block;
+}
+
+.tnavwrapper{
 position: relative;
 top: 20px;
 background: #8e8e8e;
-height:34px;
+height:31px;
 width:100%; 
 }
 
-.metanav{
-width:66%;
+.tnav{
+width:60%;
 margin: auto;
 }
 
-.metanav a{
+.tnav a{
 padding:6px;
 text-decoration:none;
-display:inline;
-vertical-align:center;
+display:block;
 color:#fff;
 float:right;
+border:0px;
+border-radius:5px;
 }
 
-.metanav a:hover{
+.tnav a:hover{
 background:#8e8eff;
 }
+
+.pagecontainer{
+width:70%;
+min-height:700px;
+margin:auto;
+padding:8px;
+position:relative;
+top:15px;
+}
+
+.bnavwrapper{
+position: float;
+height:150px;
+width:100%;
+background:#3f3f3f
+}
+
+.bnav{
+width:75%;
+margin:auto;
+}
+
+.bnav_col{
+float:left;
+height:150px;
+width:21%;
+font-size:small;
+}
+
+.bnav_list{
+list-style-type:none;
+padding:0;
+margin-left:0;
+}
+
+.bnav_header{
+display:block;
+color:#fff;
+margin:3px;
+font-weight:bold;
+}
+
+.bnav_item{
+display:inline;
+color:#fff;
+text-decoration:none;
+margin:7px;
+padding:5px;
+}
+
 
 .flash{
 background: #CEE5F5;
 padding: 0.5em;
 border: 1px solid #AACBE2;
+position:relative;
+top:30px;
+display:block;
 }
 
 .error{

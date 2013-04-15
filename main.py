@@ -38,6 +38,12 @@ def explore():
 	nodes = [dict(name=row[0]) for row in cur.fetchall()]
 	return render_template('explore.html', nodes=nodes)
 
+@app.route('/build')
+def build():
+	cur = g.db.execute('select name from nodes order by id')
+	nodes = [dict(name=row[0]) for row in cur.fetchall()]
+	return render_template('build.html', nodes=nodes)
+
 @app.route('/add', methods=['POST'])
 def add_entry():
 	if not session.get('logged_in'):
