@@ -1,0 +1,20 @@
+<!doctype html>
+<title>guifi.us</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=metanavwrapper>
+ <div class=metanav>
+  {% if not session.logged_in %}
+    <a href="{{ url_for('login') }}">Log in</a>
+  {% else %}
+    <a href="{{ url_for('logout') }}">Log out</a>
+  {% endif %}
+ </div>
+</div>
+
+<div class=page>
+  <h1>guifi.us</h1>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

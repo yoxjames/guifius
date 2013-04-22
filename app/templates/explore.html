@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <dl>
+        <dt>Name:
+        <dd><input type=text size=30 name=name>
+        <dt>Longitude:
+        <dd><textarea name=lon size=30></textarea>
+	<dt>Latitude:
+	<dd><textarea name=lat size=30></textarea>
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+  {% endif %}
+  <ul class=nodes>
+  {% for node in nodes %}
+    <li><h2>{{ node.name }}</h2><li><h3>{{ node.lon }}</h3><li>{{ node.lat }}
+  {% else %}
+    <li><em>Unbelievable.  No nodes here so far</em>
+  {% endfor %}
+  </ul>
+{% endblock %}

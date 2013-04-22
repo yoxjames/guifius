@@ -1,0 +1,63 @@
+<!doctype html>
+<title>guifi.us</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=tnavwrapper>
+ <div class=tnav>
+  {% if not session.logged_in %}
+    <a href="{{ url_for('login') }}">Log in</a>
+  {% else %}
+    <a href="{{ url_for('logout') }}">Log out</a>
+  {% endif %}
+ </div>
+</div>
+
+<div class=masthead>
+ <center><img class=logo src="{{ url_for('static',
+filename='guslogo.png')}}"></center>
+ <br>
+ <div class=lnav>
+  <ul>
+   <li><a href="{{ url_for('explore') }}"> Explore </a></li>
+   <li><a href="{{ url_for('build') }}"> Build </a></li>
+ </div>
+ <div class=rnav>
+ </div>
+</div>
+
+  {% for message in get_flashed_messages() %}
+  <div class=flash>{{ message }}<p></div>
+  {% endfor %}
+
+
+<div class=pagecontainer>
+  {% block body %}{% endblock %}
+</div>
+
+<div class=bnavwrapper>
+ <div class=bnav>
+  <div class=bnav_col>
+    <ul class=bnav_list>
+     <li class=bnav_header>General information</li>
+     <ul class=bnav_list>
+      <li class=bnav_item> About us</li>
+     </ul>
+    </ul>
+  </div>
+  <div class=bnav_col>
+    <ul class=bnav_list>
+     <li class=bnav_header>Security and privacy</li>
+     <ul class=bnav_list>
+      <li class=bnav_item> Terms of use</li>
+     </ul>
+    </ul>
+  </div>
+  <div class=bnav_col>
+    <ul class=bnav_list>
+     <li class=bnav_header>Shipping and returns</li>
+     <ul class=bnav_list>
+      <li class=bnav_item> Shipping fees</li>
+     </ul>
+    </ul>
+  </div>
+ </div>
+</div>

@@ -1,0 +1,16 @@
+{% extends "map.html" %}
+{% block body %}
+  <h2>Login</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('login') }}" method="post" name="login">
+        {{form.hidden_tag()}}
+        <p>
+            Username:<br>
+	    {{form.username(size=60)}}<br><br>
+	    Password:<br>
+	    {{form.password(size=60)}}<br><br>
+        {{form.remember_me}} Remember Me</p>
+	<p><input type="submit" value="Sign In"></p>
+	<p><a class="button" href="/register">Register</a></p>
+    </form>
+{% endblock %}  
