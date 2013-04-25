@@ -3,6 +3,7 @@
   {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
+	<!-- Maps go here! -->
         <dt>Name:
         <dd><input type=text size=30 name=name>
         <dt>Longitude:
