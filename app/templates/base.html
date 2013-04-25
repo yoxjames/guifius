@@ -21,13 +21,16 @@ filename='guslogo.png')}}"></center>
    <li><a href="{{ url_for('build') }}"> Build </a></li>
  </div>
  <div class=rnav>
+  <ul>
+   <li><a href="{{ url_for('contact') }}"> Contact </a></li>
+   <li><a href="{{ url_for('about') }}"> About </a></li>
  </div>
 </div>
 
-  {% for message in get_flashed_messages() %}
-  <div class=flash>{{ message }}<p></div>
-  {% endfor %}
 
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
 
 <div class=pagecontainer>
   {% block body %}{% endblock %}
