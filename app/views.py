@@ -20,60 +20,72 @@ login_manager.refresh_view = "reauth"
 
 login_manager.setup_app(app)
 
-'''
-Currently not operational
-'''
-def pullUserObj(username): 
-    cur = g.db.execute("select * from users where username = ?", [username])
-    user = [dict(name=row[0]) for row in cur.fetchall()]
-    return User(user.id, user.username, user.password, user.name, user.city)
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query,args)
+    rv = [dict((cur.description[idx][0], value)
+        for idx, value in enumerate(row)) for row in cur.fetchall()]
+    return (rv[0] if rv else None) if one else rv
+
+def pullUserObj(username, password): 
+    user = query_db('select * from users where username = ? and password = ?'
+            , [username, password], one=True)
+    if user is None: #Username or password incorrect
+        return None
+    return User(user['id'], user['username'], user['password'], user['name'], user['city'])
 
 @app.before_request
 def before_request():
-	g.db = db.connect_db()
+    g.db = db.connect_db()
 
 @app.teardown_request
 def teardown_request(exception):
-	g.db.close()
+    if hasattr(g, 'db'):
+        g.db.close()
 
 @app.route('/')
 def explore():
-	cur = g.db.execute('select name from nodes order by id')
-	nodes = [dict(name=row[0]) for row in cur.fetchall()]
-	return render_template('explore.html', nodes=nodes)
+    cur = g.db.execute('select name from nodes order by id')
+    nodes = [dict(name=row[0]) for row in cur.fetchall()]
+    return render_template('explore.html', nodes=nodes)
 
 @app.route('/build')
 def build():
-	cur = g.db.execute('select name from nodes order by id')
-	nodes = [dict(name=row[0]) for row in cur.fetchall()]
-	return render_template('build.html', nodes=nodes)
+    cur = g.db.execute('select name from nodes order by id')
+    nodes = [dict(name=row[0]) for row in cur.fetchall()]
+    return render_template('build.html', nodes=nodes)
 
 @app.route('/contact')
 def contact():
-	return render_template('base.html')
+    return render_template('base.html')
 
 @app.route('/about')
 def about():
-	return render_template('base.html')
+    return render_template('base.html')
 
 @app.route('/add', methods=['POST'])
 def add_entry():
-	if not session.get('logged_in'):
-		about(401)
-	g.db.execute('insert into nodes (name, lon, lat) values (?, ?, ?)',
-		[request.form['name'], request.form['lon'], request.form['lat']])
-	g.db.commit()
-	flash('New node added')
-	return redirect(url_for('explore'))
+    if not session.get('logged_in'):
+        about(401)
+    g.db.execute('insert into nodes (name, lon, lat) values (?, ?, ?)',
+        [request.form['name'], request.form['lon'], request.form['lat']])
+    g.db.commit()
+    flash('New node added')
+    return redirect(url_for('explore'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
+        password = form.password.data
         #if username == "yoxjames": #Query Database
         remember = form.remember_me.data
-        if login_user(pullUserObj(username), remember=remember):
+        
+        user = pullUserObj(username, password)
+        if user is None: #Correct username and password?
+            flash("Incorrect Username or Password")
+            return redirect('/login')
+        if login_user(user ,remember): #Everything looks good attempt login.
             flash("Logged in")
             return redirect('/')
         else:
@@ -84,28 +96,29 @@ def login():
 
 @login_manager.user_loader
 def load_user(id):
-    cur = g.db.execute("select * from users u where u.id = ?",[id])
-    u = [dict(name=row[0]) for row in cur.fetchall()]
-    return User(u.id, u.username, u.password, u.name, u.city, u.role)
+    g.db = db.connect_db() # Since this isn't a request we need to connect first.
+    user = query_db('select * from users where id = ?', [id], one=True)
+    g.db.close()
+    return User(user['id'], user['username'], user['password'], user['name'], user['city'])
 
 @app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        g.db.execute('insert into users (username, password, name, city, role) values (?,?,?,?,?)',
+        g.db.execute('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
                 [form.username.data,
                 form.password.data,
+                form.email.data,
                 form.name.data,
                 form.city.data,
                 1])
         g.db.commit()
         flash("User Successfully Registered!")
-
         return redirect('/')
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/logout')
 def logout():
-	session.pop('logged_in', None)
-	flash('Logged out')
-	return redirect(url_for('explore'))
+    session.pop('logged_in', None)
+    flash('Logged out')
+    return redirect(url_for('explore'))

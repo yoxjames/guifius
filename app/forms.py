@@ -10,5 +10,6 @@ class RegisterForm(Form):
     username = TextField('username', validators = [Required()])
     password = PasswordField('password', validators = [Required()])
     password_conf = PasswordField('password_conf', validators = [Required()])
+    email = TextField('email')
     name = TextField('name')
     city = TextField('city')
