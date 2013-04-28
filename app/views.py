@@ -33,6 +33,15 @@ def pullUserObj(username, password):
         return None
     return User(user['id'], user['username'], user['password'], user['name'], user['city'])
 
+def curUsername(id):
+    if (id is None):
+        return "ERROR: Invalid Query"
+    else:
+        name = query_db('select username from users where id = ?', [id], one=True)
+        if name is None:
+            return "Invalid ID"
+        return name['username']
+
 @app.before_request
 def before_request():
     g.db = db.connect_db()
@@ -44,9 +53,12 @@ def teardown_request(exception):
 
 @app.route('/')
 def explore():
+    curUser = (current_user.get_id() or "Not Logged In")
+    if (curUser != "Not Logged In" and curUser != None):
+        curUser = curUsername(curUser)
     cur = g.db.execute('select name from nodes order by id')
     nodes = [dict(name=row[0]) for row in cur.fetchall()]
-    return render_template('explore.html', nodes=nodes)
+    return render_template('explore.html', nodes=nodes, curUser= curUser)
 
 @app.route('/build')
 def build():
@@ -69,6 +81,7 @@ def add_entry():
     g.db.execute('insert into nodes (name, lon, lat) values (?, ?, ?)',
         [request.form['name'], request.form['lon'], request.form['lat']])
     g.db.commit()
+
     flash('New node added')
     return redirect(url_for('explore'))
 
@@ -78,7 +91,6 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        #if username == "yoxjames": #Query Database
         remember = form.remember_me.data
         
         user = pullUserObj(username, password)
@@ -86,7 +98,6 @@ def login():
             flash("Incorrect Username or Password")
             return redirect('/login')
         if login_user(user ,remember): #Everything looks good attempt login.
-            flash("Logged in")
             return redirect('/')
         else:
             flash("Login Failed")    
@@ -119,6 +130,5 @@ def register():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
-    flash('Logged out')
-    return redirect(url_for('explore'))
+    logout_user()
+    return redirect('/')

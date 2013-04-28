@@ -2,12 +2,14 @@
 <title>guifi.us</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=tnavwrapper>
- <div class=tnav>
-  {% if not session.logged_in %}
-    <a href="{{ url_for('login') }}">Log in</a>
-  {% else %}
-    <a href="{{ url_for('logout') }}">Log out</a>
-  {% endif %}
+<div class=tnav>
+
+{{ curUser}}
+{% if curUser == "Not Logged In" %}
+ <a href="{{ url_for('login') }}">Log in</a>
+{% else %}
+ <a href="{{ url_for('logout') }}">Log out</a>
+{% endif %}
  </div>
 </div>
 
