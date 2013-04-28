@@ -48,6 +48,14 @@ def build():
 	nodes = [dict(name=row[0]) for row in cur.fetchall()]
 	return render_template('build.html', nodes=nodes)
 
+@app.route('/contact')
+def contact():
+	return render_template('base.html')
+
+@app.route('/about')
+def about():
+	return render_template('base.html')
+
 @app.route('/add', methods=['POST'])
 def add_entry():
 	if not session.get('logged_in'):
