@@ -200,3 +200,8 @@ display:block;
 background: #F0D6D6;
 padding: 0.5em;
 }
+
+#map-container{
+width:960px;
+height:600px;
+}
