@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
   {% if session.logged_in %}
+    <div id="map-container" class="olMap"></div>
+    <script type="text/javascript" src="{{ url_for('js',
+filename='CustomLayer-2.12/OpenLayers.js') }}">
+    <script type="text/javascript" src"{{ url_for('js',
+filename='exploremap.js') }}">
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
-	<!-- Maps go here! -->
         <dt>Name:
         <dd><input type=text size=30 name=name>
         <dt>Longitude:
