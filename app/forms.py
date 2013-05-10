@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form, TextField, BooleanField, PasswordField, Email, ValidationError
-from flask.ext.wtf import Required, EqualTo
+from flask.ext.wtf import Required, EqualTo, RecaptchaField
 import db
 
 
@@ -23,3 +23,4 @@ class RegisterForm(Form):
     email = TextField('Email', validators = [Email("Not a valid email address."), validate_email])
     name = TextField('Name (Optional)')
     city = TextField('City (Optional)')
+    recaptcha = RecaptchaField()

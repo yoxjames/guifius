@@ -10,10 +10,12 @@ from flask.ext.login import (LoginManager, current_user, login_required,
                             confirm_login, fresh_login_required)
 from app import app
 from models import *
+from flaskext.babel import Babel
 
 from flaskext.bcrypt import Bcrypt
 
 bcrypt = Bcrypt(app)
+babel = Babel(app)
 
 login_manager = LoginManager()
 
