@@ -55,3 +55,19 @@ def insert_db(query, args=(), commit=True):
     g.db.execute(query, args)
     if (commit):
         g.db.commit()
+
+def user_exists(username):
+    name = query_db('select username from users where username = ?', [username], one=True)
+    if name is None:
+        return False
+    else:
+        return True
+
+def email_exists(email):
+    email = query_db('select email from users where email = ?', [email], one=True)
+    if email is None:
+        return False
+    else:
+        return True
+
+

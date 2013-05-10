@@ -96,7 +96,7 @@ def load_user(id):
 @app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         pw_hash = bcrypt.generate_password_hash(form.password.data) #Hash the inputted pw
         db.insert_db('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
                 [form.username.data,
@@ -105,11 +105,7 @@ def register():
                 form.name.data,
                 form.city.data,
                 1],True)
-        
-        flash("User Successfully Registered!" + pw_hash)
-        ''' 
-        Now we attempt to login with the user just inputted into the database
-        '''
+        flash("User: " + form.username.data + " has been successfully registered!")
         user = db.pullUserObj(form.username.data, form.password.data) 
         if login_user(user,0): #Everything looks good attempt login.
             return redirect('/')
