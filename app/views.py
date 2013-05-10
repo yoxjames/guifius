@@ -46,6 +46,9 @@ def explore():
 
 @app.route('/build')
 def build():
+    curUser = (current_user.get_id() or "Not Logged In")
+    if (curUser != "Not Logged In" and curUser != None):
+        curUser = db.curUsername(curUser)
     cur = g.db.execute('select name from nodes order by id')
     nodes = [dict(name=row[0]) for row in cur.fetchall()]
     return render_template('build.html', nodes=nodes)
@@ -98,7 +101,7 @@ def load_user(id):
 @app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         pw_hash = bcrypt.generate_password_hash(form.password.data) #Hash the inputted pw
         db.insert_db('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
                 [form.username.data,
