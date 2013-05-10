@@ -11,6 +11,10 @@ from flask.ext.login import (LoginManager, current_user, login_required,
 from app import app
 from models import *
 
+from flaskext.bcrypt import Bcrypt
+
+bcrypt = Bcrypt(app)
+
 login_manager = LoginManager()
 
 login_manager.anonymous_user = Anonymous
@@ -70,7 +74,6 @@ def login():
         username = form.username.data
         password = form.password.data
         remember = form.remember_me.data
-        
         user = db.pullUserObj(username, password)
         if user is None: #Correct username and password?
             flash("Incorrect Username or Password")
@@ -94,15 +97,16 @@ def load_user(id):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        g.db.execute('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
+        pw_hash = bcrypt.generate_password_hash(form.password.data) #Hash the inputted pw
+        db.insert_db('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
                 [form.username.data,
-                form.password.data,
+                pw_hash, #drop in the hashed password
                 form.email.data,
                 form.name.data,
                 form.city.data,
-                1])
-        g.db.commit()
-        flash("User Successfully Registered!")
+                1],True)
+        
+        flash("User Successfully Registered!" + pw_hash)
         ''' 
         Now we attempt to login with the user just inputted into the database
         '''
