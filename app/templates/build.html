@@ -13,7 +13,9 @@
       </dl>
     </form>
   {% endif %}
+
 <div id="map-container" class="olMap"></div>
+
 <div id="clist">
    <form>
    <select id="controlList" onchange="switchControl()">
@@ -22,18 +24,20 @@
           <option>FNR13</option>
           <option>FNR10T</option>
           <option>FNR13T</option>
-        </select>
-        </form>
-        </div>
-   <script type="text/javacript" src="{{ url_for('static',
+   </select>
+   </form>
+</div>
+
+ <script type="text/javascript" src="{{ url_for('static',
 filename='js/buildmap.js') }}" defer="defer"></script>
  <script type="text/javascript" src="{{ url_for('static',
 filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+
  <ul class=nodes>
   {% for node in nodes %}
     <li><h2>{{ node.name }}</h2>{{ node.lon|safe }}{{ node.lat|safe}}
   {% else %}
-    <li><em>Unbelievable.  No nodes here so far</em>
+    <li><em>No nodes :-(</em>
   {% endfor %}
   </ul>
 {% endblock %}

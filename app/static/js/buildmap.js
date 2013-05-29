@@ -82,7 +82,8 @@
               Vector1.displayInLayerSwitcher = false;
 
 
-              var geofield = document.getElementById("edit-submitted-geofield").value;             
+              var geofield = " , , , ";
+	      //var geofield = document.getElementById("edit-submitted-geofield").value;             
               if (geofield == " , , , "){
                 center = new OpenLayers.LonLat(-90,39);
                 center.transform(from,to);
