@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-  {% if session.logged_in %}
-   <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+  {% if current_user.is_authenticated() %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>Name:
         <dd><input type=text size=30 name=name>

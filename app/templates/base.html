@@ -5,7 +5,7 @@
 <div class=tnav>
 
 {{ curUser}}
-{% if curUser == "Not Logged In" %}
+{% if not current_user.is_authenticated() %}
  <a href="{{ url_for('login') }}">Log in</a>
 {% else %}
  <a href="{{ url_for('logout') }}">Log out</a>

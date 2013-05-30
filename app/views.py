@@ -10,6 +10,12 @@ from flask.ext.login import (LoginManager, current_user, login_required,
                             confirm_login, fresh_login_required)
 from app import app
 from models import *
+from flaskext.babel import Babel
+
+from flaskext.bcrypt import Bcrypt
+
+bcrypt = Bcrypt(app)
+babel = Babel(app)
 
 login_manager = LoginManager()
 
@@ -19,28 +25,6 @@ login_manager.login_message = "Please log in to access this page."
 login_manager.refresh_view = "reauth"
 
 login_manager.setup_app(app)
-
-def query_db(query, args=(), one=False):
-    cur = g.db.execute(query,args)
-    rv = [dict((cur.description[idx][0], value)
-        for idx, value in enumerate(row)) for row in cur.fetchall()]
-    return (rv[0] if rv else None) if one else rv
-
-def pullUserObj(username, password): 
-    user = query_db('select * from users where username = ? and password = ?'
-            , [username, password], one=True)
-    if user is None: #Username or password incorrect
-        return None
-    return User(user['id'], user['username'], user['password'], user['name'], user['city'])
-
-def curUsername(id):
-    if (id is None):
-        return "ERROR: Invalid Query"
-    else:
-        name = query_db('select username from users where id = ?', [id], one=True)
-        if name is None:
-            return "Invalid ID"
-        return name['username']
 
 @app.before_request
 def before_request():
@@ -55,13 +39,16 @@ def teardown_request(exception):
 def explore():
     curUser = (current_user.get_id() or "Not Logged In")
     if (curUser != "Not Logged In" and curUser != None):
-        curUser = curUsername(curUser)
+        curUser = db.curUsername(curUser)
     cur = g.db.execute('select name from nodes order by id')
     nodes = [dict(name=row[0]) for row in cur.fetchall()]
     return render_template('explore.html', nodes=nodes, curUser= curUser)
 
 @app.route('/build')
 def build():
+    curUser = (current_user.get_id() or "Not Logged In")
+    if (curUser != "Not Logged In" and curUser != None):
+        curUser = db.curUsername(curUser)
     cur = g.db.execute('select name from nodes order by id')
     nodes = [dict(name=row[0]) for row in cur.fetchall()]
     return render_template('build.html', nodes=nodes)
@@ -92,8 +79,7 @@ def login():
         username = form.username.data
         password = form.password.data
         remember = form.remember_me.data
-        
-        user = pullUserObj(username, password)
+        user = db.pullUserObj(username, password)
         if user is None: #Correct username and password?
             flash("Incorrect Username or Password")
             return redirect('/login')
@@ -108,7 +94,7 @@ def login():
 @login_manager.user_loader
 def load_user(id):
     g.db = db.connect_db() # Since this isn't a request we need to connect first.
-    user = query_db('select * from users where id = ?', [id], one=True)
+    user = db.query_db('select * from users where id = ?', [id], one=True)
     g.db.close()
     return User(user['id'], user['username'], user['password'], user['name'], user['city'])
 
@@ -116,16 +102,21 @@ def load_user(id):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        g.db.execute('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
+        pw_hash = bcrypt.generate_password_hash(form.password.data) #Hash the inputted pw
+        db.insert_db('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
                 [form.username.data,
-                form.password.data,
+                pw_hash, #drop in the hashed password
                 form.email.data,
                 form.name.data,
                 form.city.data,
-                1])
-        g.db.commit()
-        flash("User Successfully Registered!")
-        return redirect('/')
+                1],True)
+        flash("User: " + form.username.data + " has been successfully registered!")
+        user = db.pullUserObj(form.username.data, form.password.data) 
+        if login_user(user,0): #Everything looks good attempt login.
+            return redirect('/')
+        else:
+            flash("Could Not Login After Registering. Try manually logging in.")    
+        return redirect('/login') #Dump them back to login, maybe this'll work?
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/logout')
