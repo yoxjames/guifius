@@ -1,0 +1,11 @@
+{% macro render_field(field) %}
+<p>
+{{ field.label }}: <br \>
+ {{ field(size=35)|safe }}
+ {% if field.errors %}
+    {% for error in field.errors %}
+    <font size="2" color="red">* {{ error }}</font>
+    {% endfor %}
+  {% endif %}
+  </p>
+{% endmacro %}
