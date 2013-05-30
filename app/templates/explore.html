@@ -12,12 +12,15 @@
         <dd><input type=submit value=Add>
       </dl>
     </form>
-  {% endif %}
+    {% endif %}
+    <center><h3>WARNING<br />
+	    PRE-ALPHA<br />
+	    DATA IS REGULARLY FLUSHED</h3>
    <div id="map-container" class="olMap"></div>
    <script type="text/javascript" src="{{ url_for('static',
 filename='js/exploremap.js') }}" defer="defer"></script>
    <script type="text/javascript" src="{{ url_for('static',
-filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+	   filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script></center>
   <ul class=nodes>
   {% for node in nodes %}
     <li><h2>{{ node.name }}</h2><li><h3>{{ node.lon }}</h3><li>{{ node.lat }}
