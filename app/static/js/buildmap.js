@@ -121,12 +121,10 @@
                 selected = list.options[list.selectedIndex].text;
                 var erp = erps[selected];
                 var muxer = new OpenLayers.LonLat(xval,yval);
-                muxer.transform(to,from);
                 var request = OpenLayers.Request.GET({
-                    url:
-                    encodeURI("/rf.php?x="+muxer.lon.toString()+
-                                            "&y="+muxer.lat.toString()+
-                                                "&erp="+erp.toString()),
+                    url: 
+                    encodeURI("/add/"+muxer.lon.toString()+
+                                            "&"+muxer.lat.toString()),
                     callback: rfhandler
                     });
               }

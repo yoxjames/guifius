@@ -17,15 +17,14 @@ from, to;
               from = new OpenLayers.Projection("EPSG:4326");
               to = new OpenLayers.Projection("EPSG:900913");
 
-              var node = {
-                  'pointRadius': 1,
+              var nodest = {
+                  'pointRadius': 10,
                   'fillColor': '#ffffff'};
 
-              var nodesty = OpenLayers.Util.applyDefaults(node,
+              var nodesty = OpenLayers.Util.applyDefaults(nodest,
                   OpenLayers.Feature.Vector.style["defaults"]);
 
-              var nodestyle = new OpenLayers.StyleMap({'pointRadius': 1,
-                  'fillColor': '#ffffff'});
+              var nodestyle = new OpenLayers.StyleMap({'default': nodest});
 
 
 
@@ -68,10 +67,10 @@ from, to;
                       }));
 
               map.addLayer(Vector1 = new OpenLayers.Layer.Vector("nodes",
-                    {styleMap: nodestyle}, {
+                    {style: OpenLayers.Feature.Vector.style["default"]}, {
                               renderers: renderer
                           }));
-              Vector1.displayInLayerSwitcher = false;
+              Vector1.displayInLayerSwitcher = true;
 
               center = new OpenLayers.LonLat(-93,43);
               center.transform(from,to);
@@ -85,5 +84,7 @@ from, to;
               for(var key in controls) {
                 map.addControl(controls[key]);
               }
+	draw_nodes();
+	
       }
             

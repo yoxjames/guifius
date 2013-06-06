@@ -1,18 +1,5 @@
 {% extends "base.html" %}
 {% block body %}
-  {% if current_user.is_authenticated() %}
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
-      <dl>
-        <dt>Name:
-        <dd><input type=text size=30 name=name>
-        <dt>Longitude:
-        <dd><textarea name=lon size=30></textarea>
-	<dt>Latitude:
-	<dd><textarea name=lat size=30></textarea>
-        <dd><input type=submit value=Add>
-      </dl>
-    </form>
-  {% endif %}
 
 <div id="map-container" class="olMap"></div>
 

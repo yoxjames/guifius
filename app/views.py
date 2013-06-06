@@ -2,6 +2,7 @@
 from __future__ import with_statement
 import sqlite3
 import db
+import json
 from flask import Flask, request, session, g, redirect, url_for, \
 	abort, render_template, flash
 from forms import *
@@ -40,16 +41,19 @@ def explore():
     curUser = (current_user.get_id() or "Not Logged In")
     if (curUser != "Not Logged In" and curUser != None):
         curUser = db.curUsername(curUser)
-    cur = g.db.execute('select name from nodes order by id')
-    nodes = [dict(name=row[0]) for row in cur.fetchall()]
-    return render_template('explore.html', nodes=nodes, curUser= curUser)
+    
+    nodes = db.query_db("select * from nodes",[],one=False)
+    
+    #cur = g.db.execute('select * from nodes order by id')
+    #nodes = [dict(name=row[0]) for row in cur.fetchall()]
+    return render_template('explore.html', nodes=json.dumps(nodes), curUser= curUser)
 
 @app.route('/build')
 def build():
     curUser = (current_user.get_id() or "Not Logged In")
     if (curUser != "Not Logged In" and curUser != None):
         curUser = db.curUsername(curUser)
-    cur = g.db.execute('select name from nodes order by id')
+    cur = g.db.execute('select * from nodes order by id')
     nodes = [dict(name=row[0]) for row in cur.fetchall()]
     return render_template('build.html', nodes=nodes)
 
@@ -61,16 +65,16 @@ def contact():
 def about():
     return render_template('base.html')
 
-@app.route('/add', methods=['POST'])
-def add_entry():
+@app.route('/add/<lon>&<lat>', methods=['GET'])
+def add_entry(lon, lat):
     if not session.get('logged_in'):
-        about(401)
-    g.db.execute('insert into nodes (name, lon, lat) values (?, ?, ?)',
-        [request.form['name'], request.form['lon'], request.form['lat']])
-    g.db.commit()
+        about()
+    db.insert_db('insert into nodes (lon, lat) values (?, ?)',
+        [lon, lat],
+	True)
 
     flash('New node added')
-    return redirect(url_for('explore'))
+    return redirect(url_for('build'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
