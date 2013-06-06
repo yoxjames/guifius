@@ -1,5 +1,23 @@
 {% extends "base.html" %}
 {% block body %}
+<<<<<<< HEAD
+=======
+  {% if current_user.is_authenticated() %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <dl>
+        <dt>Name:
+        <dd><input type=text size=30 name=name>
+        <dt>Longitude:
+        <dd><textarea name=lon size=30></textarea>
+	<dt>Latitude:
+	<dd><textarea name=lat size=30></textarea>
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+    {% endif %}
+    <center><h3>WARNING<br />
+	    PRE-ALPHA<br />
+	    DATA IS REGULARLY FLUSHED</h3>
    <div id="map-container" class="olMap"></div>
    <script type="text/javascript" src="{{ url_for('static',
 filename='js/exploremap.js') }}" defer="defer"></script>
@@ -28,9 +46,5 @@ filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
 		}
 	}
   </script>
-<!--
-	var point = new OpenLayers.Geometry.Point(});
-	var pointFeature = new OpenLayers.Feature.Vector(point,{'pointRadius':2, 'fillColor':'#ffffff'});
-	vector1.addFeatures([pointFeature]); -->
 
 {% endblock %}
