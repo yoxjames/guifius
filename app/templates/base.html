@@ -4,7 +4,7 @@
 <div class=tnavwrapper>
 <div class=tnav>
 
-{{ curUser}}
+<div class=user_block>{{ curUser}}</div>
 {% if not current_user.is_authenticated() %}
  <a href="{{ url_for('login') }}">Log in</a>
 {% else %}
@@ -19,13 +19,13 @@ filename='guslogo.png')}}"></center>
  <br>
  <div class=lnav>
   <ul class=lnav_list>
-   <li class=lnav_item><a href="{{ url_for('explore') }}"> Explore </a></li>
-   <li class=lnav_item><a href="{{ url_for('build') }}"> Build </a></li>
+   <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('explore') }}"> Explore </a></li>
+   <li {% if request.path == "/build" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('build') }}"> Build </a></li>
  </div>
  <div class=rnav>
   <ul class=rnav_list>
-   <li class=rnav_item><a href="{{ url_for('contact') }}"> Contact </a></li>
-   <li class=rnav_item><a href="{{ url_for('about') }}"> About </a></li>
+   <li {% if request.path == "/contact" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('contact') }}"> Contact </a></li>
+   <li {% if request.path == "/about" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('about') }}"> About </a></li>
  </div>
 </div>
 

@@ -55,8 +55,14 @@ border-bottom: 1px solid #ccc;
 font-weight: bold;
 }
 
+.user_block{
+float:left;
+vertical-align:center;
+padding:6px;
+}
+
 .masthead{
-height:100px;
+height:40px;
 width:70%;
 margin:auto;
 padding:35px;
@@ -70,6 +76,7 @@ margin:auto;
 background:#efefef;
 float:left;
 display:block;
+border:1px solid #000000;
 }
 
 .lnav_list{
@@ -85,13 +92,15 @@ list-style-type:none;
 
 .lnav a, .lnav a:visited{
 width:40px;
-border:1px solid #000;
+border:none;
+text-decoration:none;
 }
 
 .rnav{
 background:#efefef;
 float:right;
 display:block;
+border:1px solid #000000;
 }
 
 .rnav_list{
@@ -100,14 +109,22 @@ margin:0;
 display:inline;
 }
 
-.rnav_item{
+.cur_page{
+display:inline;
+list-style-type:none;
+background:#fff;
+padding:5px;
+}
+
+.nav_item{
 display:inline;
 list-style-type:none;
 }
 
 .rnav a, .rnav a:visited{
 width:40px;
-border:1px solid #000;
+border:none;
+text-decoration:none;
 }
 
 .tnavwrapper{
@@ -139,7 +156,7 @@ background:#8e8eff;
 
 .pagecontainer{
 width:70%;
-min-height:700px;
+min-height:740px;
 margin:auto;
 padding:8px;
 position:relative;
@@ -202,6 +219,6 @@ padding: 0.5em;
 }
 
 #map-container{
-width:960px;
+width:900px;
 height:600px;
 }
