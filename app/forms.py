@@ -1,5 +1,7 @@
-from flask.ext.wtf import Form, TextField, BooleanField, PasswordField, Email, ValidationError
-from flask.ext.wtf import Required, EqualTo, RecaptchaField
+from flask.ext.wtf import Form, TextField, BooleanField, PasswordField, Email, ValidationError, html5
+from flask.ext.wtf import Required, EqualTo, RecaptchaField, RadioField, SelectField
+from flask.ext.wtf.html5 import NumberInput, IntegerRangeField
+import extras
 import db
 
 
@@ -24,3 +26,12 @@ class RegisterForm(Form):
     name = TextField('Name (Optional)')
     city = TextField('City (Optional)')
     recaptcha = RecaptchaField()
+
+class WhereForm(Form):
+    #assert html5.RangeInput()(self.expected_users, min=0, max=20000)
+    address = TextField('Address', validators = [Required()])
+    address2 = TextField('Address 2')
+    city = TextField('City', validators = [Required()])
+    state = SelectField('State:', choices=extras.states)
+    zip = TextField('ZIP Code:', validators = [Required()])
+    
