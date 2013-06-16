@@ -48,14 +48,32 @@ def explore():
     #nodes = [dict(name=row[0]) for row in cur.fetchall()]
     return render_template('explore.html', nodes=json.dumps(nodes), curUser= curUser)
 
-@app.route('/build')
+@app.route('/build', methods=['POST', 'GET'])
 def build():
-    curUser = (current_user.get_id() or "Not Logged In")
-    if (curUser != "Not Logged In" and curUser != None):
-        curUser = db.curUsername(curUser)
-    cur = g.db.execute('select * from nodes order by id')
-    nodes = [dict(name=row[0]) for row in cur.fetchall()]
-    return render_template('build.html', nodes=nodes)
+
+    #Dont allow access if logged in
+    if not current_user.is_authenticated():
+        flash("You must log in.")
+        return redirect('/')
+
+    return redirect('/build/where')
+
+@app.route('/build/where', methods=['POST', 'GET'])
+def add_nodes():
+    if not current_user.is_authenticated():
+        flash("You must log in.")
+        return redirect('/')
+    form = WhereForm()
+    if form.validate_on_submit():
+        addr1 = form.address.data
+        addr2 = form.address2.data
+        city = form.city.data
+        state = form.state.data
+        zip = form.state.data
+        flash("Address form successfully completed")
+        return redirect('/')
+
+    return render_template('wherebuild.html', form=form)
 
 @app.route('/contact')
 def contact():
