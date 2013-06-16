@@ -63,7 +63,6 @@ def add_nodes():
     if not current_user.is_authenticated():
         flash("You must log in.")
         return redirect('/')
-
     form = WhereForm()
     if form.validate_on_submit():
         addr1 = form.address.data

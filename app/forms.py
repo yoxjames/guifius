@@ -34,4 +34,7 @@ class WhereForm(Form):
     city = TextField('City', validators = [Required()])
     state = SelectField('State:', choices=extras.states)
     zip = TextField('ZIP Code:', validators = [Required()])
+
+class WhereFormLite(Form):
+    addr = TextField('Address', validators = [Required()])
     
