@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Where are you interested in building?</h2>
+<br />
+
+<FORM NAME="myform" ACTION="" METHOD="POST" onSubmit="locate(this.form)">
+Address:<INPUT TYPE="text" NAME="addr" VALUE="" size=60></INPUT>
+<INPUT TYPE="submit" NAME="button" Value="Locate:" onClick="locate(this.form)" ></INPUT>
+</FORM>
+
+   <div id="map-container" class="olMap" style="width: 700px; height: 500px;"></div>
+   <script type="text/javascript" src="{{ url_for('static',
+filename='js/wheremap.js') }}" defer="defer"></script>
+   <script type="text/javascript" src="{{ url_for('static',
+filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+	<p><input type="submit" value="Continue"></p>
+    </form>
+
+<script type="text/javascript">
+    function locate(form)
+    {
+       var input_addr = form.addr.value;
+       var trans_input;
+       var loc_info;
+       var lat,lon
+       alert(input_addr);
+       trans_input = input_addr.replace(/ /g,"+");
+       loc_info = httpGet("http://maps.googleapis.com/maps/api/geocode/json?address=" + trans_input + "&sensor=true");
+       
+       eval("json_rep = "+loc_info);
+       lat = json_rep.results[0].geometry.location.lat;
+       lon = json_rep.results[0].geometry.location.lng;
+       alert("lat: "+lat+"\nlon: " + lon);
+
+    }
+
+    function httpGet(theUrl)
+    {
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+    }
+</script>
+
+{% endblock %}
