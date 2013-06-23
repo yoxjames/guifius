@@ -50,19 +50,12 @@ def explore():
 
 @app.route('/build', methods=['POST', 'GET'])
 def build():
-
-    #Dont allow access if logged in
-    if not current_user.is_authenticated():
-        flash("You must log in.")
-        return redirect('/')
-
+    # Here we might want to let users pick up where they left off
+    # Doesn't really matter currently it just directs to stage one.
     return redirect('/build/where')
 
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
-    if not current_user.is_authenticated():
-        flash("You must log in.")
-        return redirect('/')
     form = WhereForm()
     if form.validate_on_submit():
         addr1 = form.address.data
@@ -71,9 +64,17 @@ def add_nodes():
         state = form.state.data
         zip = form.state.data
         flash("Address form successfully completed")
-        return redirect('/')
+        return redirect('build/what')
 
     return render_template('wherebuild.html', form=form)
+
+@app.route('/build/what', methods=['POST','GET'])
+def what_view():
+    form = WhatForm()
+    if form.validate_on_submit():
+        flash('done')
+        return redirect('/')
+    return render_template('whatbuild.html', form=form)
 
 @app.route('/contact')
 def contact():

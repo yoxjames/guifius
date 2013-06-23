@@ -29,12 +29,15 @@ class RegisterForm(Form):
 
 class WhereForm(Form):
     #assert html5.RangeInput()(self.expected_users, min=0, max=20000)
-    address = TextField('Address', validators = [Required()])
+    address = TextField('Address')
     address2 = TextField('Address 2')
-    city = TextField('City', validators = [Required()])
+    city = TextField('City')
     state = SelectField('State:', choices=extras.states)
-    zip = TextField('ZIP Code:', validators = [Required()])
+    zip = TextField('ZIP Code:')
 
 class WhereFormLite(Form):
     addr = TextField('Address', validators = [Required()])
+
+class WhatForm(Form):
+    dummy = TextField('DUMMY')
     
