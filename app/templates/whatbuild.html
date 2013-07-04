@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h2>What can you build?</h2>
+<br />
+<FORM NAME="myform" ACTION="" METHOD="POST" onSubmit="locate(this.form)">
+Address:<INPUT TYPE="text" NAME="addr" VALUE="" size=60></INPUT>
+<INPUT TYPE="submit" NAME="button" Value="Locate:" onClick="locate(this.form)" ></INPUT>
+</FORM>
+<div id="map-container" class="olMap" style="width: 700px; height: 500px;"></div>
+   <script type="text/javascript" src="{{ url_for('static',filename='js/wheremap.js') }}" defer="defer"></script>
+   <script type="text/javascript" src="{{ url_for('static',filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+   <link href="{{ url_for('static', filename='css/simple-slider.css') }}" rel="stylesheet" type="text/css" />
+   <form action="{{ url_for('what_view') }}" method="post" name="whereform">
+	   {{ form.hidden_tag() }}
+   <input type="submit" value="Continue">
+
+   </form>
+
+   
+   <input type="text" data-slider="true" data-slider-range="0,4">
+   <input type="text" data-slider="true" data-slider-range="0,50">
+</div>
+
+ <script>
+  $("[data-slider]")
+    .each(function () {
+      var input = $(this);
+      $("<span>")
+        .addClass("output")
+        .insertAfter($(this));po
+    })
+    .bind("slider:ready slider:changed", function (event, data) {
+      $(this)
+        .nextAll(".output:first")
+          .html(Math.round(Math.pow(10, data.value.toFixed(3))));
+    });
+  </script>
+
+
+{% endblock %}
