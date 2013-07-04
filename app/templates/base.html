@@ -1,3 +1,9 @@
+
+<script src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simple-slider.js')}}"> </script>
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+
+
 <!doctype html>
 <title>guifi.us</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
@@ -19,8 +25,8 @@ filename='guslogo.png')}}"></center>
  <br>
  <div class=lnav>
   <ul class=lnav_list>
-   <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('explore') }}"> Explore </a></li>
-   <li {% if request.path == "/build" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('build') }}"> Build </a></li>
+   <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('explore') }}"> Explore </a></li>
+   <li {% if request.path == "/build" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('build') }}"> Build </a></li>
  </div>
  <div class=rnav>
   <ul class=rnav_list>
@@ -30,9 +36,9 @@ filename='guslogo.png')}}"></center>
 </div>
 
 
-  {% for message in get_flashed_messages() %}
+{% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
-  {% endfor %}
+{% endfor %}
 
 <div class=pagecontainer>
   {% block body %}{% endblock %}
