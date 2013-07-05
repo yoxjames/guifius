@@ -1,41 +1,63 @@
 {% extends "base.html" %}
-{% block body %}
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static',filename='js/wheremap.js') }}" defer="defer"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simple-slider.js')}}"> </script>
+<link href="{{ url_for('static', filename='css/simple-slider.css') }}" rel="stylesheet" type="text/css" />
 
-<h2>What can you build?</h2>
-<br />
-<FORM NAME="myform" ACTION="" METHOD="POST" onSubmit="locate(this.form)">
-Address:<INPUT TYPE="text" NAME="addr" VALUE="" size=60></INPUT>
-<INPUT TYPE="submit" NAME="button" Value="Locate:" onClick="locate(this.form)" ></INPUT>
-</FORM>
-<div id="map-container" class="olMap" style="width: 700px; height: 500px;"></div>
-   <script type="text/javascript" src="{{ url_for('static',filename='js/wheremap.js') }}" defer="defer"></script>
-   <script type="text/javascript" src="{{ url_for('static',filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
-   <link href="{{ url_for('static', filename='css/simple-slider.css') }}" rel="stylesheet" type="text/css" />
-   <form action="{{ url_for('what_view') }}" method="post" name="whereform">
-	   {{ form.hidden_tag() }}
-   <input type="submit" value="Continue">
 
-   </form>
+<script>
+$(document).ready(function(){
 
-   
-   <input type="text" data-slider="true" data-slider-range="0,4">
-   <input type="text" data-slider="true" data-slider-range="0,50">
-</div>
 
- <script>
-  $("[data-slider]")
+  $("#moneyslide")
     .each(function () {
       var input = $(this);
       $("<span>")
         .addClass("output")
-        .insertAfter($(this));po
+        .insertAfter($(this))
     })
     .bind("slider:ready slider:changed", function (event, data) {
       $(this)
         .nextAll(".output:first")
-          .html(Math.round(Math.pow(10, data.value.toFixed(3))));
+          .html("$"+Math.round(Math.pow(10, data.value.toFixed(3))));
     });
-  </script>
 
+   $("#hoursslide")
+    .each(function () {
+      var input = $(this);
+      $("<span>")
+        .addClass("output")
+        .insertAfter($(this))
+    })
+    .bind("slider:ready slider:changed", function (event, data) {
+      $(this)
+        .nextAll(".output:first")
+          .html(Math.round(data.value.toFixed(3)) + " hours/week<br />");
+    });
+
+
+});
+  </script>
+{% endblock %}
+
+{% block body %}
+<center>  
+<h2>What can you build?</h2>
+<br />
+<div id="map-container" class="olMap" style="width: 400px; height: 400px;"></div>
+
+   <form action="{{ url_for('what_view') }}" method="post" name="whereform">
+	   {{ form.hidden_tag() }}
+
+ 
+   <h4> Money </h4>
+   <input id="moneyslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,4">
+   
+   <h4> Time </h4>
+   <input id ="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
+   <input type="submit" value="Continue">
+</center>
+</div>
 
 {% endblock %}

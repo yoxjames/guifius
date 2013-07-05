@@ -62,7 +62,7 @@ padding:6px;
 }
 
 .masthead{
-height:40px;
+height:140px;
 width:70%;
 margin:auto;
 padding:35px;
@@ -112,8 +112,8 @@ display:inline;
 .cur_page{
 display:inline;
 list-style-type:none;
-background:#fff;
 padding:5px;
+font-weight:bold;
 }
 
 .nav_item{
@@ -160,7 +160,7 @@ min-height:740px;
 margin:auto;
 padding:8px;
 position:relative;
-top:70px;
+
 }
 
 .bnavwrapper{

@@ -1,20 +1,12 @@
 {% extends "base.html" %}
-{% block body %}
-<h2>Where are you interested in building?</h2>
-<br />
 
-<FORM NAME="myform" ACTION="" METHOD="POST" onSubmit="locate(this.form)">
-Address:<INPUT TYPE="text" NAME="addr" VALUE="" size=60></INPUT>
-<INPUT TYPE="submit" NAME="button" Value="Locate:" onClick="locate(this.form)" ></INPUT>
-</FORM>
+{% block head %}
 
-   <div id="map-container" class="olMap" style="width: 700px; height: 500px;"></div>
-   <script type="text/javascript" src="{{ url_for('static',
-filename='js/wheremap.js') }}" defer="defer"></script>
-   <script type="text/javascript" src="{{ url_for('static',
-filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
-	<p><input type="submit" value="Continue"></p>
-    </form>
+<script type="text/javascript" src="{{ url_for('static',filename='js/wheremap.js') }}" defer="defer"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+
+{% endblock %}
+
 
 <script type="text/javascript">
     function locate(form)
@@ -44,5 +36,22 @@ filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
     return xmlHttp.responseText;
     }
 </script>
+
+
+
+{% block body %}
+<center>
+<h2>Where are you interested in building?</h2>
+<br />
+
+<FORM NAME="myform" ACTION="" METHOD="POST" onSubmit="locate(this.form)">
+Address:<INPUT TYPE="text" NAME="addr" VALUE="" size=60></INPUT>
+<INPUT TYPE="submit" NAME="button" Value="Locate:" onClick="locate(this.form)" ></INPUT>
+</FORM>
+
+<div id="map-container" class="olMap" style="width: 400px; height: 400px;"></div>
+
+<p><input type="submit" value="Continue"></p>
+<center>
 
 {% endblock %}

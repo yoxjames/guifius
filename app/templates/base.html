@@ -1,11 +1,25 @@
-
 <script src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/simple-slider.js')}}"> </script>
-<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<script>
 
+$(document).ready(function(){
+  $(".nav_item").hover(
+    function()
+    {
+        $(this).css("background-color","yellow");
+    } ,
+    function()
+    {
+        $(this).css("background-color","white");
+    });
+});
+
+</script>
 
 <!doctype html>
 <title>guifi.us</title>
+
+{% block head %}
+{% endblock %}
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=tnavwrapper>
 <div class=tnav>
@@ -26,7 +40,8 @@ filename='guslogo.png')}}"></center>
  <div class=lnav>
   <ul class=lnav_list>
    <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('explore') }}"> Explore </a></li>
-   <li {% if request.path == "/build" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('build') }}"> Build </a></li>
+   <li {% if request.path == "/build/where" or request.path == "/build/what"%} 
+    class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('build') }}"> Build </a></li>
  </div>
  <div class=rnav>
   <ul class=rnav_list>

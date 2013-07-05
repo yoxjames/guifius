@@ -1,32 +1,35 @@
 {% extends "base.html" %}
-{% block body %}
-   <div id="map-container" class="olMap"></div>
-   <script type="text/javascript" src="{{ url_for('static',
-filename='js/exploremap.js') }}" defer="defer"></script>
-   <script type="text/javascript" src="{{ url_for('static',
-filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+{% block head %}
 
-   <script type="text/javascript">
-	function draw_nodes() {
-		
-		var fn = {
-			'pointRadis':10,
-			'fillColor': '#ffffff'};
-		var fnsty = OpenLayers.Util.applyDefaults(fn,
+<script type="text/javascript" src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+
+<script type="text/javascript">
+function draw_nodes() {
+    var fn = {
+		'pointRadis':10,
+		'fillColor': '#ffffff'};
+	var fnsty = OpenLayers.Util.applyDefaults(fn,
 				OpenLayers.Feature.Vector.style["defaults"]);
-		var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,
+	var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,
 				'fillColor': '#ffffff'});
-		console.log("V1-Z: "+Vector1.getZIndex());
-		console.log("T-Z: "+Terrain.getZIndex());
+	console.log("V1-Z: "+Vector1.getZIndex());
+	console.log("T-Z: "+Terrain.getZIndex());
 
-		var nodes = {{ nodes|safe }};
-		for(i=0;i<nodes.length;i++){
-			var node = nodes[i];
-			var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
-			var pointFeature = new OpenLayers.Feature.Vector(point);
-			Vector1.addFeatures([pointFeature]);
-		}
+	var nodes = {{ nodes|safe }};
+	for(i=0;i<nodes.length;i++){
+		var node = nodes[i];
+		var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
+		var pointFeature = new OpenLayers.Feature.Vector(point);
+		Vector1.addFeatures([pointFeature]);
 	}
-  </script>
+}
+</script>
 
+{% endblock %}
+
+{% block body %}
+
+<div id="map-container" class="olMap"></div>
+ 
 {% endblock %}
