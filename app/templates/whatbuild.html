@@ -45,7 +45,7 @@ $(document).ready(function(){
 <center>  
 <h2>What can you build?</h2>
 <br />
-<div id="map-container" class="olMap" style="width: 400px; height: 400px;"></div>
+<div id="map-container" class="olMap" style="width: 500px; height: 400px;"></div>
 
    <form action="{{ url_for('what_view') }}" method="post" name="whereform">
 	   {{ form.hidden_tag() }}
@@ -56,6 +56,7 @@ $(document).ready(function(){
    
    <h4> Time </h4>
    <input id ="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
+   <br />
    <input type="submit" value="Continue">
 </center>
 </div>

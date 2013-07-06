@@ -218,7 +218,16 @@ background: #F0D6D6;
 padding: 0.5em;
 }
 
+.coords{
+color:blue;
+font-weight:bold;
+}
+
+
+
 #map-container{
 width:900px;
 height:600px;
 }
+
+

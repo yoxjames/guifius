@@ -57,15 +57,6 @@ def build():
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
     form = WhereForm()
-    if form.validate_on_submit():
-        addr1 = form.address.data
-        addr2 = form.address2.data
-        city = form.city.data
-        state = form.state.data
-        zip = form.state.data
-        flash("Address form successfully completed")
-        return redirect('build/what')
-
     return render_template('wherebuild.html', form=form)
 
 @app.route('/build/what', methods=['POST','GET'])
