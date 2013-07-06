@@ -73,25 +73,24 @@ $(document).ready(function(){
 {% block body %}
 <h2>What can you build?</h2>
 <br />
-<div id="map-container" class="olMap" style="width: 500px; height: 400px;"></div>
 
-   <form action="{{ url_for('what_view') }}" method="post" name="whereform">
-	   {{ form.hidden_tag() }}
+<div id="map-container" class="olMap" style="width: 50%; height: 40%; padding: 0.5em;"></div>
+<div class="side-panel" style="float:left; width:50px; position:relative;"></div>
+  <div id="money-header" class="slider-item"> Money
+  <input id="moneyslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,4">      
+  <div id="money-info" class="slider-info">How much money are you willing to contribute? The money will be used to purchase networking hardware.</div>
 
- 
-   <div id="money-header" class="slider-item"> Money
-   <input id="moneyslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,4">      
-   <div id="money-info" class="slider-info">How much money are you willing to contribute? The money will be used to purchase networking hardware.</div>
-   </div>
+  </div>
 
-   <div id="hours-header" class="slider-item"> Time
-   <input id="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
-   <div id="hours-info" class="slider-info">How many hours are you willing to dedicate per week on average? Note: Zero hours is an option.</div>
-   </div>
+  <div id="hours-header" class="slider-item"> Time
+  <input id="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
+  <div id="hours-info" class="slider-info">How many hours are you willing to dedicate per week on average? Note: Zero hours is an option.</div>
+  </div>
 
-   <br />
+  <br />
 
-   <input type="submit" value="Continue">
+  <input type="submit" value="Continue" style="float:block;">
 </div>
+
 
 {% endblock %}

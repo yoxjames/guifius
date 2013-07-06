@@ -160,7 +160,7 @@ min-height:740px;
 margin:auto;
 padding:8px;
 position:relative;
-
+//float:left;
 }
 
 .bnavwrapper{
@@ -225,15 +225,15 @@ font-weight:bold;
 
 .slider-info{
 //background: #CEE5F5;
-height: 100px;
-position: relative;
-margin:0.7em;
+float: left;
 }
 
 .slider-item{
 font-weight:bold;
-padding:0.5em;
-width: 400px;
+width: 350px;
+float: left;
+margin: 0.5em;
+padding: 0.5em;
 }
 
 #money-info{
@@ -245,8 +245,11 @@ font-weight:normal;
 }
 
 #map-container{
-width:900px;
-height:600px;
+//width:900px;
+//height:600px;
+padding:0.5em;
+float:left;
+margin:25px;
 }
 
 
