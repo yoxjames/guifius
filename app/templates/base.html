@@ -9,7 +9,7 @@ $(document).ready(function(){
     } ,
     function()
     {
-        $(this).css("background-color","white");
+        $(this).css("background-color","#efefef");
     });
 });
 
@@ -24,11 +24,13 @@ $(document).ready(function(){
 <div class=tnavwrapper>
 <div class=tnav>
 
-<div class=user_block>{{ curUser}}</div>
+
 {% if not current_user.is_authenticated() %}
  <a href="{{ url_for('login') }}">Log in</a>
+ <div class=user_block>Not Logged In</div>
 {% else %}
  <a href="{{ url_for('logout') }}">Log out</a>
+ <div class=user_block>{{ curUser }}</div>
 {% endif %}
  </div>
 </div>

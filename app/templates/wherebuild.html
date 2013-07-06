@@ -7,7 +7,6 @@
 
 
 <script>
-
 $(document).ready(function(){
   $(".coords").hide();
   $("#addrForm").click(
@@ -15,8 +14,9 @@ $(document).ready(function(){
     {
        $(".coords").show();
        var coords = locate(this.form);
-       $("#lat-output").append(coords[0]);
-       $("#lon-output").append(coords[1]);
+       $("#lat-output").text("lat: " + coords[0]);
+       $("#lon-output").text("lon: " + coords[1]);
+       map.setCenter(new OpenLayers.LonLat(.23,.67), 10); // Isaac help meeeee.....
     });
 });
 
@@ -33,7 +33,7 @@ function locate(form)
     eval("json_rep = "+loc_info);
     lat = json_rep.results[0].geometry.location.lat;
     lon = json_rep.results[0].geometry.location.lng;
-    return [lat,lon];
+    return [lon,lat];
 }
 
 function httpGet(theUrl)
@@ -50,6 +50,7 @@ function httpGet(theUrl)
 {% endblock %}
 
 {% block body %}
+
 <center>
 <h2>Where are you interested in building?</h2>
 <br />

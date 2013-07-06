@@ -223,7 +223,26 @@ color:blue;
 font-weight:bold;
 }
 
+.slider-info{
+//background: #CEE5F5;
+height: 100px;
+position: relative;
+margin:0.7em;
+}
 
+.slider-item{
+font-weight:bold;
+padding:0.5em;
+width: 400px;
+}
+
+#money-info{
+font-weight:normal;
+}
+
+#hours-info{
+font-weight:normal;
+}
 
 #map-container{
 width:900px;

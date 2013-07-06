@@ -38,9 +38,9 @@ def teardown_request(exception):
 
 @app.route('/')
 def explore():
-    curUser = (current_user.get_id() or "Not Logged In")
-    if (curUser != "Not Logged In" and curUser != None):
-        curUser = db.curUsername(curUser)
+    curUser = ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
     
     nodes = db.query_db("select * from nodes",[],one=False)
     
@@ -56,24 +56,39 @@ def build():
 
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
+    curUser = ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
+
     form = WhereForm()
-    return render_template('wherebuild.html', form=form)
+    return render_template('wherebuild.html', form=form, curUser=curUser)
 
 @app.route('/build/what', methods=['POST','GET'])
 def what_view():
+    curUser = ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
+
     form = WhatForm()
     if form.validate_on_submit():
         flash('done')
         return redirect('/')
-    return render_template('whatbuild.html', form=form)
-
+    return render_template('whatbuild.html', form=form, curUser=curUser)
 @app.route('/contact')
 def contact():
-    return render_template('base.html')
+    curUser = ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
+
+    return render_template('base.html', curUser=curUser)
 
 @app.route('/about')
 def about():
-    return render_template('base.html')
+    curUser = ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
+
+    return render_template('base.html', curUser=curUser)
 
 @app.route('/add/<lon>&<lat>', methods=['GET'])
 def add_entry(lon, lat):
@@ -88,6 +103,9 @@ def add_entry(lon, lat):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated():
+       return redirect('/') 
+
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data

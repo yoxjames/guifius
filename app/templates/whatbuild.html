@@ -8,8 +8,38 @@
 
 <script>
 $(document).ready(function(){
+  $(".slider-info").hide();
 
+  $(".slider-item").hover(
+    function()
+    {
+        $(this).css("border","1px solid #AACBE2");
+    } ,
+    function()
+    {
+        $(this).css("border","none");
+    });
 
+  $("#money-header").hover(
+    function()
+    {
+        $("#money-info").show();
+    } ,
+    function()
+    {
+        $("#money-info").hide();
+    });
+
+  $("#hours-header").hover(
+    function()
+    {
+        $("#hours-info").show();
+    } ,
+    function()
+    {
+        $("#hours-info").hide();
+    });
+ 
   $("#moneyslide")
     .each(function () {
       var input = $(this);
@@ -35,14 +65,12 @@ $(document).ready(function(){
         .nextAll(".output:first")
           .html(Math.round(data.value.toFixed(3)) + " hours/week<br />");
     });
-
-
 });
-  </script>
+
+</script>
 {% endblock %}
 
 {% block body %}
-<center>  
 <h2>What can you build?</h2>
 <br />
 <div id="map-container" class="olMap" style="width: 500px; height: 400px;"></div>
@@ -51,14 +79,19 @@ $(document).ready(function(){
 	   {{ form.hidden_tag() }}
 
  
-   <h4> Money </h4>
-   <input id="moneyslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,4">
-   
-   <h4> Time </h4>
-   <input id ="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
+   <div id="money-header" class="slider-item"> Money
+   <input id="moneyslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,4">      
+   <div id="money-info" class="slider-info">How much money are you willing to contribute? The money will be used to purchase networking hardware.</div>
+   </div>
+
+   <div id="hours-header" class="slider-item"> Time
+   <input id="hoursslide" type="text" data-slider="true" data-slider-highlight="true" data-slider-range="0,50" data-slider-step="1">
+   <div id="hours-info" class="slider-info">How many hours are you willing to dedicate per week on average? Note: Zero hours is an option.</div>
+   </div>
+
    <br />
+
    <input type="submit" value="Continue">
-</center>
 </div>
 
 {% endblock %}
