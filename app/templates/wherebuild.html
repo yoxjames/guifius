@@ -29,6 +29,7 @@ $(document).ready(function(){
    {
       $("#what-title").show();
       $(".wherephase").hide();
+      $(".whatphase").show();
 
    });
 
@@ -89,49 +90,67 @@ function httpGet(theUrl)
 <!-- Panel In line with map which contains all the divs that can inhabit this place -->
 <div  class="map-sidepanel-container">
 
+<!-- Phase One sidepanel -->
 <div class="wherephase map-sidepanel">
+
 <div id="where-sidepanel-text" class="wherephase map-sidepanel-one">
 Choose the general area where you want to build a Free Network. you can use the address field to jump to a specific location and we can even attempt to locate you via IP!<br />
 </div>
+
 <div id="where-sidepanel-form" class="wherephase map-sidepanel-two">
 <form class="address ">
 <input id="addr-text-input" name="addr" type="text" class="sidepanel-two-input" size=30"></input>
-
 <input id="addr-text-btn" class = "sidepanel-two-input" type="button" value="Locate Address">
-
 <input id="addr-ip-btn" class="sidepanel-two-input"  type="submit" value="Locate by IP">
 </form>
-
 </div>
 
 <div id="where-sidepanel-submit" class="wherephase map-sidepanel-three">
 <input id="what-phase" class="sidepanel-two-input" type="button" value="Next Phase" >
-
 </div>
 
+</div> <!-- End Phase One Sidepanel -->
+
+<!-- Phase Two Sidepanel -->
+
+<div class="whatphase map-sidepanel">
+
+<div id="what-sidepanel-text" class="whatphase map-sidepanel-one">
+
+Place points on the map in order to create a polygon. This polygon represents the area you would like to cover. If you are only interested in placing a single node at a location, simply press "Next Phase".
 </div>
 
-
-<div class="whatphase map-sidepanel"> 
-The next step is to define the area of coverage you are trying to attain. To do this, place points on the map. This will begin drawing a polygon. Once you are done hit "Next" to move on to phase 3.
+<div id="where-sidepanel-form" class="whatphase map-sidepanel-two">
+<br />
+<img class="sidepanel-two-input" src="/static/guslogoava.jpg">
 </div>
 
-
+<div id="what-sidepanel-submit" class="whatphase map-sidepanel-three">
+<input id="what-phase" class="sidepanel-two-input" type="button" value="Next Phase" >
 </div>
 
+</div> <!-- End Phase One Sidepanel -->
+
+
+</div> <!-- End Sidepanel Container -->
 
 </div>
 
 <!-- Address Input Field -->
 
 <div id="addr-panel" class="bottom-panel">
+<div id="coords-display">
+<h3>Debug Output</h3>
+<p class="wherephase">IP Locate not yet functional</p>
+<p class="wherephase">Map Zoom not yet functional</p>
+<p class="coords-display wherephase" id="lat-output">lat: </p>
+<p class="coords-display wherephase" id="lon-output">lon: </p>
+<p class="whatphase"> This feature is not yet functional </p>
+</div> <!-- end coords display -->
 </div> <!--End addr-field -->
 
 <!-- Just displays coordinates, probably only useful for debugging -->
-<div id="coords-display" class="bottom-panel" >
-<p class="coords-display" id="lat-output">lat: </p>
-<p class="coords-display" id="lon-output">lon: </p>
-</div> <!-- end coords display -->
+
 
 
 
