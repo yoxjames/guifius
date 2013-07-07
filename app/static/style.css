@@ -218,9 +218,18 @@ background: #F0D6D6;
 padding: 0.5em;
 }
 
+.upper-display{
+display: block;
+width: 100%;
+position: relative;
+margin-top: 0.5em;
+margin-bottom: 0.5em;
+}
+
 .coords{
 color:blue;
-font-weight:bold;
+font-weight:bold
+display: inline;
 }
 
 .slider-info{
@@ -234,6 +243,67 @@ width: 350px;
 float: left;
 margin: 0.5em;
 padding: 0.5em;
+}
+
+.map-sidepanel-container{
+width:50%;
+height:100%;
+//background:#125655;
+display: inline;
+position: relative;
+float: right;
+}
+
+.map-sidepanel{
+margin:5%;
+padding:5%;
+background:#8e8e8e;
+width: 80%;
+height: 80%;
+position: relative;
+}
+
+.map-sidepanel-one
+{
+width: 100%;
+height: 40%;
+position: relative;
+display: block;
+}
+.map-sidepanel-two
+{
+width: 100%;
+height: 50%;
+position: relative;
+display: block;
+}
+.map-sidepanel-three
+{
+display: block;
+width: 100%;
+}
+
+.sidepanel-two-input
+{
+display: block;
+margin-right: auto;
+margin-left: auto;
+}
+
+.bottom-panel
+{
+display: inline;
+width: 100%;
+}
+
+.coords-display
+{
+}
+
+.map-controller
+{
+height:40%;
+display: block;
 }
 
 #money-info{
