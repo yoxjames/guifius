@@ -75,16 +75,35 @@ from, to;
               center = new OpenLayers.LonLat(-93,43);
               center.transform(from,to);
               map.setCenter(center, 4);
-         
+
+             var geolocate = new OpenLayers.Control.Geolocate({
+    		bind: false,
+    		geolocationOptions: {
+        		enableHighAccuracy: true,
+        		maximumAge: 0,
+        		timeout: 7000
+    		}
+             }); 
 
               controls = {
-                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false})
+                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+		locator: geolocate
               }
 
               for(var key in controls) {
                 map.addControl(controls[key]);
               }
-	draw_nodes();
-	
+
+	    var firstGeolocation = true;
+
+geolocate.events.register("locationupdated",geolocate,function(e) {
+	console.log("x:" + e.point.x);
+	console.log("y:" + e.point.y);
+	center = new OpenLayers.LonLat(e.point.x, e.point.y);
+	map.setCenter(center, 10);
+});
+geolocate.events.register("locationfailed",this,function() {
+    OpenLayers.Console.log('Location detection failed');
+});
       }
             

@@ -19,8 +19,17 @@ $(document).ready(function(){
        var coords = locate(this.form.addr.value);
        $("#lat-output").text("lat: " + coords[0]);
        $("#lon-output").text("lon: " + coords[1]);
-       map.setCenter(new OpenLayers.LonLat(.23,.67), 10); // Isaac help meeeee.....
+	center = new OpenLayers.LonLat(coords[0],coords[1]);
+	center.transform(from, to);
+	map.setCenter(center, 16);
     });
+
+   $("#addr-ip-btn").click(
+   function()
+	{
+		controls.locator.deactivate();
+		controls.locator.activate();
+	});
     
     // Next phase
 
@@ -101,7 +110,7 @@ Choose the general area where you want to build a Free Network. you can use the 
 <form class="address ">
 <input id="addr-text-input" name="addr" type="text" class="sidepanel-two-input" size=30"></input>
 <input id="addr-text-btn" class = "sidepanel-two-input" type="button" value="Locate Address">
-<input id="addr-ip-btn" class="sidepanel-two-input"  type="submit" value="Locate by IP">
+<input id="addr-ip-btn" class="sidepanel-two-input"  type="button" value="Locate by IP">
 </form>
 </div>
 
