@@ -87,7 +87,9 @@ from, to;
 
               controls = {
                 switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false}),
-		locator: geolocate
+		locator: geolocate,
+		area: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Polygon),
+		node: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Point)
               }
 
               for(var key in controls) {
@@ -106,4 +108,15 @@ geolocate.events.register("locationfailed",this,function() {
     OpenLayers.Console.log('Location detection failed');
 });
       }
+
+function toggleControl(element) {
+	for(key in controls) {
+		var control = controls[key];
+		if(element.value == key && element.checked) {
+			control.activate();
+		} else {
+			control.deactivate();
+		}
+	}
+}
             

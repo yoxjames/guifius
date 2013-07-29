@@ -124,6 +124,20 @@ Choose the general area where you want to build a Free Network. you can use the 
 
 <div class="whatphase map-sidepanel">
 
+<div id="whatcontrols" class="whatphase">
+	<ul id="whatcontroltoggle">
+		<li>
+		<input type="radio" name="type" value="node" id="nodeToggle" onclick="toggleControl(this);" />
+		<label for="nodeToggle"> Draw a Node </label>
+		</li>
+		<li>
+		<input type="radio" name="type" value="area" id="areaToggle"
+onclick="toggleControl(this);" />
+		<label for="areaToggle"> Draw an Area </label>
+		</li>
+	</ul>
+</div>
+
 <div id="what-sidepanel-text" class="whatphase map-sidepanel-one">
 
 Place points on the map in order to create a polygon. This polygon represents the area you would like to cover. If you are only interested in placing a single node at a location, simply press "Next Phase".
