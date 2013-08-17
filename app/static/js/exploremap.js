@@ -78,7 +78,7 @@ from, to;
               center.transform(from,to);
               map.setCenter(center, 5);
          
-
+		/*
               controls = {
                 switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false})
               }
@@ -86,6 +86,7 @@ from, to;
               for(var key in controls) {
                 map.addControl(controls[key]);
               }
+	      */
 	draw_nodes();
 	
       }
