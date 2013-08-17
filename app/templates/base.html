@@ -21,13 +21,14 @@ $(document).ready(function(){
 {% block head %}
 {% endblock %}
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=masthead>
 <div class=tnavwrapper>
 <div class=tnav>
 
 
 {% if not current_user.is_authenticated() %}
  <a href="{{ url_for('login') }}">Log in</a>
- <div class=user_block>Not Logged In</div>
+ <div class=user_block></div>
 {% else %}
  <a href="{{ url_for('logout') }}">Log out</a>
  <div class=user_block>{{ curUser }}</div>
@@ -35,10 +36,8 @@ $(document).ready(function(){
  </div>
 </div>
 
-<div class=masthead>
- <center><img class=logo src="{{ url_for('static',
-filename='guslogo.png')}}"></center>
- <br>
+ <img class=logo src="{{ url_for('static',
+filename='guslogo.png')}}">
  <div class=lnav>
   <ul class=lnav_list>
    <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('explore') }}"> Explore </a></li>
@@ -60,7 +59,7 @@ filename='guslogo.png')}}"></center>
 <div class=pagecontainer>
   {% block body %}{% endblock %}
 </div>
-
+<!--
 <div class=bnavwrapper>
  <div class=bnav>
   <div class=bnav_col>
@@ -90,4 +89,8 @@ filename='guslogo.png')}}"></center>
 <div class=bnav_col>
   <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0; margin:0.5em"   src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a>
 </div>
+ 
 </div>
+-->
+
+

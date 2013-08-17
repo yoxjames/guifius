@@ -62,14 +62,19 @@ padding:6px;
 }
 
 .masthead{
-height:140px;
-width:70%;
+height:10%;
+width:100%;
 margin:auto;
-padding:35px;
+display:block;
+text-align:center;
+margin-left:auto;
+margin-right:auto;
+position:relative;
 }
 
 .logo{
 margin:auto;
+position:relative;
 }
 
 .lnav{
@@ -77,6 +82,8 @@ background:#efefef;
 float:left;
 display:block;
 border:1px solid #000000;
+position: absolute;
+bottom: 0;
 }
 
 .lnav_list{
@@ -101,6 +108,9 @@ background:#efefef;
 float:right;
 display:block;
 border:1px solid #000000;
+position: absolute;
+bottom: 0;
+right: 0;
 }
 
 .rnav_list{
@@ -128,11 +138,12 @@ text-decoration:none;
 }
 
 .tnavwrapper{
-position: relative;
-top: 20px;
+position:absolute;
 background: #8e8e8e;
 height:31px;
-width:100%; 
+width:100%;
+top:35;
+z-index:0;
 }  
 
 .tnav{
@@ -155,10 +166,9 @@ background:#8e8eff;
 }
 
 .pagecontainer{
-width:70%;
-min-height:740px;
+width:100%;
+height:90%;
 margin:auto;
-padding:8px;
 position:relative;
 //float:left;
 }

@@ -29,7 +29,20 @@ from, to;
 
 
 
-              map.addLayer(Terrain = new OpenLayers.Layer.XYZ("terrain",
+              
+              map.addLayer(Street = new OpenLayers.Layer.XYZ("Street",
+                      [
+                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
+                      ],
+                      {
+                        attribution: "CC BY SA OSM Contributors",
+                        transitionEffect: "resize"
+                      }));
+
+	      map.addLayer(Terrain = new OpenLayers.Layer.XYZ("terrain",
                       [
                         "http://a.tile.stamen.com/terrain/${z}/${x}/${y}.jpg",
                         "http://b.tile.stamen.com/terrain/${z}/${x}/${y}.jpg",
@@ -42,17 +55,6 @@ from, to;
                       }));
               Terrain.setName('Terrain');
 
-              map.addLayer(Street = new OpenLayers.Layer.XYZ("Street",
-                      [
-                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                        "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
-                      ],
-                      {
-                        attribution: "CC BY SA OSM Contributors",
-                        transitionEffect: "resize"
-                      }));
 
               map.addLayer(Satellite = new OpenLayers.Layer.XYZ("Imagery",
                       [
@@ -74,7 +76,7 @@ from, to;
 
               center = new OpenLayers.LonLat(-93,43);
               center.transform(from,to);
-              map.setCenter(center, 4);
+              map.setCenter(center, 5);
          
 
               controls = {
