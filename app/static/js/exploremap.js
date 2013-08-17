@@ -26,11 +26,7 @@ from, to;
 
               var nodestyle = new OpenLayers.StyleMap({'default': nodest});
 
-
-
-
-              
-              map.addLayer(Street = new OpenLayers.Layer.XYZ("Street",
+             map.addLayer(Street = new OpenLayers.Layer.XYZ("Street",
                       [
                         "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
                         "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
@@ -42,7 +38,9 @@ from, to;
                         transitionEffect: "resize"
                       }));
 
-	      map.addLayer(Terrain = new OpenLayers.Layer.XYZ("terrain",
+
+
+              map.addLayer(Terrain = new OpenLayers.Layer.XYZ("terrain",
                       [
                         "http://a.tile.stamen.com/terrain/${z}/${x}/${y}.jpg",
                         "http://b.tile.stamen.com/terrain/${z}/${x}/${y}.jpg",
@@ -55,7 +53,7 @@ from, to;
                       }));
               Terrain.setName('Terrain');
 
-
+ 
               map.addLayer(Satellite = new OpenLayers.Layer.XYZ("Imagery",
                       [
                         "http://otile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
@@ -72,22 +70,50 @@ from, to;
                     {style: OpenLayers.Feature.Vector.style["default"]}, {
                               renderers: renderer
                           }));
-              Vector1.displayInLayerSwitcher = true;
+              Vector1.displayInLayerSwitcher = false;
 
               center = new OpenLayers.LonLat(-93,43);
               center.transform(from,to);
-              map.setCenter(center, 5);
          
-		/*
-              controls = {
-                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false})
-              }
+              map.setCenter(center, 4);
 
+             var geolocate = new OpenLayers.Control.Geolocate({
+    		bind: false,
+    		geolocationOptions: {
+        		enableHighAccuracy: true,
+        		maximumAge: 0,
+        		timeout: 7000
+    		}
+             }); 
+              controls = {
+                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+		locator: geolocate,
+		area: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Polygon),
+		node: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Point)
+              }
+	       /*
               for(var key in controls) {
                 map.addControl(controls[key]);
-              }
-	      */
-	draw_nodes();
-	
-      }
+              }*/
+	    var firstGeolocation = true;
+
+geolocate.events.register("locationupdated",geolocate,function(e) {
+	console.log("x:" + e.point.x);
+	console.log("y:" + e.point.y);
+	center = new OpenLayers.LonLat(e.point.x, e.point.y);
+	map.setCenter(center, 10);
+});
+}
+
+
+function toggleControl(element) {
+	for(key in controls) {
+		var control = controls[key];
+		if(element.value == key && element.checked) {
+			control.activate();
+		} else {
+			control.deactivate();
+		}
+	}
+}
             
