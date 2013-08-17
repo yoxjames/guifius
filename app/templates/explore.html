@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block head %}
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
+<script src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
 
 <script type="text/javascript">
 function draw_nodes() {
@@ -24,12 +24,89 @@ function draw_nodes() {
 		Vector1.addFeatures([pointFeature]);
 	}
 }
+
+function locate(addr)
+{
+    var input_addr = addr;
+    var trans_input;
+    var loc_info;
+    var lat,lon
+    trans_input = input_addr.replace(/ /g,"+");
+    loc_info = httpGet("http://maps.googleapis.com/maps/api/geocode/json?address=" + trans_input + "&sensor=true");
+       
+    eval("json_rep = "+loc_info);
+    lat = json_rep.results[0].geometry.location.lat;
+    lon = json_rep.results[0].geometry.location.lng;
+    return [lon,lat];
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+</script>
+
+<script>
+$(document).ready(function(){
+  $(".rpanel").hide();
+  $("#toggle-rpanel-off").hide();
+  $(".toggle-rpanel").click(function(){
+    $(".rpanel").toggle();
+    $(".toggle-rpanel").toggle();
+  });
+ 
+  $("#addr-text-btn").click(function(){
+    var coords = locate(this.form.addr.value);
+    center = new OpenLayers.LonLat(coords[0],coords[1]);
+    center.transform(from, to);
+    map.setCenter(center, 16);
+  });
+
+  $("#addr-ip-btn").click(function(){
+    controls.locator.deactivate();
+    controls.locator.activate();
+  });
+});
 </script>
 
 {% endblock %}
 
 {% block body %}
-<center>
-<div id="map-container" class="olMap" style="width:100%; height:100%; float:center"></div>
-</center>
+	<div id="map-wrapper">
+<div id="map-container" class="olMap"></div>
+</div>
+
+<div id="toggle-rpanel-on" class="toggle-rpanel"></div>
+<div id="explore-rpanel" class="rpanel">
+<h2>Layers:</h2>
+<h3>Map:</h3>
+<input type="radio" name="layers" id="street-layer">Street</input><br />
+<input type="radio" name="layers" id="street-layer">Terrian</input><br />
+<input type="radio" name="layers" id="street-layer">Image</input><br />
+<h3>Overlays</h3>
+<input type="checkbox" id="existing-network-overlay">Existing Networks</input><br />
+<input type="checkbox" id="planned-networks-overlay">Planned Networks</input><br />
+<input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input><br />
+<br />
+
+<h2>Navigation:</h2>
+<br />
+Address:<br />
+<form class="address" >
+<input id="addr-text-input" name="addr" type="text" size=30"></input>
+<input id="addr-text-btn" type="button" value="Go">
+</form>
+<input id="addr-ip-btn" type="button" value="Locate by IP">
+
+
+
+</div>
+<div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+
+</div>
 {% endblock %}
