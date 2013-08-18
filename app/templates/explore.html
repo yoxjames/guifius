@@ -71,6 +71,20 @@ $(document).ready(function(){
     controls.locator.deactivate();
     controls.locator.activate();
   });
+
+  $("#street-layer").click(function(){
+    
+  });
+  $("#terrain-layer").click(function(){
+
+  });
+  $("#image-layer").click(function(){
+    alert(Satellite.visibility);
+    
+    Satellite.visibility = true;
+    Street.visibility = false;
+    Terrain.visibility = false;
+  });
 });
 </script>
 
@@ -83,28 +97,28 @@ $(document).ready(function(){
 
 <div id="toggle-rpanel-on" class="toggle-rpanel"></div>
 <div id="explore-rpanel" class="rpanel">
-<h2>Layers:</h2>
-<h3>Map:</h3>
-<input type="radio" name="layers" id="street-layer">Street</input><br />
-<input type="radio" name="layers" id="street-layer">Terrian</input><br />
-<input type="radio" name="layers" id="street-layer">Image</input><br />
-<h3>Overlays</h3>
-<input type="checkbox" id="existing-network-overlay">Existing Networks</input><br />
-<input type="checkbox" id="planned-networks-overlay">Planned Networks</input><br />
-<input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input><br />
-<br />
-
-<h2>Navigation:</h2>
-<br />
-Address:<br />
+<h2>Location</h2>
+<hr />
+Address:
 <form class="address" >
 <input id="addr-text-input" name="addr" type="text" size=30"></input>
 <input id="addr-text-btn" type="button" value="Go">
-</form>
 <input id="addr-ip-btn" type="button" value="Locate by IP">
-
-
-
+</form>
+<h2>Layers</h2>
+<hr />
+<h4>Map</h4>
+<dl>
+<dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
+<dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
+<dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
+</dl>
+<h4>Overlays</h4>
+<dl>
+<dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
+<dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
+<dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
+</dl>
 </div>
 <div id="toggle-rpanel-off" class="toggle-rpanel"></div>
 

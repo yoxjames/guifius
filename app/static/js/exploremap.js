@@ -3,7 +3,8 @@
            var map, Street, Terrain, Satellite, renderer, Vector1, Vector2,
 from, to;
            function init() {
-
+              
+              
               map = new OpenLayers.Map('map-container', {
                   controls: [
                     new OpenLayers.Control.Navigation(),
@@ -85,8 +86,12 @@ from, to;
         		timeout: 7000
     		}
              }); 
+             var baseLayerOptions = {
+               displayInLayerSwitcher: false
+             };
+
               controls = {
-                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+                switcher: new OpenLayers.Control.LayerSwitcher({'ascending':true}),
 		locator: geolocate,
 		area: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Polygon),
 		node: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Point)
@@ -96,7 +101,7 @@ from, to;
                 map.addControl(controls[key]);
               }*/
 	    var firstGeolocation = true;
-
+map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
 geolocate.events.register("locationupdated",geolocate,function(e) {
 	console.log("x:" + e.point.x);
 	console.log("y:" + e.point.y);
