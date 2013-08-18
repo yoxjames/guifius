@@ -5,7 +5,7 @@ font-family: sans-serif;
 background: #fff;
 }
 
-a, h1, h2{
+a, dt, h1, h2, h4{
 color: #470b0b;
 }
 
@@ -105,6 +105,39 @@ min-height: 450px;
 border:1px solid #000000;
 }
 
+#toggle-lpanel-on{
+left: 0px;
+}
+
+#toggle-lpanel-off{
+left: 310px;
+}
+
+.toggle-lpanel{
+position:absolute;
+width: 15px;
+top: 20%;
+z-index:1002;
+background: #c18686;
+min-height: 310px;
+border-top-right-radius: 5px;
+border-bottom-right-radius: 5px;
+border:1px solid #000000;
+}
+
+
+.lpanel{
+position: absolute;
+width: 300px;
+left: 0px;
+top: 20%;
+padding: 5px;
+z-index: 1003;
+background: #d7d7d7;
+min-height: 300px;
+border:1px solid #000000;
+}
+
 .logo{
 margin:auto;
 position:relative;
@@ -114,7 +147,8 @@ width: 295px;
 .lnav{
 background:#efefef;
 float:left;
-border:1px solid #000000;
+border:1px solid #470b0b;
+border-radius:5px;
 margin-left: 5%;
 margin-top: 4%;
 width: 15%;
@@ -129,6 +163,7 @@ display:inline;
 .lnav_item{
 display:inline;
 list-style-type:none;
+color: #470b0b;
 }
 
 .lnav a, .lnav a:visited{
@@ -140,7 +175,8 @@ text-decoration:none;
 .rnav{
 background:#efefef;
 float:right;
-border:1px solid #000000;
+border:1px solid #470b0b;
+border-radius:5px;
 margin-right: 5%;
 margin-top: 4%;
 width: 15%;
@@ -162,6 +198,7 @@ font-weight:bold;
 .nav_item{
 display:inline;
 list-style-type:none;
+color: #470b0b;
 }
 
 .rnav a, .rnav a:visited{

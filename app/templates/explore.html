@@ -86,6 +86,16 @@ $(document).ready(function(){
     Terrain.visibility = false;
   });
 });
+
+$(document).ready(function(){
+  $(".lpanel").hide();
+  $("#toggle-lpanel-off").hide();
+  $(".toggle-lpanel").click(function(){
+    $(".lpanel").toggle();
+    $(".toggle-lpanel").toggle();
+	});
+});
+
 </script>
 
 {% endblock %}
@@ -120,5 +130,17 @@ Address:
 </dl>
 </div>
 <div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+</div>
+
+<div id="map-wrapper">
+<div id="map-container" class="olMap"></div>
+</div>
+<div id="toggle-lpanel-on" class="toggle-lpanel"></div>
+<div id="explore-lpanel" class="lpanel">
+<h2 align=center>Info</h2>
+<hr />
+</div>
+</div>
+<div id="toggle-lpanel-off" class="toggle-lpanel"></div>
 </div>
 {% endblock %}
