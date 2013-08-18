@@ -21,7 +21,6 @@ $(document).ready(function(){
 {% block head %}
 {% endblock %}
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=masthead>
 <div class=tnavwrapper>
 <div class=tnav>
 
@@ -36,14 +35,16 @@ $(document).ready(function(){
  </div>
 </div>
 
- <img class=logo src="{{ url_for('static',
-filename='guslogo.png')}}">
+<div class=masthead>
  <div class=lnav>
   <ul class=lnav_list>
    <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('explore') }}"> Explore </a></li>
    <li {% if request.path == "/build/where" or request.path == "/build/what"%} 
     class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('build') }}"> Build </a></li>
  </div>
+
+ <img class=logo src="{{ url_for('static',
+filename='guslogo.png')}}">
  <div class=rnav>
   <ul class=rnav_list>
    <li {% if request.path == "/contact" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('contact') }}"> Contact </a></li>
