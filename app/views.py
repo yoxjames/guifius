@@ -50,9 +50,13 @@ def explore():
 
 @app.route('/build', methods=['POST', 'GET'])
 def build():
+    curUser= ""
+    if current_user.is_authenticated():
+        curUser = db.curUsername(current_user.get_id())
+
     # Here we might want to let users pick up where they left off
     # Doesn't really matter currently it just directs to stage one.
-    return redirect('/build/where')
+    return render_template('build.html',  curUser=curUser)
 
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
