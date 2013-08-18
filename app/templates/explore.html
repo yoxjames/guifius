@@ -88,45 +88,42 @@ $(document).ready(function(){
 
 {% block body %}
 <div id="map-wrapper">
-<div id="map-container" class="olMap"></div>
-</div>
-<div id="toggle-rpanel-on" class="toggle-rpanel"></div>
-<div id="explore-rpanel" class="rpanel">
-<h2 align=center>Layers</h2>
-<hr />
-<h4>Map</h4>
-<dl>
-<dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
-<dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
-<dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
-</dl>
-<h4>Overlays</h4>
-<dl>
-<dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
-<dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
-<dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
-</dl>
-<h2 align=center>Navigation</h2>
-<hr />
-Address:
-<form class="address" >
-<input id="addr-text-input" name="addr" type="text" size=30"></input>
-<input id="addr-text-btn" type="button" value="Go">
-</form>
-<input id="addr-ip-btn" type="button" value="Locate by IP">
-</div>
-<div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+	<div id="map-container" class="olMap"></div>
 </div>
 
-<div id="map-wrapper">
-<div id="map-container" class="olMap"></div>
+<div id="toggle-rpanel-on" class="toggle-rpanel"></div>
+<div id="explore-rpanel" class="rpanel">
+	<h2 align=center>Layers</h2>
+	<hr />
+	<h4>Map</h4>
+	<dl>
+	<dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
+	<dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
+	<dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
+	</dl>
+	<h4>Overlays</h4>
+	<dl>
+	<dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
+	<dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
+	<dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
+	</dl>
+	<h2 align=center>Navigation</h2>
+	<hr />
+	Address:
+	<form class="address" >
+	<input id="addr-text-input" name="addr" type="text" size=30"></input>
+	<input id="addr-text-btn" type="button" value="Go">
+	</form>
+	<input id="addr-ip-btn" type="button" value="Locate by IP">
 </div>
+<div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+	
 <div id="toggle-lpanel-on" class="toggle-lpanel"></div>
 <div id="explore-lpanel" class="lpanel">
-<h2 align=center>Info</h2>
-<hr />
-</div>
-</div>
+	<h2 align=center>Info</h2>
+	<hr />
+	</div>
+
 <div id="toggle-lpanel-off" class="toggle-lpanel"></div>
 </div>
 {% endblock %}
