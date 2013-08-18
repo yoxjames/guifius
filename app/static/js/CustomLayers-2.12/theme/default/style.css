@@ -61,6 +61,7 @@ div.olLayerDiv {
    text-align: center;
 }
 
+
 .olControlPermalink {
     right: 3px;
     bottom: 1.5em;
@@ -314,6 +315,7 @@ div.olControlSaveFeaturesItemInactive {
     font-size: smaller;
     color: white;
     background-color: transparent;
+    display: none;
 }
 
 .olControlLayerSwitcher .layersDiv {

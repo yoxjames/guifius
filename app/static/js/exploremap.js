@@ -91,10 +91,11 @@ from, to;
 		area: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Polygon),
 		node: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Point)
               }
-	       /*
+	      
               for(var key in controls) {
                 map.addControl(controls[key]);
-              }*/
+              }
+              
 	    var firstGeolocation = true;
 
 geolocate.events.register("locationupdated",geolocate,function(e) {

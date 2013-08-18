@@ -6,7 +6,7 @@ background: #fff;
 }
 
 a, h1, h2{
-color: #377BA8;
+color: #470b0b;
 }
 
 h1, h2{
@@ -71,30 +71,25 @@ position:relative;
 z-index:1003;
 }
 
-.rpanel{
-width: 200px;
-position: absolute;
-right: 0;
-top:80px;
-}
 
 #toggle-rpanel-on{
-position: absolute;
 right: 0px;
 }
 
 #toggle-rpanel-off{
-position: absolute;
-right: 300px;
+right: 310px;
 }
 
 .toggle-rpanel{
+position:absolute;
 width: 15px;
-top: 80px;
-height: 80%;
+top: 20%;
 z-index:1002;
-background: red;
-min-height: 600px;
+background: #c18686;
+min-height: 460px;
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;
+border:1px solid #000000;
 }
 
 
@@ -102,11 +97,12 @@ min-height: 600px;
 position: absolute;
 width: 300px;
 right: 0px;
-top: 80px;
-height: 80%;
+top: 20%;
+padding: 5px;
 z-index: 1003;
-background: blue;
-min-height: 600px;
+background: #d7d7d7;
+min-height: 450px;
+border:1px solid #000000;
 }
 
 .logo{
