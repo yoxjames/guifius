@@ -72,6 +72,16 @@ $(document).ready(function(){
     controls.locator.activate();
   });
 });
+
+$(document).ready(function(){
+  $(".lpanel").hide();
+  $("#toggle-lpanel-off").hide();
+  $(".toggle-lpanel").click(function(){
+    $(".lpanel").toggle();
+    $(".toggle-lpanel").toggle();
+	});
+});
+
 </script>
 
 {% endblock %}
@@ -82,7 +92,7 @@ $(document).ready(function(){
 </div>
 <div id="toggle-rpanel-on" class="toggle-rpanel"></div>
 <div id="explore-rpanel" class="rpanel">
-<h2>Layers</h2>
+<h2 align=center>Layers</h2>
 <hr />
 <h4>Map</h4>
 <dl>
@@ -96,7 +106,7 @@ $(document).ready(function(){
 <dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
 <dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
 </dl>
-<h2>Navigation</h2>
+<h2 align=center>Navigation</h2>
 <hr />
 Address:
 <form class="address" >
@@ -106,5 +116,17 @@ Address:
 <input id="addr-ip-btn" type="button" value="Locate by IP">
 </div>
 <div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+</div>
+
+<div id="map-wrapper">
+<div id="map-container" class="olMap"></div>
+</div>
+<div id="toggle-lpanel-on" class="toggle-lpanel"></div>
+<div id="explore-lpanel" class="lpanel">
+<h2 align=center>Info</h2>
+<hr />
+</div>
+</div>
+<div id="toggle-lpanel-off" class="toggle-lpanel"></div>
 </div>
 {% endblock %}
