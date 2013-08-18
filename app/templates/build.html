@@ -1,30 +1,105 @@
 {% extends "base.html" %}
+{% block head %}
+
+<script src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
+<script src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+
+<script type="text/javascript">
+function draw_nodes() {
+    var fn = {
+		'pointRadis':10,
+		'fillColor': '#ffffff'};
+	var fnsty = OpenLayers.Util.applyDefaults(fn,
+				OpenLayers.Feature.Vector.style["defaults"]);
+	var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,
+				'fillColor': '#ffffff'});
+	console.log("V1-Z: "+Vector1.getZIndex());
+	console.log("T-Z: "+Terrain.getZIndex());
+
+	var nodes = {{ nodes|safe }};
+	for(i=0;i<nodes.length;i++){
+		var node = nodes[i];
+		var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
+		var pointFeature = new OpenLayers.Feature.Vector(point);
+		Vector1.addFeatures([pointFeature]);
+	}
+}
+
+function locate(addr)
+{
+    var input_addr = addr;
+    var trans_input;
+    var loc_info;
+    var lat,lon
+    trans_input = input_addr.replace(/ /g,"+");
+    loc_info = httpGet("http://maps.googleapis.com/maps/api/geocode/json?address=" + trans_input + "&sensor=true");
+       
+    eval("json_rep = "+loc_info);
+    lat = json_rep.results[0].geometry.location.lat;
+    lon = json_rep.results[0].geometry.location.lng;
+    return [lon,lat];
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+</script>
+
+<script>
+$(document).ready(function(){
+  $(".rpanel").hide();
+  $("#toggle-rpanel-off").hide();
+  $(".toggle-rpanel").click(function(){
+    $(".rpanel").toggle();
+    $(".toggle-rpanel").toggle();
+  });
+ 
+  $("#addr-text-btn").click(function(){
+    var coords = locate(this.form.addr.value);
+    center = new OpenLayers.LonLat(coords[0],coords[1]);
+    center.transform(from, to);
+    map.setCenter(center, 16);
+  });
+
+  $("#addr-ip-btn").click(function(){
+    controls.locator.deactivate();
+    controls.locator.activate();
+  });
+});
+</script>
+
+{% endblock %}
+
 {% block body %}
-
+<div id="map-wrapper">
 <div id="map-container" class="olMap"></div>
-
-<div id="clist">
-   <form>
-   <select id="controlList" onchange="switchControl()">
-          <option>Navigate</option>
-          <option>FNR10</option>
-          <option>FNR13</option>
-          <option>FNR10T</option>
-          <option>FNR13T</option>
-   </select>
-   </form>
 </div>
-
- <script type="text/javascript" src="{{ url_for('static',
-filename='js/buildmap.js') }}" defer="defer"></script>
- <script type="text/javascript" src="{{ url_for('static',
-filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
-
- <ul class=nodes>
-  {% for node in nodes %}
-    <li><h2>{{ node.name }}</h2>{{ node.lon|safe }}{{ node.lat|safe}}
-  {% else %}
-    <li><em>No nodes :-(</em>
-  {% endfor %}
-  </ul>
+<div id="toggle-rpanel-on" class="toggle-rpanel"></div>
+<div id="build-rpanel" class="rpanel">
+<h2>Build Location</h2>
+<hr />
+Locate by address:<br>
+<form class="address" >
+<input id="addr-text-input" name="addr" type="text" size=30"></input>
+<input id="addr-text-btn" type="button" value="Go">
+</form>
+Locate by IP:<br>
+<input id="addr-ip-btn" type="button" value="Go"> <br>
+<br>
+Locate by map center:
+<dl>
+<dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
+<dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
+<dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
+</dl>
+</div>
+<input id="next-btn" type="button" value="Next">
+<div id="toggle-rpanel-off" class="toggle-rpanel"></div>
+</div>
 {% endblock %}
