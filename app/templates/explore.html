@@ -5,42 +5,67 @@
 <script src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='olstyle.css') }}">
 
-<script type="text/javascript">
-function draw_nodes() {
-    var fn = {
-		'pointRadis':10,
-		'fillColor': '#ffffff'};
-	var fnsty = OpenLayers.Util.applyDefaults(fn,
-				OpenLayers.Feature.Vector.style["defaults"]);
-	var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,
-				'fillColor': '#ffffff'});
-	console.log("V1-Z: "+Vector1.getZIndex());
-	console.log("T-Z: "+Terrain.getZIndex());
 
-	var nodes = {{ nodes|safe }};
-	for(i=0;i<nodes.length;i++){
-		var node = nodes[i];
-		var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
-		var pointFeature = new OpenLayers.Feature.Vector(point);
-		Vector1.addFeatures([pointFeature]);
-	}
+<!-- Non jQuery javascript. Used for behinds the scenes non visual
+stuff
+-->
+<script type="text/javascript">
+
+/*
+ * draw_nodes
+ * This function takes no input and is supposed to draw all the
+ * nodes on the map. We may eventually want to split this into
+ * three functions for the different node types but for now it
+ * just does everything. 
+ *
+ */
+function draw_nodes() {
+  var fn = {
+             'pointRadis':10,
+             'fillColor': '#ffffff'
+           };
+  var fnsty = OpenLayers.Util.applyDefaults(fn,OpenLayers.Feature.Vector.style["defaults"]);
+  var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,'fillColor': '#ffffff'});
+  console.log("V1-Z: "+Vector1.getZIndex());
+  console.log("T-Z: "+Terrain.getZIndex());
+
+  var nodes = {{ nodes|safe }};
+  for(i=0;i<nodes.length;i++)
+  {
+    var node = nodes[i];
+    var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
+    var pointFeature = new OpenLayers.Feature.Vector(point);
+    Vector1.addFeatures([pointFeature]);
+  }
 }
 
+
+/* locate
+ * Takes a string as input (hopefully an address)
+ * and attemps to send that information to google
+ * to recieve a json object in return that contains
+ * location information. This function returns an array
+ * of two elements [lat,lon] for latitude and longitude.
+ */
 function locate(addr)
 {
-    var input_addr = addr;
-    var trans_input;
-    var loc_info;
-    var lat,lon
-    trans_input = input_addr.replace(/ /g,"+");
-    loc_info = httpGet("http://maps.googleapis.com/maps/api/geocode/json?address=" + trans_input + "&sensor=true");
+  var trans_input;
+  var loc_info;
+  var lat,lon
+  trans_input = addr.replace(/ /g,"+");
+  loc_info = httpGet("http://maps.googleapis.com/maps/api/geocode/json?address=" + trans_input + "&sensor=true");
        
-    eval("json_rep = "+loc_info);
-    lat = json_rep.results[0].geometry.location.lat;
-    lon = json_rep.results[0].geometry.location.lng;
-    return [lon,lat];
+  eval("json_rep = "+loc_info);
+  lat = json_rep.results[0].geometry.location.lat;
+  lon = json_rep.results[0].geometry.location.lng;
+  return [lon,lat];
 }
 
+/* httpGet
+ * Helper function that sends out a GET request to a desired
+ * URL. The responsetext from google is actually json despite
+ * the xmlHttp stuff.
+ */
 function httpGet(theUrl)
 {
     var xmlHttp = null;
@@ -52,102 +77,102 @@ function httpGet(theUrl)
 }
 </script>
 
+
 <script>
 $(document).ready(function(){
-  $(".rpanel").hide();
-  $("#toggle-rpanel-off").hide();
+  $(".rpanel").hide(); // Hide the right panel on startup
+  $("#toggle-rpanel-off").hide(); // hide the div that is to minimize the rpanel
+  $(".lpanel").hide(); // Hide the left panel on startup
+  $("#toggle-lpanel-off").hide(); // Hide leftpanel toggle
+
+  /* Open the rpanel */
   $(".toggle-rpanel").click(function(){
     $(".rpanel").toggle();
     $(".toggle-rpanel").toggle();
   });
- 
+
+  /* Open the lpenel */
+  $(".toggle-lpanel").click(function(){
+    $(".lpanel").toggle();
+    $(".toggle-lpanel").toggle();
+	});
+
+
+  /* "Go button clicked. Try to locate address string */ 
   $("#addr-text-btn").click(function(){
-    var coords = locate(this.form.addr.value);
+    var coords = locate($('#addr-text-input').val());
     center = new OpenLayers.LonLat(coords[0],coords[1]);
     center.transform(from, to);
     map.setCenter(center, 16);
   });
 
+  /* If a user presses return in the address field then
+   * run the same code that would run when the "Go" 
+   * button is pushed.
+   */
+
+  $("#addr-text-input").bind('keypress', function(e){
+    if(e.keyCode==13){
+      var coords = locate($('#addr-text-input').val());
+      center = new OpenLayers.LonLat(coords[0],coords[1]);
+      center.transform(from, to);
+      map.setCenter(center, 16);
+    }
+  });
+
+  /* If IP Locate is clicked try to locate via IP */
   $("#addr-ip-btn").click(function(){
     controls.locator.deactivate();
     controls.locator.activate();
   });
-
-  $("#street-layer").click(function(){
-    
-  });
-  $("#terrain-layer").click(function(){
-
-  });
-  $("#image-layer").click(function(){
-    alert(Satellite.visibility);
-    
-    Satellite.visibility = true;
-    Street.visibility = false;
-    Terrain.visibility = false;
-  });
 });
-
-$(document).ready(function(){
-  $(".lpanel").hide();
-  $("#toggle-lpanel-off").hide();
-  $(".toggle-lpanel").click(function(){
-    $(".lpanel").toggle();
-    $(".toggle-lpanel").toggle();
-	});
-});
-
 </script>
 
 {% endblock %}
 
 {% block body %}
 <div id="map-wrapper">
-	<div id="map-container" class="olMap"></div>
+  <div id="map-container" class="olMap"></div>
 </div>
 
 <div id="toggle-rpanel-on" class="toggle-rpanel"></div>
 <div id="explore-rpanel" class="rpanel">
-<h2>Location</h2>
-<hr />
-Address:
-<form class="address" >
-<input id="addr-text-input" name="addr" type="text" size=30"></input>
-<input id="addr-text-btn" type="button" value="Go">
-<input id="addr-ip-btn" type="button" value="Locate by IP">
-</form>
-<h2>Layers</h2>
-<hr />
-<h4>Map</h4>
-<div id="layerswitcher" class="olControlLayerSwitcher"></div>
+  <h2>Location</h2>
+  <hr />
+  Address:
+  <input id="addr-text-input" name="addr" type="text" size=20"></input>
+  <input id="addr-text-btn" type="button" value="Go">
+  <input id="addr-ip-btn" type="button" value="Locate by IP">
+  <h2>Layers</h2>
+  <hr />
+  <h4>Map</h4>
+  <div id="layerswitcher" class="olControlLayerSwitcher"></div>
 
-<!--
-<dl>
-<dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
-<dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
-<dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
-</dl>
+  <!--
+  <dl>
+  <dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
+  <dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
+  <dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
+  </dl>
 
-REMOVED. Went with embedding olControlLayerSwitcher inside the sidepanel
-and overriding all the styles in olstyle.css.
--->
+  REMOVED. Went with embedding olControlLayerSwitcher inside the sidepanel
+  and overriding all the styles in olstyle.css.
+  -->
 
 
-<h4>Overlays</h4>
-<dl>
-<dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
-<dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
-<dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
-</dl>
+  <h4>Overlays</h4>
+  <dl>
+    <dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
+    <dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
+    <dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
+  </dl>
 </div>
+
 <div id="toggle-rpanel-off" class="toggle-rpanel"></div>
-	
 <div id="toggle-lpanel-on" class="toggle-lpanel"></div>
 <div id="explore-lpanel" class="lpanel">
-	<h2 align=center>Info</h2>
-	<hr />
-	</div>
-
-<div id="toggle-lpanel-off" class="toggle-lpanel"></div>
+  <h2 align=center>Info</h2>
+  <hr />
 </div>
+<div id="toggle-lpanel-off" class="toggle-lpanel"></div>
 {% endblock %}
