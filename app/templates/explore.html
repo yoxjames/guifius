@@ -3,6 +3,7 @@
 
 <script src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
 <script src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='olstyle.css') }}">
 
 <script type="text/javascript">
 function draw_nodes() {
@@ -118,11 +119,20 @@ Address:
 <h2>Layers</h2>
 <hr />
 <h4>Map</h4>
+<div id="layerswitcher" class="olControlLayerSwitcher"></div>
+
+<!--
 <dl>
 <dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
 <dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
 <dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
 </dl>
+
+REMOVED. Went with embedding olControlLayerSwitcher inside the sidepanel
+and overriding all the styles in olstyle.css.
+-->
+
+
 <h4>Overlays</h4>
 <dl>
 <dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
