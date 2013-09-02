@@ -201,4 +201,22 @@ $(document).ready(function(){
   <hr />
 </div>
 <div id="toggle-lpanel-off" class="toggle-lpanel"></div>
+{% if mode==2 %} 
+  <!-- Render the bottom build panel -->
+  <div id="build-panel" class="bpanel">
+  <div id="net-panel" class="bpanel-one">
+  <h2>Network</h2>
+  <hr \>
+  Name: <input id="network-name" name="net-name" type="text" size=25"></input>
+  <h2>Type</h2>
+  <dl>
+    <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
+    <dt><input type="radio" name="net-type" id="type-planned">Planned</input></dt>
+    <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
+    <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
+  </dl>
+  <input type="button" id="commit-network" class=".commit-btn" value="COMMIT!"></input>
+  </div>
+
+{% endif %}
 {% endblock %}

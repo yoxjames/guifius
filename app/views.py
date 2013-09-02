@@ -44,20 +44,26 @@ def explore():
     
     nodes = db.query_db("select * from nodes",[],one=False)
     
-    #cur = g.db.execute('select * from nodes order by id')
-    #nodes = [dict(name=row[0]) for row in cur.fetchall()]
-    return render_template('explore.html', nodes=json.dumps(nodes), curUser= curUser)
+    # Mode: 1 is for EXPLORE mode.
+    return render_template('explore.html', \
+            nodes=json.dumps(nodes), \
+            curUser= curUser, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
 def build():
     curUser= ""
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
+    
+    nodes = db.query_db("select * from nodes",[],one=False)
+    
+    # Mode: 2 is for BUILD mode.
+    return render_template('explore.html', \
+            nodes=json.dumps(nodes), \
+            curUser=curUser, mode=2) 
 
-    # Here we might want to let users pick up where they left off
-    # Doesn't really matter currently it just directs to stage one.
-    return render_template('build.html',  curUser=curUser)
 
+# NOT USED. DEPRECIATED.
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
     curUser = ""
@@ -67,6 +73,7 @@ def add_nodes():
     form = WhereForm()
     return render_template('wherebuild.html', form=form, curUser=curUser)
 
+# NOT USED. DEPRECIATED
 @app.route('/build/what', methods=['POST','GET'])
 def what_view():
     curUser = ""
