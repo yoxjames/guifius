@@ -54,9 +54,10 @@ def build():
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
 
+    nodes = db.query_db("select * from nodes",[],one=False)
     # Here we might want to let users pick up where they left off
     # Doesn't really matter currently it just directs to stage one.
-    return render_template('build.html',  curUser=curUser)
+    return render_template('explore.html', nodes=json.dumps(nodes), curUser=curUser)
 
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():
