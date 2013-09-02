@@ -1,16 +1,21 @@
-<script src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}"></script>
+<script 
+src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}">
+</script>
+
 <script>
 
-$(document).ready(function(){
+$(document).ready(function()
+{
   $(".nav_item").hover(
     function()
     {
-        $(this).css("background-color","yellow");
+      $(this).css("background-color","yellow");
     } ,
     function()
     {
-        $(this).css("background-color","#efefef");
-    });
+      $(this).css("background-color","#efefef");
+    }
+  );
 });
 
 </script>
@@ -20,47 +25,86 @@ $(document).ready(function(){
 
 {% block head %}
 {% endblock %}
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+<link 
+rel=stylesheet 
+type=text/css 
+href="{{ url_for('static', filename='style.css') }}"
+>
+
 <div class=tnavwrapper>
-<div class=tnav>
-
-
-{% if not current_user.is_authenticated() %}
- <a href="{{ url_for('login') }}">Log in</a>
- <div class=user_block></div>
-{% else %}
- <a href="{{ url_for('logout') }}">Log out</a>
- <div class=user_block>{{ curUser }}</div>
-{% endif %}
- </div>
+  <div class=tnav>
+    {% if not current_user.is_authenticated() %}
+      <a href="{{ url_for('login') }}">Log in</a>
+      <div class=user_block></div>
+    {% else %}
+      <a href="{{ url_for('logout') }}">Log out</a>
+      <div class=user_block>{{ curUser }}</div>
+    {% endif %}
+  </div>
 </div>
 
 <div class=masthead>
- <div class=lnav>
-  <ul class=lnav_list>
-   <li {% if request.path == "/" %} class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('explore') }}"> Explore </a></li>
-   <li {% if request.path == "/build/where" or request.path == "/build/what"%} 
-    class=cur_page {% else %} class=nav_item {% endif %}> <a href="{{ url_for('build') }}"> Build </a></li>
- </div>
-
- <img class=logo src="{{ url_for('static',
-filename='guslogo.png')}}">
- <div class=rnav>
-  <ul class=rnav_list>
-   <li {% if request.path == "/contact" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('contact') }}"> Contact </a></li>
-   <li {% if request.path == "/about" %} class=cur_page {% else %} class=nav_item {% endif %}><a href="{{ url_for('about') }}"> About </a></li>
- </div>
+  <div class=lnav>
+    <ul class=lnav_list>
+      <li 
+      {% if request.path == "/" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}> 
+        <a href="{{ url_for('explore') }}"> Explore </a>
+      </li>
+      <li 
+      {% if request.path == "/build" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}> 
+        <a href="{{ url_for('build') }}"> Build </a>
+      </li>
+    </ul>
+  </div>
+  <img class=logo src="{{ url_for('static',filename='guslogo.png')}}">
+  <div class=rnav>
+    <ul class=rnav_list>
+      <li 
+      {% if request.path == "/contact" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}>
+        <a href="{{ url_for('contact') }}"> Contact </a>
+      </li>
+      <li 
+      {% if request.path == "/about" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}>
+        <a href="{{ url_for('about') }}"> About </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 
 {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
+  <div class=flash>{{ message }}</div>
 {% endfor %}
 
 <div class=pagecontainer>
   {% block body %}{% endblock %}
 </div>
+
+
 <!--
+
+Removed in favor of the new UI where the map covers the entire page.
+Originally this was the bottom portion of the page where contact/about
+stuff was. There are no plans to reincorporate this with the exception
+of maybe the Creative Commons logo.
+
 <div class=bnavwrapper>
  <div class=bnav>
   <div class=bnav_col>
