@@ -315,7 +315,6 @@ display: inline;
 }
 
 .slider-info{
-//background: #CEE5F5;
 float: left;
 }
 
@@ -330,7 +329,6 @@ padding: 0.5em;
 .map-sidepanel-container{
 width:50%;
 min-height:100%;
-//background:#125655;
 display: block;
 float:left;
 position:relative;

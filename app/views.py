@@ -78,6 +78,7 @@ def what_view():
         flash('done')
         return redirect('/')
     return render_template('whatbuild.html', form=form, curUser=curUser)
+
 @app.route('/contact')
 def contact():
     curUser = ""
@@ -102,7 +103,7 @@ def add_entry(lon, lat):
         [lon, lat],
 	True)
 
-    flash('New node added')
+    #flash('New node added')
     return redirect(url_for('build'))
 
 @app.route('/login', methods=['GET', 'POST'])

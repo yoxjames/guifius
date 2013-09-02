@@ -21,11 +21,11 @@ stuff
  */
 function draw_nodes() {
   var fn = {
-             'pointRadis':10,
-             'fillColor': '#ffffff'
+             'pointRadis':5,
+             'fillColor': '#000000'
            };
   var fnsty = OpenLayers.Util.applyDefaults(fn,OpenLayers.Feature.Vector.style["defaults"]);
-  var fnstyle = new OpenLayers.StyleMap({'pointRadius':10,'fillColor': '#ffffff'});
+  var fnstyle = new OpenLayers.StyleMap({'pointRadius':5,'fillColor': '#000000'});
   console.log("V1-Z: "+Vector1.getZIndex());
   console.log("T-Z: "+Terrain.getZIndex());
 
@@ -85,6 +85,11 @@ $(document).ready(function(){
   $(".lpanel").hide(); // Hide the left panel on startup
   $("#toggle-lpanel-off").hide(); // Hide leftpanel toggle
 
+  /* Draw default explore nodes */
+  draw_nodes();
+  
+  $("#existing-network-overlay").prop('checked',true);
+
   /* Open the rpanel */
   $(".toggle-rpanel").click(function(){
     $(".rpanel").toggle();
@@ -95,7 +100,7 @@ $(document).ready(function(){
   $(".toggle-lpanel").click(function(){
     $(".lpanel").toggle();
     $(".toggle-lpanel").toggle();
-	});
+  });
 
 
   /* "Go button clicked. Try to locate address string */ 
@@ -125,6 +130,25 @@ $(document).ready(function(){
     controls.locator.deactivate();
     controls.locator.activate();
   });
+
+
+  /* Node Layer Checkboxes */
+
+  // Existing Networks:
+  $("#existing-network-overlay").click(function()
+  {
+    if ($("#existing-network-overlay").is(":checked"))
+    {
+      draw_nodes();
+    }
+    else
+    {
+      //alert("Uncheck'd");
+    }
+  });
+
+
+  
 });
 </script>
 
@@ -162,7 +186,7 @@ $(document).ready(function(){
 
   <h4>Overlays</h4>
   <dl>
-    <dt><input type="checkbox" id="existing-network-overlay">Existing Networks</input></dt>
+    <dt><input type="checkbox" id="existing-network-overlay" value="true">Existing Networks</input></dt>
     <dt><input type="checkbox" id="planned-networks-overlay">Planned Networks</input></dt>
     <dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
   </dl>
