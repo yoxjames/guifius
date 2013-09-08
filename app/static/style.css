@@ -441,7 +441,7 @@ margin-left:-500px;
 left:50%;
 }
 
-.bpanel-one{
+.bpanel-sect{
 margin-top:15px;
 margin-left:15px;
 margin-bottom:10px;
@@ -450,6 +450,45 @@ position: absolute;
 bottom -15px;
 width: 300px;
 height:225px;
+}
+
+
+#net-panel{
 border-right:1px solid #000000;
+}
+#node-panel{
+border-right:1px solid #000000;
+left:331px;
+}
+#info-panel{
+left:662px;
+}
+#info-panel-disp{
+background: #c18686;
+width:275px;
+height:130px;
+padding:5px;
+margin-top:10px;
+margin-left:15px;
+margin-right:15px;
+border:1px solid #000000;
+}
+
+.rlist{
+display:inline;
+}
+
+.left-bottom-btn{
+display:inline;
+position:absolute;
+bottom:5px;
+margin:0px;
+}
+
+.right-bottom-btn{
+position:absolute;
+right:15px;
+font-weight:bold;
+bottom:5px;
 }
 

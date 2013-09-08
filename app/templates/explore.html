@@ -170,7 +170,7 @@ $(document).ready(function(){
   <h2>Location</h2>
   <hr />
   Address:
-  <input id="addr-text-input" name="addr" type="text" size=20"></input>
+  <input id="addr-text-input" name="addr" type="text" size=20></input>
   <input id="addr-text-btn" type="button" value="Go">
   <input id="addr-ip-btn" type="button" value="Locate by IP">
   <h2>Layers</h2>
@@ -207,13 +207,16 @@ Removed due to not having a current purpose.
   <hr />
 </div>
 <div id="toggle-lpanel-off" class="toggle-lpanel"></div>
+
+-->
 {% if mode==2 %} 
   <!-- Render the bottom build panel -->
-  <div id="build-panel" class="bpanel">
-  <div id="net-panel" class="bpanel-one">
-  <h2>Network</h2>
-  <hr \>
-  Name: <input id="network-name" name="net-name" type="text" size=25"></input>
+<div id="build-panel" class="bpanel">
+
+  <div id="net-panel" class="bpanel-sect">
+  <h2>Network [NET DROP DWN]</h2>
+  <hr />
+  Name: <input id="network-name" name="net-name" type="text" size="25"></input>
   <h2>Type</h2>
   <dl>
     <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
@@ -221,8 +224,36 @@ Removed due to not having a current purpose.
     <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
     <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
   </dl>
-  <input type="button" id="commit-network" class=".commit-btn" value="COMMIT!"></input>
+  <dl class="left-bottom-btn">
+  <dt class="rlist"><input type="button" id="polygon-mode-btn" value="Polygon"></input></dt>
+  <dt class="rlist"><input type="button" id="profile-mode-btn" value="Profile"></input></dt>
+  </dl>
+  <input type="button" id="commit-network" class="right-bottom-btn" value="COMMIT"></input>
   </div>
+  
+  <div id="node-panel" class="bpanel-sect">
+    <h2>Node [NODE DROP DOWN]</h2>
+    <hr />
+    Name: <input id="network-name" name="net-name" type="text" size="25"></input>
+    <dl>
+      <dt class="rlist">lat:<input type="text" id="node-lat" size="3"></input></dt>
+      <dt class="rlist">lon:<input type="text" id="node-lon" size="3"></input></dt>
+      <dt class="rlist">type:<input type="text" id="node-type" size="10" value="DROP DOWN"></input></dt>
+    </dl> 
+    <h2>About/Notes</h2>
+    <textarea id="nodes-about" rows="2" cols="40"></textarea>
+    <input type="button" id="commit-node" class="right-bottom-btn" value="COMMIT"></input>
+  </div>
+
+  <div id="info-panel" class="bpanel-sect">
+    <h2>Info</h2>
+    <hr />
+    <div id="info-panel-disp">
+      To be updated with relevant info as the user mouses over different elements of the build panel.
+    </div>
+    <input type="button" id="help-mode" class="right-bottom-btn" value="HELP"></input>
+  </div>
+</div>
 
 {% endif %}
 {% endblock %}
