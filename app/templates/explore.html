@@ -82,12 +82,9 @@ function httpGet(theUrl)
 $(document).ready(function(){
   $(".rpanel").hide(); // Hide the right panel on startup
   $("#toggle-rpanel-off").hide(); // hide the div that is to minimize the rpanel
-  
-  /* Removed since it currently does not serve a purpose 
-   *
-   * $(".lpanel").hide(); // Hide the left panel on startup
-   * $("#toggle-lpanel-off").hide(); // Hide leftpanel toggle
-   */
+  $(".lpanel").hide(); // Hide the left panel on startup
+  $("#toggle-lpanel-off").hide(); // Hide leftpanel toggle
+   
 
   /* Draw default explore nodes */
   draw_nodes();
@@ -198,14 +195,10 @@ $(document).ready(function(){
   </dl>
 </div>
 <div id="toggle-rpanel-off" class="toggle-rpanel"></div>
-<!--
-
-Removed due to not having a current purpose.
 <div id="toggle-lpanel-on" class="toggle-lpanel"></div>
 <div id="explore-lpanel" class="lpanel">
   <h2 align=center>Info</h2>
   <hr />
 </div>
 <div id="toggle-lpanel-off" class="toggle-lpanel"></div>
--->
 {% endblock %}
