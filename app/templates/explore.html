@@ -89,6 +89,8 @@ $(document).ready(function(){
    * $("#toggle-lpanel-off").hide(); // Hide leftpanel toggle
    */
 
+  $("#toggle-bpanel-on").hide();
+
   /* Draw default explore nodes */
   draw_nodes();
   
@@ -152,8 +154,24 @@ $(document).ready(function(){
   });
 
 
-  /* Build rpanel */
+  /* Bottom Panel show/hide */
 
+  $(".toggle-bpanel").click(function()
+  {
+    $(".bpanel").toggle();
+  });
+
+  $("#toggle-bpanel-off").click(function()
+  {
+    $("#toggle-bpanel-off").hide();
+    $("#toggle-bpanel-on").show();
+  });
+
+  $("#toggle-bpanel-on").click(function()
+  {
+    $("#toggle-bpanel-off").show();
+    $("#toggle-bpanel-on").hide();
+  });
    
 });
 </script>
@@ -212,7 +230,6 @@ Removed due to not having a current purpose.
 {% if mode==2 %} 
   <!-- Render the bottom build panel -->
 <div id="build-panel" class="bpanel">
-
   <div id="net-panel" class="bpanel-sect">
   <h2>Network [NET DROP DWN]</h2>
   <hr />
@@ -254,6 +271,8 @@ Removed due to not having a current purpose.
     <input type="button" id="help-mode" class="right-bottom-btn" value="HELP"></input>
   </div>
 </div>
+<div id="toggle-bpanel-off" class="toggle-bpanel"></div>
+<div id="toggle-bpanel-on" class="toggle-bpanel"></div>
 
 {% endif %}
 {% endblock %}

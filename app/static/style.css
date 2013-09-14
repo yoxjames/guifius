@@ -434,8 +434,6 @@ display:block;
 width:1000px;
 background: #d7d7d7;
 border:1px solid #000000;
-border-top-left-radius: 10px;
-border-top-right-radius: 10px;
 margin-right:500px;
 margin-left:-500px;
 left:50%;
@@ -492,3 +490,23 @@ font-weight:bold;
 bottom:5px;
 }
 
+.toggle-bpanel{
+position:absolute;
+width: 1000px;
+z-index:1002;
+background: #c18686;
+height: 15px;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+border:1px solid #000000;
+margin-right:500px;
+margin-left:-500px;
+left:50%;
+}
+
+#toggle-bpanel-off{
+bottom:250px;
+}
+#toggle-bpanel-on{
+bottom:0px;
+}
