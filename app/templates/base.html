@@ -68,13 +68,13 @@ href="{{ url_for('static', filename='style.css') }}"
   <img class=logo src="{{ url_for('static',filename='guslogo.png')}}">
   <div class=rnav>
     <ul class=rnav_list>
-      <li 
-      {% if request.path == "/contact" %} 
-        class=cur_page 
+      {% if current_user.is_authenticated() %}  
+        <li class=nav_item>
+        <a href="{{ url_for('login') }}"> Account </a>
       {% else %} 
-        class=nav_item 
-      {% endif %}>
-        <a href="{{ url_for('contact') }}"> Contact </a>
+        <li class=nav_item>
+        <a href="{{ url_for('login') }}"> Log In </a>
+      {% endif %}
       </li>
       <li 
       {% if request.path == "/about" %} 
