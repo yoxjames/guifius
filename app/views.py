@@ -42,7 +42,7 @@ def explore():
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
     
-    nodes = db.query_db("select * from nodes",[],one=False)
+    nodes = db.query_db("select * from point",[],one=False)
     
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
@@ -55,13 +55,12 @@ def build():
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
     
-    nodes = db.query_db("select * from nodes",[],one=False)
+    nodes = db.query_db("select * from point",[],one=False)
     
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             nodes=json.dumps(nodes), \
             curUser=curUser, mode=2) 
-
 
 # NOT USED. DEPRECIATED.
 @app.route('/build/where', methods=['POST', 'GET'])
