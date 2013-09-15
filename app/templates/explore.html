@@ -169,6 +169,18 @@ $(document).ready(function(){
     $("#toggle-bpanel-off").show();
     $("#toggle-bpanel-on").hide();
   });
+
+  /* New Network Popup */
+
+  $("#new-network-button").click(function()
+  {
+    $("#new-network-popup").show();
+  });
+
+  $("#cancel-network-button").click(function()
+  {
+    $("#new-network-popup").hide();
+  });
    
 });
 </script>
@@ -224,25 +236,37 @@ $(document).ready(function(){
   <!-- Render the bottom build panel -->
 <div id="build-panel" class="bpanel">
   <div id="net-panel" class="bpanel-sect">
-  <h2>Network [NET DROP DWN]</h2>
-  <hr />
-  Name: <input id="network-name" name="net-name" type="text" size="25"></input>
-  <h2>Type</h2>
-  <dl>
-    <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
-    <dt><input type="radio" name="net-type" id="type-planned">Planned</input></dt>
-    <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
-    <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
-  </dl>
-  <dl class="left-bottom-btn">
-  <dt class="rlist"><input type="button" id="polygon-mode-btn" value="Polygon"></input></dt>
-  <dt class="rlist"><input type="button" id="profile-mode-btn" value="Profile"></input></dt>
-  </dl>
-  <input type="button" id="commit-network" class="right-bottom-btn" value="COMMIT"></input>
+    <h2 class="bpanel-sect-title">Network [DROP DWN]</h2>
+    <input type="button" 
+      id="new-network-button" 
+      class="bpanel-sect-title" 
+      value="New" 
+      style="display:inline">
+    </input>
+    <hr />
+    Name: <input id="network-name" name="net-name" type="text" size="25"></input>
+    <h2>Type</h2>
+    <dl>
+      <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
+      <dt><input type="radio" name="net-type" id="type-planned">Planned</input></dt>
+      <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
+      <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
+    </dl>
+    <dl class="left-bottom-btn">
+      <dt class="rlist"><input type="button" id="polygon-mode-btn" value="Polygon"></input></dt>
+      <dt class="rlist"><input type="button" id="profile-mode-btn" value="Profile"></input></dt>
+    </dl>
+    <input type="button" id="commit-network" class="right-bottom-btn" value="COMMIT"></input>
   </div>
   
   <div id="node-panel" class="bpanel-sect">
-    <h2>Node [NODE DROP DOWN]</h2>
+    <h2 class="bpanel-sect-title">Node [DROP DOWN]</h2>
+    <input type="button" 
+      id="new-network-button" 
+      class="bpanel-sect-title" 
+      value="New" 
+      style="display:inline">
+    </input>
     <hr />
     Name: <input id="network-name" name="net-name" type="text" size="25"></input>
     <dl>
@@ -266,6 +290,56 @@ $(document).ready(function(){
 </div>
 <div id="toggle-bpanel-off" class="toggle-bpanel"></div>
 <div id="toggle-bpanel-on" class="toggle-bpanel"></div>
+
+
+<!-- Net network -->
+<div id="new-network-popup" class="popup">
+  <div id="network-wizard-top" class="popup-top"></div>
+  <h2 class="popup-title">New Network</h2>
+  <hr />
+
+  <!-- Begin Dynamic Content -->
+
+  <div id="wizard-phase-one">
+    <p>
+    First, you need to pick a name for your new network. Don't worry too much about this
+    as it can be changed at a later time. 
+    </p>
+    
+    <div class="wizard-input">
+    <h3 class="rlist">Name</h3>
+    <input id="network-name-input" class="rlist" type="text" size=20></input>
+    </div>
+  </div>
+
+  <dl class="popup-bottom-r">
+    <dt class="rlist">
+      <input type="button" 
+        id="cancel-network-button" 
+        value="Cancel" 
+        style="display:inline">
+      </input>
+    </dt>
+    
+    <dt class="rlist">
+      <input type="button" 
+        id="cancel-network-button" 
+        disabled="true"
+	value="Back" 
+        style="display:inline">
+      </input>
+    </dt>
+    
+    <dt class="rlist">
+      <input type="button" 
+        id="create-network-button" 
+        class="important-btn"
+	value="Next" 
+        style="display:inline">
+      </input>
+    </dt>
+  </dl>
+</div>
 
 {% endif %}
 {% endblock %}
