@@ -42,7 +42,7 @@ def explore():
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
     
-    nodes = db.query_db("select * from nodes",[],one=False)
+    nodes = db.query_db("select * from point",[],one=False)
     
     #cur = g.db.execute('select * from nodes order by id')
     #nodes = [dict(name=row[0]) for row in cur.fetchall()]
@@ -53,11 +53,13 @@ def build():
     curUser= ""
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
-
-    nodes = db.query_db("select * from nodes",[],one=False)
-    # Here we might want to let users pick up where they left off
-    # Doesn't really matter currently it just directs to stage one.
-    return render_template('explore.html', nodes=json.dumps(nodes), curUser=curUser)
+    
+    nodes = db.query_db("select * from point",[],one=False)
+    
+    # Mode: 2 is for BUILD mode.
+    return render_template('explore.html', \
+            nodes=json.dumps(nodes), \
+            curUser=curUser, mode=2) 
 
 @app.route('/build/where', methods=['POST', 'GET'])
 def add_nodes():

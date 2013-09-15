@@ -1,10 +1,43 @@
-drop table if exists nodes;
-create table nodes (
+
+
+drop table if exists point;
+create table point (
 	id integer primary key autoincrement,
-	lon int not null,
 	lat int not null,
-	network_id int not null,
-	foreign key(network_id) REFERENCES network(network_id)
+	lon int not null,
+	altitude int,
+	seq int
+);
+
+drop table if exists device;
+create table device (
+	id integer primary key autoincrement,
+	name string not null,
+	type_val int not null,
+	point_id not null,
+	azimuth int,
+	elevation int,
+	polarization_type_val,
+	status_type_val not null,
+
+	foreign key(point_id) REFERENCES point(point_id),
+	foreign key(type_val) REFERENCES type_val(id_val),
+	foreign key(polarization_type_val) REFERENCES type_val(id_val),
+	foreign key(status_type_val) REFERENCES type_val(id_val)
+);
+
+drop table if exists network;
+create table network (
+	network_id integer primary key autoincrement,
+	name string not null,
+	type_val int not null,
+	phase_type_val int not null,
+	geometry_obj int not null,
+
+
+	foreign key(type_val) REFERENCES type_val(id_val),
+	foreign key(phase_type_val) REFERENCES type_val(id_val),
+        foreign key(geometry_obj) REFERENCES object(id_obj)
 );
 
 drop table if exists users;
@@ -13,15 +46,36 @@ create table users (
 	username string not null,
 	password string not null,
 	email string not null,
-	name string not null,
-	city string not null,
-	role integer not null
+	type_val int not null,
+
+        foreign key(type_val) REFERENCES type_val(id_val)
 );
 
-drop table if exists network;
-create table network (
-	network_id integer primary key autoincrement,
+drop table if exists object;
+create table object (
+	id_obj integer primary key autoincrement,
+	type_val int not null,
+	data string,
+
+	foreign key(type_val) REFERENCES type_val(id_val)
+);
+
+drop table if exists relation;
+create table relation (
+	id integer primary key autoincrement,
+	a_id int not null,
+	b_id int not null,
+        type_val int not null,
+
+	foreign key(type_val) REFERENCES type_val(id_val)
+);
+
+drop table if exists type_val;
+create table type_val (
+	id_val integer primary key autoincrement,
 	name string not null,
-	owner_id int,
-	foreign key(owner_id) REFERENCES users(id)
+	obj int,
+	class int not null,
+
+	foreign key(obj) REFERENCES object(id_obj)
 );
