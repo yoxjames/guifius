@@ -8,6 +8,9 @@ from contextlib import closing
 from flaskext.bcrypt import Bcrypt
 bcrypt = Bcrypt(app)
 
+from code_val import *
+
+CODE_CLASS = CODE_CLASS()
 '''
 Creates a database and sets up the schema and injects all starter
 data needed to run this application.
@@ -52,9 +55,11 @@ def curUsername(id):
         return name['username']
 
 def insert_db(query, args=(), commit=True):
-    g.db.execute(query, args)
+    cursor = g.db.cursor()
+    cursor.execute(query, args)
     if (commit):
-        g.db.commit()
+        g.db.commit();
+    return cursor.lastrowid
 
 def user_exists(username):
     name = query_db('select username from users where username = ?', [username], one=True)
@@ -69,5 +74,24 @@ def email_exists(email):
         return False
     else:
         return True
+
+
+# Helper function to add relations
+def add_reltn(a_id, b_id, type_val):
+    insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
+            [a_id, b_id, type_val], True)
+
+
+def add_network(name, type_val, phase_type_val, owner_id):
+    # Add entry to Network Table
+      # Store the primary key added as Network
+    network_id = insert_db('insert into network (name, type_val, phase_type_val) values (?,?,?)',
+            [name, type_val, phase_type_val], True)
+
+    reltn_type_val = CODE_CLASS.RELATION.A_NETWORK_B_PERSON
+
+    # Add relation to owner
+    add_reltn(network_id, owner_id, reltn_type_val)
+
 
 

@@ -542,6 +542,7 @@ border-top-left-radius:10px;
 }
 
 #new-network-popup{
+position:absolute;
 width: 400px;
 height: 300px;
 margin-right:200px;
@@ -573,6 +574,11 @@ right:15px;
 font-weight: bold;
 }
 
+.centered{
+display:block;
+margin:auto;
+}
+
 .wizard{
 }
 
@@ -589,8 +595,15 @@ padding:15px;
 #wizard-phase-pre{
 }
 
-#wizard-phase-one{
+.wizard-phase-one{
 
+}
+
+.wizard-phase-two{
+display:none;
+}
+.wizard-phase-three{
+display:none;
 }
 
 

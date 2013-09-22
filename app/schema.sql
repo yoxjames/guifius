@@ -32,7 +32,7 @@ create table network (
 	name string not null,
 	type_val int not null,
 	phase_type_val int not null,
-	geometry_obj int not null,
+	geometry_obj int,
 
 
 	foreign key(type_val) REFERENCES type_val(id_val),

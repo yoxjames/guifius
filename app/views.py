@@ -15,6 +15,7 @@ from flaskext.babel import Babel
 
 from flaskext.bcrypt import Bcrypt
 
+
 bcrypt = Bcrypt(app)
 babel = Babel(app)
 
@@ -111,6 +112,28 @@ def add_entry(lon, lat):
 
     #flash('New node added')
     return redirect(url_for('build'))
+
+
+'''LISTENERS '''
+@app.route('/ajax/add_network', methods=['POST'])
+def add_network():
+    if request.method == 'POST':
+        db.add_network(
+                request.json['name'],
+                request.json['type_val'],
+                request.json['phase_type_val'],
+                0)
+        return json.dumps("S");
+
+@app.route('/ajax/add_poly', methods=['POST'])
+def add_poly():
+    return ""
+
+@app.route('/ajax/add_node', methods=['POST'])
+def add_node():
+    return ""
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

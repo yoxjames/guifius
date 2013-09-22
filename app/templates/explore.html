@@ -79,7 +79,8 @@ function httpGet(theUrl)
 
 
 <script>
-$(document).ready(function(){
+$(document).ready(function()
+{
   $(".rpanel").hide(); // Hide the right panel on startup
   $("#toggle-rpanel-off").hide(); // hide the div that is to minimize the rpanel
   $(".lpanel").hide(); // Hide the left panel on startup
@@ -90,6 +91,8 @@ $(document).ready(function(){
 
   /* Draw default explore nodes */
   draw_nodes();
+
+  var wiz_phase = 0;
   
   $("#existing-network-overlay").prop('checked',true);
 
@@ -175,12 +178,65 @@ $(document).ready(function(){
   $("#new-network-button").click(function()
   {
     $("#new-network-popup").show();
+    wiz_phase=1;
   });
 
-  $("#cancel-network-button").click(function()
+  $("#cancel-wizard-button").click(function()
   {
     $("#new-network-popup").hide();
   });
+
+  $("#next-wizard-button").click(function()
+  {
+    wiz_phase++;
+    if (wiz_phase == 2)
+    {
+
+      var data = 
+      { 
+      "name": $("#network-name-input").val(), 
+      "type_val": 1, 
+      "phase_type_val": 7, 
+      "owner_id": 0 
+      };
+      data=JSON.stringify(data);
+      
+      /* AJAX SEND AND RETURN. SHOULD BE WRAPPED */
+      $.ajax(
+      {
+        type: 'POST',
+	contentType: "application/json; charset=utf-8",
+        url: '/ajax/add_network',
+	data: data,
+	success: 
+	function(data)
+	{
+	  console.log("add_network: " + data);
+	},
+        dataType: "json"
+      });
+
+
+
+      $(".wizard-phase-one").hide();
+      $(".wizard-phase-two").show();
+      $(".bpanel").hide();
+      $(".toggle-bpanel").hide();
+      $("#new-network-popup").animate(
+      {
+	top:'100%'
+	, height:'134px'
+      });
+    }
+    else if (wiz_phase == 3)
+    {
+      $(".wizard-phase-one").hide();
+      $(".wizard-phase-two").hide();
+      $(".wizard-phase-three").show();
+    }
+
+  });
+
    
 });
 </script>
@@ -295,12 +351,13 @@ $(document).ready(function(){
 <!-- Net network -->
 <div id="new-network-popup" class="popup">
   <div id="network-wizard-top" class="popup-top"></div>
-  <h2 class="popup-title">New Network</h2>
+  <h2 class="popup-title wizard-phase-one">New Network</h2>
+  <h2 class="popup-title wizard-phase-two">Polygon</h2>
   <hr />
 
   <!-- Begin Dynamic Content -->
 
-  <div id="wizard-phase-one">
+  <div class="wizard-phase-one">
     <p>
     First, you need to pick a name for your new network. Don't worry too much about this
     as it can be changed at a later time. 
@@ -311,11 +368,31 @@ $(document).ready(function(){
     <input id="network-name-input" class="rlist" type="text" size=20></input>
     </div>
   </div>
-
+  <div class="wizard-phase-two">
+    <!--
+    <p>
+    Now, we will construct a polygon to represent the intended coverage area/geometry
+    of your dream network. This polygon can be updated later if you are too ambitious
+    or wish to expand a network!.
+    </p>
+    <p>
+    Clicking on the map will begin to draw the polygon. Hit clear to start over.
+    </p>
+    -->
+    <input type="button" class="important-btn centered" value="Clear"></input>
+  </div>
+  <div id="wizard-phase-three">
+    <!--
+    <p>
+    Now it's time to see what it would take to cover that area. Use the panel below
+    to select nodes and drop them on to the map.
+    </p
+    -->
+  </div>
   <dl class="popup-bottom-r">
     <dt class="rlist">
       <input type="button" 
-        id="cancel-network-button" 
+        id="cancel-wizard-button" 
         value="Cancel" 
         style="display:inline">
       </input>
@@ -323,7 +400,7 @@ $(document).ready(function(){
     
     <dt class="rlist">
       <input type="button" 
-        id="cancel-network-button" 
+        id="back-wizard-button" 
         disabled="true"
 	value="Back" 
         style="display:inline">
@@ -332,7 +409,7 @@ $(document).ready(function(){
     
     <dt class="rlist">
       <input type="button" 
-        id="create-network-button" 
+        id="next-wizard-button" 
         class="important-btn"
 	value="Next" 
         style="display:inline">
