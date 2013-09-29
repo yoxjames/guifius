@@ -58,6 +58,22 @@ def add_node():
 '  END AJAX LISTENERS 
 '''
 
+'''
+' BEGIN SPECIAL HOOKS
+'''
+
+@login_manager.user_loader
+def load_user(id):
+    return user_db.get_user(id)
+
+'''
+' END SPECIAL HOOKS
+'''
+
+'''
+' BEGIN HTTP LISTENERS
+'''
+
 @app.route('/')
 def explore():
     curUser = ""
@@ -125,9 +141,6 @@ def login():
     return render_template('login.html', title= 'Sign In', form = form)
 
 
-@login_manager.user_loader
-def load_user(id):
-    return user_db.get_user(id)
 
 @app.route('/register',methods=['GET', 'POST'])
 def register():
@@ -146,3 +159,7 @@ def register():
 def logout():
     logout_user()
     return redirect('/')
+
+'''
+' END HTTP LISTENERS
+'''
