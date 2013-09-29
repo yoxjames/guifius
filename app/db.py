@@ -79,7 +79,7 @@ class Database:
     type_val: Type code of relationship
     '''
     def add_reltn(self, a_id, b_id, type_val):
-        self.__insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
+        self.insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
                 [a_id, b_id, type_val], True)
 
     '''

@@ -76,7 +76,8 @@ def explore():
 def build():
     curUser= ""
     if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
+        curUser = user_db.get_username(current_user.get_id())
+
     
     #nodes = data.query_db("select * from point",[],one=False) comment: fix
     nodes = []
