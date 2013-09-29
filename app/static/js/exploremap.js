@@ -1,6 +1,6 @@
 window.onload=init();
 console.log("init runs");
-var map, Street, Terrain, Satellite, renderer, Vector1, Vector2, from, to;
+var map, Street, Terrain, Satellite, renderer, nodeLayer, polygonLayer, from, to;
 
 function init() 
 {
@@ -70,7 +70,7 @@ function init()
     transitionEffect: "resize"
   }));
 
-  map.addLayer(Vector1 = new OpenLayers.Layer.Vector("nodes",
+  map.addLayer(nodeLayer= new OpenLayers.Layer.Vector("Nodes",
   {
     style: OpenLayers.Feature.Vector.style["default"]
   }, 
@@ -78,7 +78,7 @@ function init()
     renderers: renderer
   }));
 
-  Vector1.displayInLayerSwitcher = false;
+  map.addLayer(polygonLayer = new OpenLayers.Layer.Vector("Polygon"));
 
   center = new OpenLayers.LonLat(-93,43);
   center.transform(from,to);
@@ -108,8 +108,8 @@ function init()
      */
     //switcher: new OpenLayers.Control.LayerSwitcher({'ascending':true}),
     locator: geolocate,
-    area: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Polygon),
-      node: new OpenLayers.Control.DrawFeature(Vector1, OpenLayers.Handler.Point)
+    polygon: new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon),
+    node: new OpenLayers.Control.DrawFeature(nodeLayer, OpenLayers.Handler.Point)
   }
       
   for(var key in controls) 
@@ -129,15 +129,16 @@ function init()
     center = new OpenLayers.LonLat(e.point.x, e.point.y);
     map.setCenter(center, 10);
   });
+  map.addControl(new OpenLayers.Control.MousePosition());
 }
 
 
-function toggleControl(element) 
+function toggleControl(toggle_key) 
 {
   for(key in controls) 
   {
     var control = controls[key];
-    if(element.value == key && element.checked) 
+    if(toggle_key == key) 
     {
       control.activate();
     } 
@@ -147,4 +148,5 @@ function toggleControl(element)
     }
   }
 }
+
             

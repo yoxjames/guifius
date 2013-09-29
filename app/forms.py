@@ -1,16 +1,19 @@
 from flask.ext.wtf import Form, TextField, BooleanField, PasswordField, Email, ValidationError, html5
 from flask.ext.wtf import Required, EqualTo, RecaptchaField, RadioField, SelectField
 from flask.ext.wtf.html5 import NumberInput, IntegerRangeField
+from models import User_db
 import extras
-import db
+
 
 
 def validate_user(form, field):
-    if (db.user_exists(field.data)):
+    user_checker = User_db()
+    if (user_checker.username_exists(field.data)):
         raise ValidationError("This username is already in use!")
 
 def validate_email(form, field):
-    if (db.email_exists(field.data)):
+    email_checker = User_db()
+    if (email_checker.email_exists(field.data)):
         raise ValidationError("This email is already in use!")
 
 class LoginForm(Form):

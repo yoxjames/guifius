@@ -28,7 +28,7 @@ create table device (
 
 drop table if exists network;
 create table network (
-	network_id integer primary key autoincrement,
+	id integer primary key autoincrement,
 	name string not null,
 	type_val int not null,
 	phase_type_val int not null,

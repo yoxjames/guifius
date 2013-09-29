@@ -4,7 +4,7 @@ import app.db
 from contextlib import closing
 
 def init_db():
-    app.db.init_db()
+    database = app.db.Database(refresh=True)
 
 def main(argv):
     if argv == "init":

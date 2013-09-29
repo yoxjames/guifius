@@ -1,7 +1,6 @@
 #imports
 from __future__ import with_statement
-import sqlite3
-import db
+from code_val import *
 import json
 from flask import Flask, request, session, g, redirect, url_for, \
 	abort, render_template, flash
@@ -13,37 +12,60 @@ from app import app
 from models import *
 from flaskext.babel import Babel
 
-from flaskext.bcrypt import Bcrypt
+''' INITIALIZE ALL OBJECTS '''
+# Global
+@app.before_request
+def before_request():
+    g.CODE_CLASS = CODE_CLASS()
 
-
-bcrypt = Bcrypt(app)
-babel = Babel(app)
-
+# Local
 login_manager = LoginManager()
-
 login_manager.anonymous_user = Anonymous
 login_manager.login_view = "login"
 login_manager.login_message = "Please log in to access this page."
 login_manager.refresh_view = "reauth"
-
 login_manager.setup_app(app)
 
-@app.before_request
-def before_request():
-    g.db = db.connect_db()
+bcrypt = Bcrypt(app)
+babel = Babel(app)
+network_db = Network_db()
+user_db = User_db()
 
-@app.teardown_request
-def teardown_request(exception):
-    if hasattr(g, 'db'):
-        g.db.close()
+''' 
+'  BEGIN AJAX LISTENERS
+''' 
+
+@app.route('/ajax/add_network', methods=['POST'])
+def add_network():
+    if request.method == 'POST':
+        network_db.add_network(
+                request.json['name'],
+                request.json['type_val'],
+                request.json['phase_type_val'],
+                0)
+        return json.dumps("S");
+
+@app.route('/ajax/add_poly', methods=['POST'])
+def add_poly():
+    if request.method == 'POST':
+        return ""
+
+@app.route('/ajax/add_node', methods=['POST'])
+def add_node():
+    return ""
+
+''' 
+'  END AJAX LISTENERS 
+'''
 
 @app.route('/')
 def explore():
     curUser = ""
     if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
+        curUser = user_db.get_username(current_user.get_id())
     
-    nodes = db.query_db("select * from point",[],one=False)
+    #nodes = data.query_db("select * from point",[]) comment: fix
+    nodes = []
     
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
@@ -56,41 +78,19 @@ def build():
     if current_user.is_authenticated():
         curUser = db.curUsername(current_user.get_id())
     
-    nodes = db.query_db("select * from point",[],one=False)
+    #nodes = data.query_db("select * from point",[],one=False) comment: fix
+    nodes = []
     
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             nodes=json.dumps(nodes), \
             curUser=curUser, mode=2) 
 
-# NOT USED. DEPRECIATED.
-@app.route('/build/where', methods=['POST', 'GET'])
-def add_nodes():
-    curUser = ""
-    if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
-
-    form = WhereForm()
-    return render_template('wherebuild.html', form=form, curUser=curUser)
-
-# NOT USED. DEPRECIATED
-@app.route('/build/what', methods=['POST','GET'])
-def what_view():
-    curUser = ""
-    if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
-
-    form = WhatForm()
-    if form.validate_on_submit():
-        flash('done')
-        return redirect('/')
-    return render_template('whatbuild.html', form=form, curUser=curUser)
-
 @app.route('/contact')
 def contact():
     curUser = ""
     if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
+        curUser = user_db.get_username(current_user.get_id())
 
     return render_template('base.html', curUser=curUser)
 
@@ -98,42 +98,9 @@ def contact():
 def about():
     curUser = ""
     if current_user.is_authenticated():
-        curUser = db.curUsername(current_user.get_id())
+        curUser = user_db.get_username(current_user.get_id())
 
     return render_template('base.html', curUser=curUser)
-
-@app.route('/add/<lon>&<lat>', methods=['GET'])
-def add_entry(lon, lat):
-    if not session.get('logged_in'):
-        about()
-    db.insert_db('insert into nodes (lon, lat) values (?, ?)',
-        [lon, lat],
-	True)
-
-    #flash('New node added')
-    return redirect(url_for('build'))
-
-
-'''LISTENERS '''
-@app.route('/ajax/add_network', methods=['POST'])
-def add_network():
-    if request.method == 'POST':
-        db.add_network(
-                request.json['name'],
-                request.json['type_val'],
-                request.json['phase_type_val'],
-                0)
-        return json.dumps("S");
-
-@app.route('/ajax/add_poly', methods=['POST'])
-def add_poly():
-    return ""
-
-@app.route('/ajax/add_node', methods=['POST'])
-def add_node():
-    return ""
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -145,7 +112,7 @@ def login():
         username = form.username.data
         password = form.password.data
         remember = form.remember_me.data
-        user = db.pullUserObj(username, password)
+        user = user_db.authenticate_user(username, password)
         if user is None: #Correct username and password?
             flash("Incorrect Username or Password")
             return redirect('/login')
@@ -159,25 +126,14 @@ def login():
 
 @login_manager.user_loader
 def load_user(id):
-    g.db = db.connect_db() # Since this isn't a request we need to connect first.
-    user = db.query_db('select * from users where id = ?', [id], one=True)
-    g.db.close()
-    return User(user['id'], user['username'], user['password'], user['name'], user['city'])
+    return user_db.get_user(id)
 
 @app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        pw_hash = bcrypt.generate_password_hash(form.password.data) #Hash the inputted pw
-        db.insert_db('insert into users (username, password, email, name, city, role) values (?,?,?,?,?,?)',
-                [form.username.data,
-                pw_hash, #drop in the hashed password
-                form.email.data,
-                form.name.data,
-                form.city.data,
-                1],True)
+        user = user_db.add_user(form.username.data, form.password.data, form.email.data)
         flash("User: " + form.username.data + " has been successfully registered!")
-        user = db.pullUserObj(form.username.data, form.password.data) 
         if login_user(user,0): #Everything looks good attempt login.
             return redirect('/')
         else:
