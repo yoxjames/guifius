@@ -71,6 +71,19 @@ position:relative;
 z-index:1003;
 }
 
+#user-bar{
+position:absolute;
+z-index:1003;
+width: auto;
+right:0px;
+top:0px;
+height:16px;
+background:#d7d7d7;
+border: 1px solid #000000;
+padding:5px;
+font-size:11px;
+border-bottom-left-radius:5px;
+}
 
 #toggle-rpanel-on{
 right: 0px;

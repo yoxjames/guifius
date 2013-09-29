@@ -248,6 +248,15 @@ $(document).ready(function()
 {% endblock %}
 
 {% block body %}
+<div id="user-bar">
+  {{ current_username }} | 
+  {% if current_user.is_authenticated() %}
+    <a href="{{ url_for('logout') }}">logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">login</a> or 
+    <a href="{{ url_for('register') }}">register</a>
+  {% endif %}
+</div>
 <div id="map-wrapper">
   <div id="map-container" class="olMap"></div>
 </div>

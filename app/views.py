@@ -78,7 +78,10 @@ def load_user(id):
 def explore():
     curUser = ""
     if current_user.is_authenticated():
-        curUser = user_db.get_username(current_user.get_id())
+        current_username = user_db.get_username(current_user.get_id())
+    else:
+        current_username = "not logged in"
+
     
     #nodes = data.query_db("select * from point",[]) comment: fix
     nodes = []
@@ -86,13 +89,16 @@ def explore():
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
             nodes=json.dumps(nodes), \
-            curUser= curUser, mode=1)
+            current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
 def build():
     curUser= ""
     if current_user.is_authenticated():
-        curUser = user_db.get_username(current_user.get_id())
+        current_username = user_db.get_username(current_user.get_id())
+    else:
+        # NOT MEANT FOR PRODUCTION
+        current_username = "not logged in"
 
     
     #nodes = data.query_db("select * from point",[],one=False) comment: fix
@@ -101,7 +107,7 @@ def build():
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             nodes=json.dumps(nodes), \
-            curUser=curUser, mode=2) 
+            current_username=current_username, mode=2) 
 
 @app.route('/contact')
 def contact():
