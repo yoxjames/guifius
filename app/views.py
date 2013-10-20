@@ -29,29 +29,55 @@ login_manager.setup_app(app)
 bcrypt = Bcrypt(app)
 babel = Babel(app)
 network_db = Network_db()
+device_db = Device_db()
+point_db = Point_db()
 user_db = User_db()
+
 
 ''' 
 '  BEGIN AJAX LISTENERS
 ''' 
 
+
+'''
+LISTENER
+/ajax/add_network
+Parameters:
+name: Name of the Network
+Rules:
+<NONE> TODO (This probably needs some kind of security)
+'''
 @app.route('/ajax/add_network', methods=['POST'])
 def add_network():
     if request.method == 'POST':
         network_db.add_network(
-                request.json['name'],
-                request.json['type_val'],
-                request.json['phase_type_val'],
-                0)
-        return json.dumps("S");
+            request.json['name'],
+            g.CODE_CLASS.NET_TYPE.UNKNOWN,
+                g.CODE_CLASS.NET_PHASE_TYPE.FUN,
+                current_user.get_id() or 0)
+        return json.dumps("SUCCESS");
+    else:
+        return ""
 
-@app.route('/ajax/add_poly', methods=['POST'])
-def add_poly():
+'''
+LISTENER
+/ajax/add_polygon
+Parameters:
+network_id: ID of the network we are adding a polygon to.
+polygon_json: JSON representing the polygon
+Rules:
+network_id > 0
+polygon_json != None
+network_id must be a network that is related to the current user
+'''
+
+@app.route('/ajax/add_polygon', methods=['POST'])
+def add_polygon():
     if request.method == 'POST':
         return ""
 
-@app.route('/ajax/add_node', methods=['POST'])
-def add_node():
+@app.route('/ajax/add_device', methods=['POST'])
+def add_device():
     return ""
 
 ''' 

@@ -8,9 +8,12 @@ class Database:
     Default Constructor
     Pass refresh=True to drop all tables and rebuild schema
     '''
-    def __init__(self, refresh=False):
+    def __init__(self, refresh=False, code_val=False):
         if (refresh):
             self.refresh()
+        if (code_val):
+            self.reset_codes()
+
 
     '''
     connect
@@ -23,14 +26,25 @@ class Database:
     '''
     refresh
     Creates a database and sets up the schema and injects all starter
-    data needed to run this application.
+    data needed to run this application. Refreshes code values.
     '''
     def refresh(self):
         with closing(self.connect()) as db:
             with app.open_resource('schema.sql') as f:
                 db.cursor().executescript(f.read())
             db.commit()
-            db.close()
+
+    '''
+    reset_codes
+    Executes code_val.sql.
+    This can be modified! The standard behavior is to delete everything
+    from the code_val table and to reinsert values.
+    '''
+    def reset_codes(self):
+        with closing(self.connect()) as db:
+            with app.open_resource('code_val.sql') as f:
+                db.cursor().executescript(f.read())
+            db.commit()
  
     '''
     query_db
@@ -77,9 +91,10 @@ class Database:
     a_id: Primary Key of A
     b_id: Primary Key of B
     type_val: Type code of relationship
+    Returns: id of row inserted
     '''
     def add_reltn(self, a_id, b_id, type_val):
-        self.insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
+        return self.insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
                 [a_id, b_id, type_val], True)
 
     '''

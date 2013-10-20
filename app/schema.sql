@@ -1,5 +1,3 @@
-
-
 drop table if exists point;
 create table point (
 	id integer primary key autoincrement,
@@ -79,3 +77,4 @@ create table type_val (
 
 	foreign key(obj) REFERENCES object(id_obj)
 );
+

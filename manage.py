@@ -4,7 +4,10 @@ import app.db
 from contextlib import closing
 
 def init_db():
-    database = app.db.Database(refresh=True)
+    database = app.db.Database(refresh=True, code_val=True)
+
+def reset_codes():
+    database = app.db.Database(refresh=False, code_val=True)
 
 def main(argv):
     if argv == "init":
