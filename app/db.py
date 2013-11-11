@@ -45,6 +45,12 @@ class Database:
             with app.open_resource('code_val.sql') as f:
                 db.cursor().executescript(f.read())
             db.commit()
+
+    def deploy_test_data(self):
+        with closing(self.connect()) as db:
+            with app.open_resource('sample.sql') as f:
+                db.cursor().executescript(f.read())
+            db.commit()
  
     '''
     query_db

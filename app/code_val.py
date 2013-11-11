@@ -34,6 +34,7 @@ class RELATION(CODE_DB):
         self.CLASS = 2
 
         self.A_NETWORK_B_PERSON = self.get_id_val(self.CLASS,"A_NETWORK_B_PERSON")
+        self.A_NETWORK_B_DEVICE = self.get_id_val(self.CLASS,"A_NETWORK_B_DEVICE")
 
 class OBJECT_TYPE(CODE_DB):
     def __init__(self):

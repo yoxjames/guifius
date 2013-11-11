@@ -1,6 +1,6 @@
 window.onload=init();
 console.log("init runs");
-var map, Street, Terrain, Satellite, renderer, nodeLayer, polygonLayer, from, to;
+var map, Street, Terrain, Satellite, renderer, nodeLayer, addpolyLayer, polygonLayer, from, to, formats, select;
 
 function init() 
 {
@@ -21,8 +21,8 @@ function init()
 
   var nodest = 
   {
-    'pointRadius': 10,
-    'fillColor': '#ffffff'
+    'pointRadius': 2,
+    'fillColor': '#00000'
   };
 
   var nodesty = OpenLayers.Util.applyDefaults(nodest,
@@ -72,17 +72,29 @@ function init()
 
   map.addLayer(nodeLayer= new OpenLayers.Layer.Vector("Nodes",
   {
+    //style: OpenLayers.Feature.Vector.style["default"]
+    style: nodest
+  }, 
+  {
+    renderers: renderer
+  }));
+
+  map.addLayer(addNodeLayer= new OpenLayers.Layer.Vector("AddNodes",
+  {
     style: OpenLayers.Feature.Vector.style["default"]
   }, 
   {
     renderers: renderer
   }));
 
+
   map.addLayer(polygonLayer = new OpenLayers.Layer.Vector("Polygon"));
+
+  map.addLayer(addpolyLayer = new OpenLayers.Layer.Vector("AddPolygon"));
 
   center = new OpenLayers.LonLat(-93,43);
   center.transform(from,to);
-       
+      2
   map.setCenter(center, 4);
 
   var geolocate = new OpenLayers.Control.Geolocate(
@@ -108,8 +120,8 @@ function init()
      */
     //switcher: new OpenLayers.Control.LayerSwitcher({'ascending':true}),
     locator: geolocate,
-    polygon: new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon),
-    node: new OpenLayers.Control.DrawFeature(nodeLayer, OpenLayers.Handler.Point)
+    polygon: new OpenLayers.Control.DrawFeature(addpolyLayer, OpenLayers.Handler.Polygon),
+    node: new OpenLayers.Control.DrawFeature(addNodeLayer, OpenLayers.Handler.Point)
   }
       
   for(var key in controls) 
@@ -122,14 +134,67 @@ function init()
   {
     'div':OpenLayers.Util.getElement('layerswitcher')
   }));
-  geolocate.events.register("locationupdated",geolocate,function(e) 
+
+  var options = 
+  {
+    hover: true,
+    onSelect: serialize
+  };
+
+  select = new OpenLayers.Control.SelectFeature(addpolyLayer, options);
+  map.addControl(select);
+  select.activate();
+
+
+  var in_options = 
+  {
+    'internalProjection': map.baseLayer.projection,
+    'externalProjection': new OpenLayers.Projection("ESPG:4326")
+  };
+
+  var out_options = 
+  {
+    'internalProjection': map.baseLayer.projection,
+    'externalProjection': new OpenLayers.Projection("ESPG:4326")
+  };
+
+  formats = 
+  {
+    'in': 
+    {
+      geojson: new OpenLayers.Format.GeoJSON(in_options)
+    },
+    'out': 
+    {
+      geojson: new OpenLayers.Format.GeoJSON(out_options)
+    }
+  };
+
+  addNodeLayer.events.register("featureadded", addNodeLayer, function(f) 
+  {
+    var coords = 
+    {
+      x: f.feature.geometry.x,
+      y: f.feature.geometry.y
+    };
+    document.getElementById('node-lat').value = coords['x'];
+    document.getElementById('node-lon').value = coords['y'];
+
+    viewMode();
+
+  });
+  
+  geolocate.events.register("locationupdated",geolocate, function(e) 
   {
     console.log("x:" + e.point.x);
     console.log("y:" + e.point.y);
     center = new OpenLayers.LonLat(e.point.x, e.point.y);
     map.setCenter(center, 10);
   });
+  
   map.addControl(new OpenLayers.Control.MousePosition());
+
+  add_overlays();
 }
 
 
@@ -149,4 +214,46 @@ function toggleControl(toggle_key)
   }
 }
 
-            
+function serialize(feature)
+{
+  var str = formats['out']['geojson'].write(feature, false);
+  //alert(str);
+  document.getElementById('polygon-json-output').value = str;
+}
+
+function clearAddPoly()
+{
+  addpolyLayer.removeAllFeatures();
+}
+
+function addPolyMode()
+{
+  select.activate();
+  toggleControl("polygon");
+}
+
+function addNodeMode()
+{
+  toggleControl("node");
+}
+
+function viewMode()
+{
+  select.deactivate();
+  toggleControl("geolocate");
+}
+
+function addPolygon(source_json)
+{
+  polygonLayer.addFeatures(formats['in']['geojson'].read(source_json));
+}
+
+function addPoint(lat, lon)
+{
+  console.log("adding point");
+  console.log(lat);
+  console.log(lon);
+  var point = new OpenLayers.Geometry.Point(lat,lon);
+  var pointFeature = new OpenLayers.Feature.Vector(point);
+  nodeLayer.addFeatures([pointFeature]);
+}

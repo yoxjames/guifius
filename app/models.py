@@ -1,3 +1,5 @@
+import queries
+
 from flask.ext.login import UserMixin, AnonymousUser
 from code_val import * #Probably should make this a list? idk....
 from db import Database
@@ -54,7 +56,14 @@ class Map_db(Database):
         self.network_db = Network_db()
 
     def get_default_json(self):
-        return ""
+        return self.query_db(queries.get_networks_main,
+                [g.CODE_CLASS.NET_PHASE_TYPE.PLANNED,
+                    g.CODE_CLASS.NET_PHASE_TYPE.IN_PROGRESS,
+                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+
+    def get_devices_json(self, network_id):
+        return self.query_db(queries.get_devices_main,
+            [network_id, g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
 
 class Network_db(Database):
 
@@ -80,13 +89,19 @@ class Network_db(Database):
         return network_id
 
     def get_devices(self, id):
-        return ""
+        devices = self.query_db(queries.get_devices,
+                [id, g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE])
+        return devices
 
     def get_network_polygon(self, id):
-        return ""
+        poly = self.query_db('select obj.data from object obj, network n join network where n.network_id = ? join obj where obj.id_obj = n.geometry_obj', [id], one=True)
+        return poly['data']
 
-    def add_network_polygon(self, id):
-        return ""
+    def add_network_polygon(self, id, polygon_obj_id):
+        self.insert_db('update network set geometry_obj = ? where id = ?', 
+                [polygon_obj_id, id], True)
+        return True
+        
 
 class Polygon_db(Database):
     
@@ -111,8 +126,15 @@ class Device_db(Database):
     Returns:
     device_id: ID of the device added
     '''
-    def add_device(self,point_id):
-        return 0
+    def add_device(self, name, type_val, point_id, polarization_type_val, status_type_val, network_id, azimuth=None, elevation=None):
+        device_id = \
+                self.insert_db('insert into device \
+                (name, type_val, point_id, azimuth, elevation, \
+                polarization_type_val, status_type_val) values (?,?,?,?,?,?,?)', 
+                [name, type_val, point_id, azimuth, elevation, polarization_type_val,status_type_val], True)
+        self.add_reltn(network_id, device_id, g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE);
+
+        return device_id
 
     '''
     add_device()
@@ -122,9 +144,16 @@ class Device_db(Database):
     None
     Returns:
     device_id: ID of the Device added
-    '''
+    
     def add_device(self):
         return 0
+    '''
+
+
+    def get_devices_for_network(self, network_id):
+        return self.query_db(queries.get_devices_for_network, 
+                [g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE, network_id], 
+                one=False)
 
 class Point_db(Database):
     '''
@@ -281,6 +310,12 @@ class User_db(Database):
                 1],
                 True)
         return self.get_user(uid)
+
+    def get_my_networks(self, id):
+        networks = self.query_db(queries.get_my_networks, \
+                [id, g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON], \
+                one=False)
+        return networks
 
 
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 
-<script src="{{ url_for('static', filename='js/exploremap.js') }}" defer="defer"></script>
+<script src="{{ url_for('static', filename='js/exploremap.js')}}" defer="defer"></script>
 <script src="{{ url_for('static', filename='js/CustomLayers-2.12/OpenLayers.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='olstyle.css') }}">
 
@@ -29,14 +29,21 @@ function draw_nodes() {
   console.log("V1-Z: "+nodeLayer.getZIndex());
   console.log("T-Z: "+Terrain.getZIndex());
 
-  var nodes = {{ nodes|safe }};
-  for(i=0;i<nodes.length;i++)
+  var dat = {{ overlay_data|safe }};
+
+  //console.log({{ networks |safe}});
+  //console.log(dat);
+  /*
+  for(network in dat)
   {
+    for (device in network)
+
     var node = nodes[i];
     var point = new OpenLayers.Geometry.Point(node.lon,node.lat);	
     var pointFeature = new OpenLayers.Feature.Vector(point);
     Vector1.addFeatures([pointFeature]);
   }
+  */
 }
 
 
@@ -79,8 +86,47 @@ function httpGet(theUrl)
 
 
 <script>
+function add_overlays()
+{
+  /*
+   * DRAW ALL NETWORK OVERLAYS
+   */
+
+  main_JSON = {{ overlay_data |safe }};
+  dev_JSON = {{ overlay_device |safe }};
+ 
+  //main_JSON = JSON.stringify(main_JSON);
+  console.log("POLYGON JSON:");
+  console.log(main_JSON);
+
+   
+  $.each(main_JSON, function(index, value)
+  {
+    console.log(value['name']);
+    // Forward JSON to OpenLayers...
+
+    addPolygon(value['data']);
+
+
+  });
+
+  console.log("DEVICE JSON");
+  console.log(dev_JSON);
+  $.each(dev_JSON, function(index, value)
+  {
+    $.each(value, function(index,value)
+    {
+      console.log(value);
+      addPoint(value['lat'],value['lon']);
+    });
+  });
+}
+  
+
 $(document).ready(function()
 {
+  
+  var network_id; // Most insecure bullshit ever.... Will make more secure later....
   $(".rpanel").hide(); // Hide the right panel on startup
   $("#toggle-rpanel-off").hide(); // hide the div that is to minimize the rpanel
   $(".lpanel").hide(); // Hide the left panel on startup
@@ -183,6 +229,16 @@ $(document).ready(function()
     wiz_phase=1;
   });
 
+  $("#new-node-button").click(function()
+  {
+    addNodeMode();
+    //$("new-node-popup").show();
+    //$(".bpanel").hide();
+    //$(".toggle-bpanel").hide();
+  });
+
+
+
   $("#cancel-wizard-button").click(function()
   {
     $("#new-network-popup").hide();
@@ -213,7 +269,7 @@ $(document).ready(function()
 	success: 
 	function(data)
 	{
-	  console.log("add_network: " + data);
+	  network_id = data; // Cringeworthy I know x_x....
 	},
         dataType: "json"
       });
@@ -229,19 +285,140 @@ $(document).ready(function()
       });
 
       // Switch to polygon mode
-      toggleControl("polygon");
+      addPolyMode();
 
     }
     else if (wiz_phase == 3)
     {
       $(".wizard-phase-one").hide();
       $(".wizard-phase-two").hide();
-      $(".wizard-phase-three").show();
+      //$(".wizard-phase-three").show();
+      viewMode();
+
+      var data = 
+      {
+      "data": $("#polygon-json-output").val(),
+      "network_id": network_id.toString()
+      };
+      
+      //alert("about to make poly request");
+      data = JSON.stringify(data);
+      $.ajax(
+      {
+        type: 'POST',
+	contentType: "application/json; charset=utf-8",
+        url: '/ajax/add_polygon',
+	data: data,
+	success: 
+	function(data)
+	{
+	  console.log("add_polygon: " + data);
+          window.location.replace("/build");
+	},
+        dataType: "json"
+      });
+
+
+
     }
 
   });
 
+
+{% if mode==2 %}
+  var curNet;
+    
+  cnt = {{ networks|safe }}
+  for (n in cnt)
+  {
+    name=(cnt[n]['name']);
+    id=(cnt[n]['id']);
+    $("#network-select").append("<option id='"+n+"'>"+name+"</option>");
+  }
+
    
+
+  $("#network-select").on('click','option', function()
+  {
+    curNet = cnt[parseInt($(this).attr('id'))];
+    $("#network-name").val(curNet['name']);
+    switch (curNet['phase_type_val'])
+    {
+      default:
+        $("#type-fun").attr('checked','true');
+        break;
+      case 2:
+        $("#type-planned").attr('checked', 'true');
+	break;
+      case 3:
+        $("#type-inproc").attr('checked', 'true');
+	break;
+      case 4:
+        $("#type-online").attr('checked', 'true');
+	break;
+    }
+
+    var req =
+    {
+      network_id: curNet['id']
+    };
+
+    req = JSON.stringify(req);
+
+    $.ajax(
+    {
+      type: 'POST',
+      contentType: "application/json; charset=utf-8",
+      url: '/ajax/get_devices_for_network',
+      data: req,
+      success: function(data)
+      {
+        $.each(data, function(index, value)
+        {
+          $("#node-select").append("<option id='"+value['id']+"'>"+value['name']+"</option>");
+        });
+      },
+      dataType: "json"
+    });
+  });
+
+  $("#commit-node").click(function()
+  {
+    var req = 
+    {
+      lat: $("#node-lat").val(),
+      lon: $("#node-lon").val(),
+      name: $("#node-name").val(),
+      type_val: 0,
+      polarization_type_val: 0,
+      status_type_val: 0,
+      network_id: curNet['id']
+    };
+
+    req = JSON.stringify(req);
+
+    $.ajax(
+    {
+      type: 'POST',
+      contentType: "application/json; charset=utf-8",
+      url: '/ajax/add_device',
+      data: req,
+      success: function(data)
+      {
+        alert("COMMITTED");
+      },
+      dataType: "json"
+    });
+  });
+
+  $("#node-select").on('click', 'option', function()
+  {
+    // Get information on Node and Populate fields.
+    alert("Not Yet Implemented....");
+  });
+
+{% endif %}
+
 });
 </script>
 
@@ -272,7 +449,7 @@ $(document).ready(function()
   <h2>Layers</h2>
   <hr />
   <h4>Map</h4>
-  <div id="layerswitcher" class="olControlLayerSwitcher"></div>
+  <div id="layerswitcher" class="olContro lLayerSwitcher"></div>
   
   <!--
   <dl>
@@ -305,7 +482,9 @@ $(document).ready(function()
   <!-- Render the bottom build panel -->
 <div id="build-panel" class="bpanel">
   <div id="net-panel" class="bpanel-sect">
-    <h2 class="bpanel-sect-title">Network [DROP DWN]</h2>
+    <select id="network-select" class="main-select">
+      <option value="none" selected="selected">Select Network</option>
+    </select>
     <input type="button" 
       id="new-network-button" 
       class="bpanel-sect-title" 
@@ -329,25 +508,35 @@ $(document).ready(function()
   </div>
   
   <div id="node-panel" class="bpanel-sect">
-    <h2 class="bpanel-sect-title">Node [DROP DOWN]</h2>
+
+    <select id="node-select" class="main-select">
+      <option value="none" selected="selected">Select Node</option>
+    </select>
     <input type="button" 
-      id="new-network-button" 
+      id="new-node-button" 
       class="bpanel-sect-title" 
       value="New" 
       style="display:inline">
     </input>
     <hr />
-    Name: <input id="network-name" name="net-name" type="text" size="25"></input>
-    <dl>
-      <dt class="rlist">lat:<input type="text" id="node-lat" size="3"></input></dt>
-      <dt class="rlist">lon:<input type="text" id="node-lon" size="3"></input></dt>
+    Name: <input id="node-name" name="node-name" type="text" size="25"></input>
+    
+    lat:<input type="text" id="node-lat" size="13"></input> <br />
+    lon:<input type="text" id="node-lon" size="13"></input> <br />
+    type:<select id="node-type">
+	    <option value="none" selected="selected">Select Type</option>
+	 </select>
+      <!--
       <dt class="rlist">type:<input type="text" id="node-type" size="10" value="DROP DOWN"></input></dt>
-    </dl> 
+      -->
+
+    <!--
     <h2>About/Notes</h2>
     <textarea id="nodes-about" rows="2" cols="40"></textarea>
+    -->
     <input type="button" id="commit-node" class="right-bottom-btn" value="COMMIT"></input>
   </div>
-
+<!--
   <div id="info-panel" class="bpanel-sect">
     <h2>Info</h2>
     <hr />
@@ -356,6 +545,7 @@ $(document).ready(function()
     </div>
     <input type="button" id="help-mode" class="right-bottom-btn" value="HELP"></input>
   </div>
+-->
 </div>
 <div id="toggle-bpanel-off" class="toggle-bpanel"></div>
 <div id="toggle-bpanel-on" class="toggle-bpanel"></div>
@@ -392,7 +582,8 @@ $(document).ready(function()
     Clicking on the map will begin to draw the polygon. Hit clear to start over.
     </p>
     -->
-    <input type="button" class="important-btn centered" value="Clear"></input>
+    <input type="button" class="important-btn centered" value="Clear" onclick="clearAddPoly();"></input>
+    <textarea id="polygon-json-output"></textarea>
   </div>
   <div id="wizard-phase-three">
     <!--
