@@ -1,8 +1,9 @@
 import sqlite3
+#import queries
 from contextlib import closing
 from app import app
 
-class Database:    
+class Database(object):    
     '''
     __init__
     Default Constructor
@@ -102,6 +103,11 @@ class Database:
     def add_reltn(self, a_id, b_id, type_val):
         return self.insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
                 [a_id, b_id, type_val], True)
+
+
+    def get_code_str(self, code_val):
+        return self.query_db(queries.get_code_str, [code_val], one=True)
+        
 
     '''
     update_db

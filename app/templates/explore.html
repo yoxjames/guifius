@@ -26,8 +26,8 @@ function draw_nodes() {
            };
   var fnsty = OpenLayers.Util.applyDefaults(fn,OpenLayers.Feature.Vector.style["defaults"]);
   var fnstyle = new OpenLayers.StyleMap({'pointRadius':5,'fillColor': '#000000'});
-  console.log("V1-Z: "+nodeLayer.getZIndex());
-  console.log("T-Z: "+Terrain.getZIndex());
+  //console.log("V1-Z: "+nodeLayer.getZIndex());
+  //console.log("T-Z: "+Terrain.getZIndex());
 
   var dat = {{ overlay_data|safe }};
 
@@ -96,13 +96,13 @@ function add_overlays()
   dev_JSON = {{ overlay_device |safe }};
  
   //main_JSON = JSON.stringify(main_JSON);
-  console.log("POLYGON JSON:");
-  console.log(main_JSON);
+  //console.log("POLYGON JSON:");
+  //console.log(main_JSON);
 
    
   $.each(main_JSON, function(index, value)
   {
-    console.log(value['name']);
+    //console.log(value['name']);
     // Forward JSON to OpenLayers...
 
     addPolygon(value['data']);
@@ -110,13 +110,13 @@ function add_overlays()
 
   });
 
-  console.log("DEVICE JSON");
-  console.log(dev_JSON);
+  //console.log("DEVICE JSON");
+  //console.log(dev_JSON);
   $.each(dev_JSON, function(index, value)
   {
     $.each(value, function(index,value)
     {
-      console.log(value);
+      //console.log(value);
       addPoint(value['lat'],value['lon']);
     });
   });
@@ -253,9 +253,8 @@ $(document).ready(function()
       var data = 
       { 
       "name": $("#network-name-input").val(), 
-      "type_val": 1, 
-      "phase_type_val": 7, 
-      "owner_id": 0 
+      "type_val": "UNKNOWN", 
+      "phase_type_val": "FUN" 
       };
       data=JSON.stringify(data);
       
@@ -336,7 +335,43 @@ $(document).ready(function()
     $("#network-select").append("<option id='"+n+"'>"+name+"</option>");
   }
 
-   
+  $("#commit-network").click(function()
+  {
+
+    if ($("#type-online").is(':checked'))
+      type_val = "ONLINE";
+    else if ($("#type-planned").is(':checked'))
+      type_val = "PLANNED";
+    else if ($("#type-inproc").is(':checked'))
+      type_val = "IN_PROGRESS";
+    else 
+      type_val = "FUN";
+  
+    var req =
+    {
+      network_id: curNet['id'],
+      name: $("#network-name").val(),
+      type_val: "UNKNOWN", 
+      phase_type_val: type_val//NOT COMPLETE
+    };
+
+    req=JSON.stringify(req);
+
+    $.ajax(
+    {
+      type: 'POST',
+      contentType: "application/json; charset=utf-8",
+      url: '/ajax/commit_network',
+      data: req,
+      success: function(data)
+      {
+        alert("Network Updated"); // CHANGE THIS
+      },
+      dataType: "json"
+    });
+  });
+
+
 
   $("#network-select").on('click','option', function()
   {
@@ -347,13 +382,13 @@ $(document).ready(function()
       default:
         $("#type-fun").attr('checked','true');
         break;
-      case 2:
+      case "PLANNED":
         $("#type-planned").attr('checked', 'true');
 	break;
-      case 3:
+      case "IN_PROGRESS":
         $("#type-inproc").attr('checked', 'true');
 	break;
-      case 4:
+      case "ONLINE":
         $("#type-online").attr('checked', 'true');
 	break;
     }
@@ -391,7 +426,7 @@ $(document).ready(function()
       name: $("#node-name").val(),
       type_val: 0,
       polarization_type_val: 0,
-      status_type_val: 0,
+      status_type_val: 4,
       network_id: curNet['id']
     };
 

@@ -56,14 +56,10 @@ class Map_db(Database):
         self.network_db = Network_db()
 
     def get_default_json(self):
-        return self.query_db(queries.get_networks_main,
-                [g.CODE_CLASS.NET_PHASE_TYPE.PLANNED,
-                    g.CODE_CLASS.NET_PHASE_TYPE.IN_PROGRESS,
-                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+        return self.query_db(queries.get_networks_main)
 
     def get_devices_json(self, network_id):
-        return self.query_db(queries.get_devices_main,
-            [network_id, g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+        return self.query_db(queries.get_devices_for_network_json, [network_id])
 
 class Network_db(Database):
 
@@ -81,12 +77,26 @@ class Network_db(Database):
     phase_type_val (type_val): Phase of Network (level of completion)
     '''
     def add_network(self, name, type_val, phase_type_val, owner_id):
+
+        # Parse TYPES
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        phase_type_val= g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+
+        # SQL
         network_id = \
-        self.insert_db('insert into network (name, type_val, phase_type_val) values (?,?,?)',
-                [name, type_val, phase_type_val], True)
+        self.insert_db(queries.insert_network,[name, type_val, phase_type_val], True)
         reltn_type_val = g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON
         self.add_reltn(network_id, owner_id, reltn_type_val)
         return network_id
+
+    def update_network(self, network_id, name, type_val, phase_type_val):
+        # Parse TYPE VALS
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        phase_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+
+        # Run SQL
+        self.insert_db(queries.update_network, 
+                [name,type_val,phase_type_val, network_id])
 
     def get_devices(self, id):
         devices = self.query_db(queries.get_devices,
@@ -94,12 +104,11 @@ class Network_db(Database):
         return devices
 
     def get_network_polygon(self, id):
-        poly = self.query_db('select obj.data from object obj, network n join network where n.network_id = ? join obj where obj.id_obj = n.geometry_obj', [id], one=True)
+        poly = self.query_db(queries.get_network_polygon, [id], one=True)
         return poly['data']
 
     def add_network_polygon(self, id, polygon_obj_id):
-        self.insert_db('update network set geometry_obj = ? where id = ?', 
-                [polygon_obj_id, id], True)
+        self.insert_db(queries.add_polygon_to_network, [polygon_obj_id, id], True)
         return True
         
 
@@ -151,9 +160,7 @@ class Device_db(Database):
 
 
     def get_devices_for_network(self, network_id):
-        return self.query_db(queries.get_devices_for_network, 
-                [g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE, network_id], 
-                one=False)
+        return self.query_db(queries.get_devices_for_network, [network_id], one=False)
 
 class Point_db(Database):
     '''
@@ -312,9 +319,9 @@ class User_db(Database):
         return self.get_user(uid)
 
     def get_my_networks(self, id):
-        networks = self.query_db(queries.get_my_networks, \
-                [id, g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON], \
-                one=False)
+        networks = self.query_db(queries.get_my_networks, [id], one=False)
+        for n in networks:
+            n['phase_type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['phase_type_val'])
         return networks
 
 

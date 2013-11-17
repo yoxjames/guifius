@@ -1,5 +1,5 @@
 window.onload=init();
-console.log("init runs");
+//console.log("init runs");
 var map, Street, Terrain, Satellite, renderer, nodeLayer, addpolyLayer, polygonLayer, from, to, formats, select;
 
 function init() 
@@ -186,8 +186,8 @@ function init()
   
   geolocate.events.register("locationupdated",geolocate, function(e) 
   {
-    console.log("x:" + e.point.x);
-    console.log("y:" + e.point.y);
+    //console.log("x:" + e.point.x);
+    //console.log("y:" + e.point.y);
     center = new OpenLayers.LonLat(e.point.x, e.point.y);
     map.setCenter(center, 10);
   });
@@ -250,9 +250,9 @@ function addPolygon(source_json)
 
 function addPoint(lat, lon)
 {
-  console.log("adding point");
-  console.log(lat);
-  console.log(lon);
+  //console.log("adding point");
+  //console.log(lat);
+  //console.log(lon);
   var point = new OpenLayers.Geometry.Point(lat,lon);
   var pointFeature = new OpenLayers.Feature.Vector(point);
   nodeLayer.addFeatures([pointFeature]);

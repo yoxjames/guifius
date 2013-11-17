@@ -54,9 +54,9 @@ def add_network():
     if request.method == 'POST':
         network_id = network_db.add_network(
             request.json['name'],
-            g.CODE_CLASS.NET_TYPE.UNKNOWN,
-                g.CODE_CLASS.NET_PHASE_TYPE.ONLINE,
-                current_user.get_id() or 0)
+            request.json['type_val'],
+            request.json['phase_type_val'],
+            current_user.get_id() or 0)
         return str(network_id);
     else:
         return ""
@@ -116,6 +116,17 @@ def get_devices_for_network():
     else:
         return ""
 
+
+@app.route('/ajax/commit_network', methods=['POST'])
+def commit_network():
+    if request.method == 'POST':
+        network_db.update_network(
+                request.json['network_id'],
+                request.json['name'],
+                request.json['type_val'],
+                request.json['phase_type_val'])
+        return "SUCCESS"
+    return ""
 
 ''' 
 '  END AJAX LISTENERS 
