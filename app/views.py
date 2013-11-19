@@ -90,19 +90,40 @@ def add_polygon():
 def add_device():
     if request.method == 'POST':
 
-        ## Add the point
-        point_id = point_db.add_point(
-                request.json['lat'],
-                request.json['lon'])
 
-        ## Add the device over the point
-        device_id = device_db.add_device(
-                request.json['name'],
-                request.json['type_val'],
-                point_id,
-                request.json['polarization_type_val'],
-                request.json['status_type_val'],
-                request.json['network_id']) # For the reltn
+        ## Check if point already exists, if so use update logic 
+        # else use insertion logic.
+            # Update point
+        if (request.json['new'] == "FALSE"):
+            point_id = device_db.get_point_id(request.json['device_id'])
+            point_db.move_point( #Handle Point Relocation
+                    point_id,
+                    request.json['lat'],
+                    request.json['lon'])
+
+            device_db.update_device(
+                    request.json['device_id'], 
+                    request.json['name'],
+                    request.json['type_val'],
+                    request.json['polarization_type_val'],
+                    request.json['status_type_val'],
+                    request.json['azimuth'] or None,
+                    request.json['elevation'] or None)
+            
+        else:
+            # Add new point
+            point_id = point_db.add_point(
+                    request.json['lat'],
+                 request.json['lon'])
+
+            ## Add the device over the point
+            device_id = device_db.add_device(
+                    request.json['name'],
+                    request.json['type_val'],
+                    point_id,
+                    request.json['polarization_type_val'],
+                    request.json['status_type_val'],
+                    request.json['network_id']) # For the reltn
 
 
         return "SUCCESS"
@@ -127,6 +148,12 @@ def commit_network():
                 request.json['phase_type_val'])
         return "SUCCESS"
     return ""
+
+@app.route('/ajax/get_device_info', methods=['POST'])
+def get_device_info():
+    if request.method == 'POST':
+        return json.dumps(device_db.get_device(request.json['device_id']))
+
 
 ''' 
 '  END AJAX LISTENERS 

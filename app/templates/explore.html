@@ -125,6 +125,9 @@ function add_overlays()
 
 $(document).ready(function()
 {
+
+  var node_insert = 0;
+  var current_device = 0;
   
   var network_id; // Most insecure bullshit ever.... Will make more secure later....
   $(".rpanel").hide(); // Hide the right panel on startup
@@ -232,6 +235,7 @@ $(document).ready(function()
   $("#new-node-button").click(function()
   {
     addNodeMode();
+    node_insert = 1;
     //$("new-node-popup").show();
     //$(".bpanel").hide();
     //$(".toggle-bpanel").hide();
@@ -249,6 +253,7 @@ $(document).ready(function()
     wiz_phase++;
     if (wiz_phase == 2)
     {
+      addPolyMode();
 
       var data = 
       { 
@@ -282,11 +287,31 @@ $(document).ready(function()
 	top:'100%'
 	, height:'134px'
       });
-
-      // Switch to polygon mode
-      addPolyMode();
+      var data = 
+      {
+      "data": $("#polygon-json-output").val(),
+      "network_id": network_id.toString()
+      };
+      
+      //alert("about to make poly request");
+      data = JSON.stringify(data);
+      $.ajax(
+      {
+        type: 'POST',
+	contentType: "application/json; charset=utf-8",
+        url: '/ajax/add_polygon',
+	data: data,
+	success: 
+	function(data)
+	{
+	  console.log("add_polygon: " + data);
+          window.location.replace("/build");
+	},
+        dataType: "json"
+      });
 
     }
+
     else if (wiz_phase == 3)
     {
       $(".wizard-phase-one").hide();
@@ -331,7 +356,7 @@ $(document).ready(function()
   for (n in cnt)
   {
     name=(cnt[n]['name']);
-    id=(cnt[n]['id']);
+    id=(cnt[n]['iFalsed']);
     $("#network-select").append("<option id='"+n+"'>"+name+"</option>");
   }
 
@@ -419,15 +444,23 @@ $(document).ready(function()
 
   $("#commit-node").click(function()
   {
+    newnode = "FALSE";
+    if (node_insert)
+      newnode = "TRUE";
+
     var req = 
     {
+      "new": newnode, 
       lat: $("#node-lat").val(),
       lon: $("#node-lon").val(),
       name: $("#node-name").val(),
-      type_val: 0,
-      polarization_type_val: 0,
-      status_type_val: 4,
-      network_id: curNet['id']
+      type_val: "UNKNOWN", // Fix
+      polarization_type_val: "",
+      azimuth: 0,
+      elevation: 0,
+      status_type_val: "ONLINE",
+      network_id: curNet['id'],
+      device_id: current_device
     };
 
     req = JSON.stringify(req);
@@ -444,12 +477,36 @@ $(document).ready(function()
       },
       dataType: "json"
     });
+
+    node_insert = 0;
   });
 
   $("#node-select").on('click', 'option', function()
   {
-    // Get information on Node and Populate fields.
-    alert("Not Yet Implemented....");
+    current_device = parseInt($(this).attr('id'));
+    
+    req = 
+    {
+      device_id: parseInt($(this).attr('id'))
+    };
+
+    req=JSON.stringify(req);
+    
+    $.ajax(
+    {
+      type: 'POST',
+      contentType: "application/json; charset=utf-8",
+      url: '/ajax/get_device_info',
+      data: req,
+      success: function(data)
+      {
+        $("#node-lat").val(data['lat']);
+	$("#node-lon").val(data['lon']);
+	$("#node-name").val(data['name']);
+      },
+      dataType: "json"
+    });
+
   });
 
 {% endif %}
