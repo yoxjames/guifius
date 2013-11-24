@@ -119,9 +119,11 @@ def add_device():
             ## Add the device over the point
             device_id = device_db.add_device(
                     request.json['name'],
-                    request.json['type_val'],
+                    "UNKNOWN",
+                    #request.json['type_val'],
                     point_id,
-                    request.json['polarization_type_val'],
+                    "UNKNOWN",
+                    #request.json['polarization_type_val'],
                     request.json['status_type_val'],
                     request.json['network_id']) # For the reltn
 
@@ -224,11 +226,24 @@ def build():
     overlay_device_str = json.dumps(overlay_device)
 
 
+    ## BUILD CODE CLASS MENUS
+    # GRAB ALL NETWORK TYPES
+
+    net_types=json.dumps(g.CODE_CLASS.NET_TYPE.get_class())
+    net_phase_types=json.dumps(g.CODE_CLASS.NET_PHASE_TYPE.get_class())
+    node_types=json.dumps(g.CODE_CLASS.NODE_TYPE.get_class())
+    polarization_types=json.dumps(g.CODE_CLASS.POLARIZATION_TYPE.get_class())
+
+
     
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             overlay_data=overlay_data_str, \
             overlay_device=overlay_device_str, \
+            net_types=net_types, \
+            net_phase_types=net_phase_types, \
+            polarization_types=polarization_types, \
+            node_types=node_types, \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 

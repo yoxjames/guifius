@@ -13,3 +13,9 @@ insert into type_val (name,class) values ("POLYGON",3);
 insert into type_val (name,class) values ("FREE",4);
 insert into type_val (name,class) values ("CORPORATE", 4);
 insert into type_val (name,class) values ("UNKNOWN",4);
+
+insert into type_val (name,class) values ("HORIZONTAL",5);
+insert into type_val (name,class) values ("VERTICAL",5);
+insert into type_val (name,class) values ("UNKNOWN",5);
+
+insert into type_val (name,class) values ("UNKNOWN",6);

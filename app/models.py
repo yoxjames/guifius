@@ -159,6 +159,7 @@ class Device_db(Database):
 
         type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
         status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
+        polarization_type_val = g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
 
         device_id = \
                 self.insert_db(
@@ -220,7 +221,13 @@ class Device_db(Database):
             return True
 
     def get_device(self, id):
-        return self.query_db(queries.get_device, [id], one=True)
+        device =  self.query_db(queries.get_device, [id], one=True)
+        device['type_val'] = g.CODE_CLASS.FUNC.get_name_val(device['type_val'])
+        device['polarization_type_val'] = \
+            g.CODE_CLASS.FUNC.get_name_val(device['polarization_type_val'])
+        # FIX: PHASE TYPE VAL NEEDED HERE!
+
+        return device
 
     def get_point_id(self, id):
         return self.query_db(queries.get_point_id, [id], one=True)['point_id']
@@ -237,7 +244,8 @@ class Device_db(Database):
 
         # Parse type vals
         type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
-        polarization_type_val = 0 #FIX THIS
+        polarization_type_val = \
+            g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
         status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
         
 
@@ -426,6 +434,7 @@ class User_db(Database):
 
         for n in networks:
             n['phase_type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['phase_type_val'])
+            n['type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['type_val'])
         return networks
 
 

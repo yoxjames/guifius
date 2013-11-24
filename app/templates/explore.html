@@ -235,6 +235,7 @@ $(document).ready(function()
   $("#new-node-button").click(function()
   {
     addNodeMode();
+    $("#node-name").val("");
     node_insert = 1;
     //$("new-node-popup").show();
     //$(".bpanel").hide();
@@ -350,34 +351,55 @@ $(document).ready(function()
 
 
 {% if mode==2 %}
-  var curNet;
-    
+  var curNet = [];
+
+  var type_selected = "UNKNOWN";
+  var current_polarization = "UNKNOWN";
+
+  $("#redrop-node-button").attr("disabled","disabled");
+
+  $("#redrop-node-button").click(function()
+  {
+    addNodeMode();
+  });
+  
+
+  my_net_types = {{ net_types | safe }};
+  my_phase_types = {{ net_phase_types | safe }};
+  my_polarization_types = {{ polarization_types | safe }};
+
   cnt = {{ networks|safe }}
   for (n in cnt)
   {
     name=(cnt[n]['name']);
-    id=(cnt[n]['iFalsed']);
+    id=(cnt[n]['id']);
     $("#network-select").append("<option id='"+n+"'>"+name+"</option>");
   }
 
-  $("#commit-network").click(function()
+  $("#network-type").on('click','option', function()
   {
+    type_selected = $(this).val();
+  });
 
-    if ($("#type-online").is(':checked'))
-      type_val = "ONLINE";
-    else if ($("#type-planned").is(':checked'))
-      type_val = "PLANNED";
-    else if ($("#type-inproc").is(':checked'))
-      type_val = "IN_PROGRESS";
-    else 
-      type_val = "FUN";
-  
+  $("#network-phase-type").on('click','option', function()
+  {
+    phase_type_val = $(this).val();
+  });
+
+  $("#polarization-type").on('click','option', function()
+  {
+    current_polarization = $(this).val();
+  });
+
+
+  $("#commit-network").click(function()
+  {  
     var req =
     {
       network_id: curNet['id'],
       name: $("#network-name").val(),
-      type_val: "UNKNOWN", 
-      phase_type_val: type_val//NOT COMPLETE
+      type_val: type_selected,
+      phase_type_val: phase_type_val//NOT COMPLETE
     };
 
     req=JSON.stringify(req);
@@ -401,22 +423,38 @@ $(document).ready(function()
   $("#network-select").on('click','option', function()
   {
     curNet = cnt[parseInt($(this).attr('id'))];
+
+    console.log(curNet);
     $("#network-name").val(curNet['name']);
-    switch (curNet['phase_type_val'])
+
+    $("#network-type").append("<option id='network-current-type'>"+curNet['type_val']+"</option>");
+    $.each(my_net_types, function(data,value)
     {
-      default:
-        $("#type-fun").attr('checked','true');
-        break;
-      case "PLANNED":
-        $("#type-planned").attr('checked', 'true');
-	break;
-      case "IN_PROGRESS":
-        $("#type-inproc").attr('checked', 'true');
-	break;
-      case "ONLINE":
-        $("#type-online").attr('checked', 'true');
-	break;
-    }
+      //console.log(value);
+      if (value['name'] != $("#network-current-type").val())
+        $("#network-type").append(
+		"<option id='"+value['name']+"'>"+value['name']+"</option>");
+    });
+
+
+    $("#network-phase-type").append(
+	    "<option id='cur-net-phase-type'>"
+	    +curNet['phase_type_val']
+	    +"</option>");
+
+    cur_net_phase_type = $("#cur-net-phase-type").val();
+    phase_type_val = cur_net_phase_type;
+
+    $.each(my_phase_types, function(data,value)
+    {
+      //console.log(value);
+      if (value['name'] != $("#cur-net-phase-type").val())
+        $("#network-phase-type").append(
+		"<option id='"+value['name']+"'>"+value['name']+"</option>");
+    });
+
+
+
 
     var req =
     {
@@ -424,6 +462,8 @@ $(document).ready(function()
     };
 
     req = JSON.stringify(req);
+
+    $("#node-select").empty();
 
     $.ajax(
     {
@@ -454,11 +494,11 @@ $(document).ready(function()
       lat: $("#node-lat").val(),
       lon: $("#node-lon").val(),
       name: $("#node-name").val(),
-      type_val: "UNKNOWN", // Fix
-      polarization_type_val: "",
-      azimuth: 0,
-      elevation: 0,
-      status_type_val: "ONLINE",
+      type_val: type_selected, // Fix
+      polarization_type_val: current_polarization,
+      azimuth: $("#azimuth-input").val(),
+      elevation: $("#elevation-input").val(),
+      status_type_val: "ONLINE", //FIX
       network_id: curNet['id'],
       device_id: current_device
     };
@@ -484,6 +524,23 @@ $(document).ready(function()
   $("#node-select").on('click', 'option', function()
   {
     current_device = parseInt($(this).attr('id'));
+
+    my_node_types = {{ node_types | safe }};
+    
+    $("#node-type").empty();
+    $("#node-type").append(
+	    "<option id='node-current-type'>Node Type</option>");
+
+    $("#polarization-type").empty();
+    $("#polarization-type").append(
+		    "<option id='current-polarization-type'>Polarization Type</option>");
+
+    
+
+
+
+
+    $("#redrop-node-button").removeAttr("disabled");
     
     req = 
     {
@@ -503,6 +560,30 @@ $(document).ready(function()
         $("#node-lat").val(data['lat']);
 	$("#node-lon").val(data['lon']);
 	$("#node-name").val(data['name']);
+	$("#node-current-type").text(data['type_val']);
+	$("#node-current-type").val(data['type_val']);
+	$("#current-polarization-type").val(data['polarization_type_val']);
+        current_polarization = data['polarization_type_val'];
+	$("#current-polarization-type").text(data['polarization_type_val']);
+	$("#azimuth-input").val(data['azimuth']);
+	$("#elevation-input").val(data['elevation']);
+
+        $.each(my_node_types, function(data,value)
+        {
+          if (value['name'] != $("#node-current-type").val())
+          $("#node-type").append(
+		"<option>"+value['name']+"</option>");
+        });
+
+        $.each(my_polarization_types, function(data,value)
+        {
+          //console.log(value);
+          if (value['name'] != $("#current-polarization-type").val())
+          $("#polarization-type").append(
+		"<option>"+value['name']+"</option>");
+        });
+
+
       },
       dataType: "json"
     });
@@ -585,13 +666,21 @@ $(document).ready(function()
     </input>
     <hr />
     Name: <input id="network-name" name="net-name" type="text" size="25"></input>
-    <h2>Type</h2>
+    Type: 
+    <select id="network-type" class="main-select">
+    </select><br />
+    Phase:
+    <select id="network-phase-type" class="main-select">
+    </select>
+
+    <!--
     <dl>
       <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
       <dt><input type="radio" name="net-type" id="type-planned">Planned</input></dt>
       <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
       <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
-    </dl>
+    </dl>a
+    -->
     <dl class="left-bottom-btn">
       <dt class="rlist"><input type="button" id="polygon-mode-btn" value="Polygon"></input></dt>
       <dt class="rlist"><input type="button" id="profile-mode-btn" value="Profile"></input></dt>
@@ -610,14 +699,21 @@ $(document).ready(function()
       value="New" 
       style="display:inline">
     </input>
+    <input type="button"
+      id="redrop-node-button"
+      class="bpanel-sect-title"
+      value="Redrop"
+      style="display:inline">
+    </input>
     <hr />
     Name: <input id="node-name" name="node-name" type="text" size="25"></input>
     
     lat:<input type="text" id="node-lat" size="13"></input> <br />
     lon:<input type="text" id="node-lon" size="13"></input> <br />
-    type:<select id="node-type">
-	    <option value="none" selected="selected">Select Type</option>
-	 </select>
+    type:<select id="node-type"></select><br />
+    polarization:<select id="polarization-type"></select> <br />
+    elevation:<input type="text" id="elevation-input" size="4"></input><br />
+    azimuth:<input type="text" id="azimuth-input" size="4"></input><br />
       <!--
       <dt class="rlist">type:<input type="text" id="node-type" size="10" value="DROP DOWN"></input></dt>
       -->
