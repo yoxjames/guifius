@@ -444,11 +444,11 @@ position:absolute;
 bottom: 0px;
 z-index:1002;
 display:block;
-width:1000px;
+width:670px;
 background: #d7d7d7;
 border:1px solid #000000;
-margin-right:500px;
-margin-left:-500px;
+margin-right:335px;
+margin-left:-335px;
 left:50%;
 }
 
@@ -468,7 +468,6 @@ height:225px;
 border-right:1px solid #000000;
 }
 #node-panel{
-border-right:1px solid #000000;
 left:331px;
 }
 #info-panel{
@@ -509,15 +508,15 @@ display:inline;
 
 .toggle-bpanel{
 position:absolute;
-width: 1000px;
+width: 670px;
 z-index:1002;
 background: #c18686;
 height: 15px;
 border-top-left-radius: 5px;
 border-top-right-radius: 5px;
 border:1px solid #000000;
-margin-right:500px;
-margin-left:-500px;
+margin-right:335px;
+margin-left:-335px;
 left:50%;
 }
 
@@ -619,6 +618,15 @@ display:none;
 display:none;
 }
 
+#polygon-json-output{
+display:block;
+margin:auto;
+width:100%;
+}
+
+.main-select{
+width:150px;
+}
 
 
 

@@ -3,8 +3,10 @@ from app import app
 import app.db
 from contextlib import closing
 
-def init_db():
+def init_db(test=False):
     database = app.db.Database(refresh=True, code_val=True)
+    if (test):
+        database.deploy_test_data()
 
 def reset_codes():
     database = app.db.Database(refresh=False, code_val=True)
