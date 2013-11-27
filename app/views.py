@@ -28,10 +28,12 @@ login_manager.setup_app(app)
 
 bcrypt = Bcrypt(app)
 babel = Babel(app)
+map_db = Map_db()
 network_db = Network_db()
 device_db = Device_db()
 point_db = Point_db()
 user_db = User_db()
+polygon_db = Polygon_db()
 
 
 ''' 
@@ -50,12 +52,12 @@ Rules:
 @app.route('/ajax/add_network', methods=['POST'])
 def add_network():
     if request.method == 'POST':
-        network_db.add_network(
+        network_id = network_db.add_network(
             request.json['name'],
-            g.CODE_CLASS.NET_TYPE.UNKNOWN,
-                g.CODE_CLASS.NET_PHASE_TYPE.FUN,
-                current_user.get_id() or 0)
-        return json.dumps("SUCCESS");
+            request.json['type_val'],
+            request.json['phase_type_val'],
+            current_user.get_id() or 0)
+        return str(network_id);
     else:
         return ""
 
@@ -74,11 +76,86 @@ network_id must be a network that is related to the current user
 @app.route('/ajax/add_polygon', methods=['POST'])
 def add_polygon():
     if request.method == 'POST':
-        return ""
+        
+        polygon_id = polygon_db.add_polygon(
+                request.json['data'])
+        network_id = network_db.add_network_polygon(
+                request.json['network_id']
+                , polygon_id)
+
+        return "SUCCESS"
+    return ""
 
 @app.route('/ajax/add_device', methods=['POST'])
 def add_device():
+    if request.method == 'POST':
+
+
+        ## Check if point already exists, if so use update logic 
+        # else use insertion logic.
+            # Update point
+        if (request.json['new'] == "FALSE"):
+            point_id = device_db.get_point_id(request.json['device_id'])
+            point_db.move_point( #Handle Point Relocation
+                    point_id,
+                    request.json['lat'],
+                    request.json['lon'])
+
+            device_db.update_device(
+                    request.json['device_id'], 
+                    request.json['name'],
+                    request.json['type_val'],
+                    request.json['polarization_type_val'],
+                    request.json['status_type_val'],
+                    request.json['azimuth'] or None,
+                    request.json['elevation'] or None)
+            
+        else:
+            # Add new point
+            point_id = point_db.add_point(
+                    request.json['lat'],
+                 request.json['lon'])
+
+            ## Add the device over the point
+            device_id = device_db.add_device(
+                    request.json['name'],
+                    "UNKNOWN",
+                    #request.json['type_val'],
+                    point_id,
+                    "UNKNOWN",
+                    #request.json['polarization_type_val'],
+                    request.json['status_type_val'],
+                    request.json['network_id']) # For the reltn
+
+
+        return "SUCCESS"
+    else:
+        return ""
+
+@app.route('/ajax/get_devices_for_network', methods=['POST'])
+def get_devices_for_network():
+    if request.method == 'POST':
+        return json.dumps(device_db.get_devices_for_network(request.json['network_id']))
+    else:
+        return ""
+
+
+@app.route('/ajax/commit_network', methods=['POST'])
+def commit_network():
+    if request.method == 'POST':
+        network_db.update_network(
+                request.json['network_id'],
+                request.json['name'],
+                request.json['type_val'],
+                request.json['phase_type_val'])
+        return "SUCCESS"
     return ""
+
+@app.route('/ajax/get_device_info', methods=['POST'])
+def get_device_info():
+    if request.method == 'POST':
+        return json.dumps(device_db.get_device(request.json['device_id']))
+
 
 ''' 
 '  END AJAX LISTENERS 
@@ -103,6 +180,18 @@ def load_user(id):
 @app.route('/')
 def explore():
     curUser = ""
+    
+    overlay_data=map_db.get_default_json()
+    overlay_data_str=json.dumps(overlay_data)
+
+    overlay_device = []
+
+    
+    for network in overlay_data:
+        overlay_device.append(map_db.get_devices_json(network['id']))
+
+    overlay_device_str = json.dumps(overlay_device)
+
     if current_user.is_authenticated():
         current_username = user_db.get_username(current_user.get_id())
     else:
@@ -114,7 +203,8 @@ def explore():
     
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
-            nodes=json.dumps(nodes), \
+            overlay_data=overlay_data_str, \
+            overlay_device=overlay_device_str, \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -125,14 +215,36 @@ def build():
     else:
         # NOT MEANT FOR PRODUCTION
         current_username = "not logged in"
-
+    overlay_data=map_db.get_default_json()
+    overlay_data_str=json.dumps(overlay_data)
     
-    #nodes = data.query_db("select * from point",[],one=False) comment: fix
-    nodes = []
+    overlay_device = []
+
+    for network in overlay_data:
+        overlay_device.append(map_db.get_devices_json(network['id']))
+
+    overlay_device_str = json.dumps(overlay_device)
+
+
+    ## BUILD CODE CLASS MENUS
+    # GRAB ALL NETWORK TYPES
+
+    net_types=json.dumps(g.CODE_CLASS.NET_TYPE.get_class())
+    net_phase_types=json.dumps(g.CODE_CLASS.NET_PHASE_TYPE.get_class())
+    node_types=json.dumps(g.CODE_CLASS.NODE_TYPE.get_class())
+    polarization_types=json.dumps(g.CODE_CLASS.POLARIZATION_TYPE.get_class())
+
+
     
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
-            nodes=json.dumps(nodes), \
+            overlay_data=overlay_data_str, \
+            overlay_device=overlay_device_str, \
+            net_types=net_types, \
+            net_phase_types=net_phase_types, \
+            polarization_types=polarization_types, \
+            node_types=node_types, \
+            networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 
 @app.route('/contact')

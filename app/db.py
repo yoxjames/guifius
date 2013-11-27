@@ -1,8 +1,9 @@
 import sqlite3
+#import queries
 from contextlib import closing
 from app import app
 
-class Database:    
+class Database(object):    
     '''
     __init__
     Default Constructor
@@ -43,6 +44,12 @@ class Database:
     def reset_codes(self):
         with closing(self.connect()) as db:
             with app.open_resource('code_val.sql') as f:
+                db.cursor().executescript(f.read())
+            db.commit()
+
+    def deploy_test_data(self):
+        with closing(self.connect()) as db:
+            with app.open_resource('sample.sql') as f:
                 db.cursor().executescript(f.read())
             db.commit()
  
@@ -96,6 +103,11 @@ class Database:
     def add_reltn(self, a_id, b_id, type_val):
         return self.insert_db('insert into relation (a_id, b_id, type_val) values (?,?,?)',
                 [a_id, b_id, type_val], True)
+
+
+    def get_code_str(self, code_val):
+        return self.query_db(queries.get_code_str, [code_val], one=True)
+        
 
     '''
     update_db

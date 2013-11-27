@@ -1,3 +1,5 @@
+import queries
+
 from flask.ext.login import UserMixin, AnonymousUser
 from code_val import * #Probably should make this a list? idk....
 from db import Database
@@ -54,7 +56,19 @@ class Map_db(Database):
         self.network_db = Network_db()
 
     def get_default_json(self):
-        return ""
+        return self.query_db(
+                queries.get_networks_main, 
+                [
+                    g.CODE_CLASS.NET_PHASE_TYPE.PLANNED,
+                    g.CODE_CLASS.NET_PHASE_TYPE.IN_PROGRESS,
+                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+
+    def get_devices_json(self, network_id):
+        return self.query_db(queries.get_devices_for_network_json, 
+                [
+                    network_id,
+                    g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE,
+                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
 
 class Network_db(Database):
 
@@ -72,21 +86,40 @@ class Network_db(Database):
     phase_type_val (type_val): Phase of Network (level of completion)
     '''
     def add_network(self, name, type_val, phase_type_val, owner_id):
+
+        # Parse TYPES
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        phase_type_val= g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+
+        # SQL
         network_id = \
-        self.insert_db('insert into network (name, type_val, phase_type_val) values (?,?,?)',
-                [name, type_val, phase_type_val], True)
+        self.insert_db(queries.insert_network,[name, type_val, phase_type_val], True)
         reltn_type_val = g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON
         self.add_reltn(network_id, owner_id, reltn_type_val)
         return network_id
 
+    def update_network(self, network_id, name, type_val, phase_type_val):
+        # Parse TYPE VALS
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        phase_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+
+        # Run SQL
+        self.insert_db(queries.update_network, 
+                [name,type_val,phase_type_val, network_id])
+
     def get_devices(self, id):
-        return ""
+        devices = self.query_db(queries.get_devices,
+                [id, g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE])
+        return devices
 
     def get_network_polygon(self, id):
-        return ""
+        poly = self.query_db(queries.get_network_polygon, [id], one=True)
+        return poly['data']
 
-    def add_network_polygon(self, id):
-        return ""
+    def add_network_polygon(self, id, polygon_obj_id):
+        self.insert_db(queries.add_polygon_to_network, [polygon_obj_id, id], True)
+        return True
+        
 
 class Polygon_db(Database):
     
@@ -111,8 +144,44 @@ class Device_db(Database):
     Returns:
     device_id: ID of the device added
     '''
-    def add_device(self,point_id):
-        return 0
+    def add_device(
+            self, 
+            name, 
+            type_val, 
+            point_id, 
+            polarization_type_val, 
+            status_type_val, 
+            network_id, 
+            azimuth=None, 
+            elevation=None):
+
+        # Parse Code Types
+
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
+        polarization_type_val = g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
+
+        device_id = \
+                self.insert_db(
+                        queries.add_device, 
+                        [
+                            name, 
+                            type_val, 
+                            point_id, 
+                            azimuth, 
+                            elevation, 
+                            polarization_type_val,
+                            status_type_val], True)
+
+
+        self.add_reltn(
+                network_id, 
+                device_id, 
+                g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE);
+
+
+
+        return device_id
 
     '''
     add_device()
@@ -122,9 +191,79 @@ class Device_db(Database):
     None
     Returns:
     device_id: ID of the Device added
-    '''
+    
     def add_device(self):
         return 0
+    '''
+
+
+    def get_devices_for_network(self, network_id):
+        return self.query_db(queries.get_devices_for_network, 
+                [
+                    g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE, 
+                    network_id
+                ],
+                one=False)
+
+    def get_device_on_point(self, point_id):
+        return self.query_db(
+                queries.get_device_on_point, 
+                [point_id], 
+                one=True)
+
+    def name_exists(self, name):
+        if (self.query_db(
+            queries.pull_device_id_by_name,
+            [name],
+            one=True) is None):
+            return False
+        else:
+            return True
+
+    def get_device(self, id):
+        device =  self.query_db(queries.get_device, [id], one=True)
+        device['type_val'] = g.CODE_CLASS.FUNC.get_name_val(device['type_val'])
+        device['polarization_type_val'] = \
+            g.CODE_CLASS.FUNC.get_name_val(device['polarization_type_val'])
+        # FIX: PHASE TYPE VAL NEEDED HERE!
+
+        return device
+
+    def get_point_id(self, id):
+        return self.query_db(queries.get_point_id, [id], one=True)['point_id']
+
+    def update_device(
+            self, 
+            id, 
+            name, 
+            type_val, 
+            polarization_type_val, 
+            status_type_val,  
+            azimuth=None, 
+            elevation=None):
+
+        # Parse type vals
+        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        polarization_type_val = \
+            g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
+        status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
+        
+
+        # Perform SQL
+        self.insert_db(
+                queries.update_device,
+                [
+                    name,
+                    type_val,
+                    polarization_type_val,
+                    status_type_val,
+                    azimuth,
+                    elevation,
+                    id
+                ], 
+                True)
+
+
 
 class Point_db(Database):
     '''
@@ -149,7 +288,10 @@ class Point_db(Database):
     TODO
     '''
     def move_point(self,id,lat,lon):
-        return 0
+        self.insert_db(
+                queries.move_point,
+                [lat,lon,id],
+                True)
     
     '''
     delete_point
@@ -281,6 +423,19 @@ class User_db(Database):
                 1],
                 True)
         return self.get_user(uid)
+
+    def get_my_networks(self, id):
+        networks = self.query_db(
+                queries.get_my_networks, 
+                [
+                    id,
+                    g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON], 
+                one=False)
+
+        for n in networks:
+            n['phase_type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['phase_type_val'])
+            n['type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['type_val'])
+        return networks
 
 
 
