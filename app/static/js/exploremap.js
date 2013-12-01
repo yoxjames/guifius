@@ -1,6 +1,6 @@
 window.onload=init();
 //console.log("init runs");
-var map, Street, Terrain, Satellite, renderer, nodeLayer, addpolyLayer, polygonLayer, from, to, formats, select;
+var map, Street, Terrain, Satellite, renderer, nodeLayer, addpolyLayer, polygonLayer, from, to, formats, select, connectionStyle, connectionLayer;
 
 function init() 
 {
@@ -24,6 +24,13 @@ function init()
     'pointRadius': 2,
     'fillColor': '#00000'
   };
+
+  connectionStyle = {
+	  strokeColor: '#0000ff',
+	  strokeOpacity: 0.5,
+	  strokeWidth: 5
+  };
+
 
   var nodesty = OpenLayers.Util.applyDefaults(nodest,
                 OpenLayers.Feature.Vector.style["defaults"]);
@@ -91,6 +98,8 @@ function init()
   map.addLayer(polygonLayer = new OpenLayers.Layer.Vector("Polygon"));
 
   map.addLayer(addpolyLayer = new OpenLayers.Layer.Vector("AddPolygon"));
+
+  map.addLayer(connectionLayer = new OpenLayers.Layer.Vector("Connections"));
 
   center = new OpenLayers.LonLat(-93,43);
   center.transform(from,to);
@@ -256,4 +265,16 @@ function addPoint(lat, lon)
   var point = new OpenLayers.Geometry.Point(lat,lon);
   var pointFeature = new OpenLayers.Feature.Vector(point);
   nodeLayer.addFeatures([pointFeature]);
+}
+
+function addConnection(dev_a, dev_b)
+{
+  var points = new Array(
+    new OpenLayers.Geometry.Point(dev_a[0], dev_a[1]),
+    new OpenLayers.Geometry.Point(dev_b[0], dev_b[1]));
+
+  var line = new OpenLayers.Geometry.LineString(points);
+  var feature = new OpenLayers.Feature.Vector(line, null,connectionStyle);
+
+  connectionLayer.addFeatures([feature]);
 }

@@ -68,7 +68,8 @@ class Map_db(Database):
                 [
                     network_id,
                     g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE,
-                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE],
+                one=False)
 
 class Network_db(Database):
 
@@ -128,6 +129,54 @@ class Polygon_db(Database):
         self.insert_db('insert into object (type_val,data) values (?,?)',
                 [g.CODE_CLASS.OBJECT_TYPE.POLYGON, json], True)
         return polygon_id
+
+
+class Connection_db(Database):
+
+    def __init__(self):
+        self.stub = "this is pointless"
+
+
+    def connect_devices(
+            self, 
+            device_a_id, 
+            target_point_id,
+            type_val, 
+            active,
+            device_b_id=None, 
+            bandwidth=None):
+
+        type_val = g.CODE_CLASS.CONNECTION_TYPE.get_id_val(type_val)
+
+        connection_id = self.insert_db(
+                queries.connect_devices,
+                [
+                    type_val,
+                    device_a_id,
+                    device_b_id,
+                    target_point_id,
+                    active,
+                    bandwidth
+                ],
+                True)
+        return connection_id
+                    
+    def inactivate_connection(self,id):
+        return self.insert_db(queries.inactivate_connection,[id],True)
+
+    def activate_connection(self,id):
+        return self.insert_db(queries.activate_connection,[id],True)
+
+    def get_device_connections(self,device_id):
+        raw_output = self.query_db(
+                queries.get_device_connections,
+                [device_id],
+                one=False)
+        for device in raw_output:
+            device['type_val'] = g.CODE_CLASS.FUNC.get_name_val(device['type_val'])
+
+        return raw_output
+    
 
 
 class Device_db(Database):

@@ -18,7 +18,7 @@ left outer join object as o on o.id_obj = n.geometry_obj \
 where n.phase_type_val in(?,?,?)'
 
 get_devices_for_network_json = \
-'select p.lat, p.lon, d.name \
+'select p.lat, p.lon, d.name, d.id \
 from device d \
 inner join relation n_d on d.id = n_d.b_id \
 and n_d.a_id = ? \
@@ -101,3 +101,25 @@ add_device = \
 (name, type_val, point_id, azimuth, elevation, \
 polarization_type_val, status_type_val) \
 values(?,?,?,?,?,?,?)'
+
+connect_devices = \
+'insert into connection \
+(type_val, device_a_id, device_b_id, \
+target_point_id, active, bandwidth) \
+values (?,?,?,?,?,?)'
+
+inactivate_connection = \
+'update connection \
+set active = 0 \
+where id = ?'
+
+activate_connection = \
+'update connection \
+set active = 1 \
+where id = ?'
+
+get_device_connections = \
+'select * from \
+connection c \
+left outer join point p on p.id = c.target_point_id \
+where c.device_a_id = ?'

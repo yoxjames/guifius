@@ -72,9 +72,26 @@ drop table if exists type_val;
 create table type_val (
 	id_val integer primary key autoincrement,
 	name string not null,
+	description string,
 	obj int,
 	class int not null,
 
 	foreign key(obj) REFERENCES object(id_obj)
 );
+
+drop table if exists connection;
+create table connection (
+	id integer primary key autoincrement,
+	type_val int not null,
+	device_a_id int not null,
+	device_b_id int,
+	target_point_id int not null,
+	active int not null,
+	bandwidth int,
+
+	foreign key(device_a_id) REFERENCES device(id),
+	foreign key(device_b_id) REFERENCES device(id)
+);
+
+
 
