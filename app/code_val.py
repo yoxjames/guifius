@@ -101,6 +101,18 @@ class OBJECT_TYPE(CODE_DB):
     def get_class(self):
         return super(OBJECT_TYPE, self).get_class(self.CLASS)
 
+class CONNECTION_TYPE(CODE_DB):
+    def __init__(self):
+        self.CLASS = 7
+
+        self.UNKNOWN = self.get_id_val("UNKNOWN")
+
+    def get_id_val(self,name):
+        return super(CONNECTION_TYPE,self).get_id_val(self.CLASS,name)
+
+    def get_ckass(self):
+        return super(CONNECTION_TYPE,self).get_class(self.CLASS)
+
 
 
 class CODE_CLASS:
@@ -111,6 +123,7 @@ class CODE_CLASS:
         self.OBJECT_TYPE = OBJECT_TYPE()
         self.NODE_TYPE = NODE_TYPE()
         self.POLARIZATION_TYPE = POLARIZATION_TYPE()
+        self.CONNECTION_TYPE = CONNECTION_TYPE()
 
         self.FUNC = CODE_DB()
 

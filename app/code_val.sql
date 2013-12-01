@@ -19,3 +19,5 @@ insert into type_val (name,class) values ("VERTICAL",5);
 insert into type_val (name,class) values ("UNKNOWN",5);
 
 insert into type_val (name,class) values ("UNKNOWN",6);
+
+insert into type_val (name,class) values ("UNKNOWN",7);

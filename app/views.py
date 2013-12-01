@@ -34,6 +34,68 @@ device_db = Device_db()
 point_db = Point_db()
 user_db = User_db()
 polygon_db = Polygon_db()
+connection_db = Connection_db()
+
+
+'''
+'  BEGIN HELPER METHODS
+'''
+
+def sync():
+    online_networks=map_db.get_default_json()
+    
+    # Create JSON Template:
+    map_data = \
+    {
+        'online_networks' : [],
+        'in_progress_networks' : [],
+        'planning_networks' : [],
+        'fun_networks' : []
+    }
+
+
+    # Populate Template:
+    
+
+    for network in online_networks:
+        device_list = []
+
+        device_query = map_db.get_devices_json(network['id'])
+        
+        for device in device_query:
+            connection_list = []
+            connection_list = connection_db.get_device_connections(device['id'])
+            device_list.append \
+            (
+                    {
+                        'device': 
+                        {
+                            'lat': device['lat'],
+                            'lon': device['lon'],
+                            'name': device['name'],
+                            'id': device['id']
+                        },
+                        'connections': connection_list
+                    }
+            )
+
+
+
+        map_data['online_networks'].append \
+        (
+                { 
+                    'id': network['id'],
+                    'name': network['name'],
+                    'data': network['data'],
+                    'type_val': "ONLINE",
+                    'devices' : device_list
+                }
+        )
+
+    return json.dumps(map_data)
+
+
+
 
 
 ''' 
@@ -157,6 +219,32 @@ def get_device_info():
         return json.dumps(device_db.get_device(request.json['device_id']))
 
 
+@app.route('/ajax/connect_devices', methods=['POST'])
+def connect_devices():
+    if request.method == 'POST':
+        target_point_id = device_db.get_point_id(request.json['device_b_id'])
+
+        return json.dumps(connection_db.connect_devices(
+                request.json['device_a_id'],
+                target_point_id,
+                request.json['type_val'],
+                request.json['active'],
+                request.json['device_b_id'],
+                request.json['bandwidth']))
+
+@app.route('/ajax/inactivate_connection', methods=['POST'])
+def inactivate_connection():
+    if request.method == 'POST':
+        return connection_db.inactivate(
+                request.json['id'])
+
+@app.route('/ajax/activate_connection', methods=['POST'])
+def activate_connection():
+    if request.method == 'POST':
+        return connection_db.activate(
+                request.json['id'])
+
+
 ''' 
 '  END AJAX LISTENERS 
 '''
@@ -180,31 +268,16 @@ def load_user(id):
 @app.route('/')
 def explore():
     curUser = ""
-    
-    overlay_data=map_db.get_default_json()
-    overlay_data_str=json.dumps(overlay_data)
-
-    overlay_device = []
-
-    
-    for network in overlay_data:
-        overlay_device.append(map_db.get_devices_json(network['id']))
-
-    overlay_device_str = json.dumps(overlay_device)
+    map_data = sync()
 
     if current_user.is_authenticated():
         current_username = user_db.get_username(current_user.get_id())
     else:
         current_username = "not logged in"
-
-    
-    #nodes = data.query_db("select * from point",[]) comment: fix
-    nodes = []
     
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
-            overlay_data=overlay_data_str, \
-            overlay_device=overlay_device_str, \
+            map_data=map_data, \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -215,20 +288,9 @@ def build():
     else:
         # NOT MEANT FOR PRODUCTION
         current_username = "not logged in"
-    overlay_data=map_db.get_default_json()
-    overlay_data_str=json.dumps(overlay_data)
+
+    map_data = sync()
     
-    overlay_device = []
-
-    for network in overlay_data:
-        overlay_device.append(map_db.get_devices_json(network['id']))
-
-    overlay_device_str = json.dumps(overlay_device)
-
-
-    ## BUILD CODE CLASS MENUS
-    # GRAB ALL NETWORK TYPES
-
     net_types=json.dumps(g.CODE_CLASS.NET_TYPE.get_class())
     net_phase_types=json.dumps(g.CODE_CLASS.NET_PHASE_TYPE.get_class())
     node_types=json.dumps(g.CODE_CLASS.NODE_TYPE.get_class())
@@ -238,10 +300,9 @@ def build():
     
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
-            overlay_data=overlay_data_str, \
-            overlay_device=overlay_device_str, \
             net_types=net_types, \
             net_phase_types=net_phase_types, \
+            map_data = map_data, \
             polarization_types=polarization_types, \
             node_types=node_types, \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
