@@ -317,10 +317,9 @@ $(document).ready(function()
     a_device = current_device;
   });
   
+  code_cache = {{ code_cache |safe }};
+  console.log(JSON.stringify(code_cache));
 
-  my_net_types = {{ net_types | safe }};
-  my_phase_types = {{ net_phase_types | safe }};
-  my_polarization_types = {{ polarization_types | safe }};
 
   cnt = {{ networks|safe }}
   for (n in cnt)
@@ -382,12 +381,12 @@ $(document).ready(function()
     $("#network-name").val(curNet['name']);
 
     $("#network-type").append("<option id='network-current-type'>"+curNet['type_val']+"</option>");
-    $.each(my_net_types, function(data,value)
+    $.each(code_cache['NET_TYPE'], function(value,desc)
     {
       //console.log(value);
-      if (value['name'] != $("#network-current-type").val())
+      if (value != $("#network-current-type").val())
         $("#network-type").append(
-		"<option id='"+value['name']+"'>"+value['name']+"</option>");
+		"<option id='"+value+"'>"+value+"</option>");
     });
 
 
@@ -399,12 +398,12 @@ $(document).ready(function()
     cur_net_phase_type = $("#cur-net-phase-type").val();
     phase_type_val = cur_net_phase_type;
 
-    $.each(my_phase_types, function(data,value)
+    $.each(code_cache['NET_PHASE_TYPE'], function(value,desc)
     {
       //console.log(value);
-      if (value['name'] != $("#cur-net-phase-type").val())
+      if (value != $("#cur-net-phase-type").val())
         $("#network-phase-type").append(
-		"<option id='"+value['name']+"'>"+value['name']+"</option>");
+		"<option id='"+value+"'>"+value+"</option>");
     });
 
 
@@ -479,7 +478,7 @@ $(document).ready(function()
   {
     current_device = parseInt($(this).attr('id'));
 
-    my_node_types = {{ node_types | safe }};
+    my_node_types = code_cache['NODE_TYPE']
     
     $("#node-type").empty();
     $("#node-type").append(
@@ -523,19 +522,18 @@ $(document).ready(function()
 	$("#azimuth-input").val(data['azimuth']);
 	$("#elevation-input").val(data['elevation']);
 
-        $.each(my_node_types, function(data,value)
+        $.each(my_node_types, function(meaning,desc)
         {
-          if (value['name'] != $("#node-current-type").val())
+          if (meaning != $("#node-current-type").val())
           $("#node-type").append(
-		"<option>"+value['name']+"</option>");
+		"<option>"+meaning+"</option>");
         });
 
-        $.each(my_polarization_types, function(data,value)
+        $.each(code_cache['POLARIZATION_TYPE'], function(meaning,desc)
         {
-          //console.log(value);
-          if (value['name'] != $("#current-polarization-type").val())
+          if (meaning != $("#current-polarization-type").val())
           $("#polarization-type").append(
-		"<option>"+value['name']+"</option>");
+		"<option>"+meaning+"</option>");
         });
 
 

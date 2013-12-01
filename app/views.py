@@ -145,7 +145,7 @@ def add_polygon():
                 request.json['network_id']
                 , polygon_id)
 
-        return "SUCCESS"
+        return json.dumps("SUCCESS")
     return ""
 
 @app.route('/ajax/add_device', methods=['POST'])
@@ -278,6 +278,7 @@ def explore():
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
             map_data=map_data, \
+            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -291,20 +292,10 @@ def build():
 
     map_data = sync()
     
-    net_types=json.dumps(g.CODE_CLASS.NET_TYPE.get_class())
-    net_phase_types=json.dumps(g.CODE_CLASS.NET_PHASE_TYPE.get_class())
-    node_types=json.dumps(g.CODE_CLASS.NODE_TYPE.get_class())
-    polarization_types=json.dumps(g.CODE_CLASS.POLARIZATION_TYPE.get_class())
-
-
-    
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
-            net_types=net_types, \
-            net_phase_types=net_phase_types, \
             map_data = map_data, \
-            polarization_types=polarization_types, \
-            node_types=node_types, \
+            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 
