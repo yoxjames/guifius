@@ -72,6 +72,7 @@ drop table if exists type_val;
 create table type_val (
 	id_val integer primary key autoincrement,
 	name string not null,
+	description string,
 	obj int,
 	class int not null,
 

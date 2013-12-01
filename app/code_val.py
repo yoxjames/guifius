@@ -22,10 +22,10 @@ class CODE_DB(Database):
     def query_class_client(self, class_val):
         resultant = {}
             
-        results = self.query_db('select name from type_val where class = ?',
+        results = self.query_db('select name,description from type_val where class = ?',
                 [class_val], one=False)
         for r in results:
-            resultant[r['name']] = 'desc' #Placeholder for query
+            resultant[r['name']] = r['description'] #Placeholder for query
 
         return resultant
 
@@ -168,11 +168,6 @@ class CONNECTION_TYPE(CODE_DB):
 
     def cache_class(self):
         return super(CONNECTION_TYPE, self).cache_class(self.CLASS,self.NAME)
-
-
-                
-
-
 
 class CODE_CLASS:
     def __init__(self):
