@@ -1,11 +1,18 @@
 from db import Database
 
 class CODE_DB(Database):
+
+    ## DEPRICATED
+    # There should be no reason to use this function
+    # when the cache can be used.
     def get_id_val(self, class_val, name):
         raw =  self.query_db('select * from type_val where class = ? and name = ?',
                   [class_val,name],one=True)
         return raw['id_val']
 
+    ## DEPRICATED
+    # There should be no reason to use this function
+    # when the cache can be used.
     def get_name_val(self, id_val):
         raw = self.query_db('select * from type_val where id_val = ?',
                 [id_val],one=True)
@@ -25,9 +32,19 @@ class CODE_DB(Database):
         results = self.query_db('select name,description from type_val where class = ?',
                 [class_val], one=False)
         for r in results:
-            resultant[r['name']] = r['description'] #Placeholder for query
+            resultant[r['name']] = r['description'] 
 
         return resultant
+
+    def cache_vals(self):
+        vals = []
+        results = self.query_db('select id_val,name from type_val order by id_val',[],one=False)
+
+        for r in results:
+            vals.append(r['name'])
+
+        return vals
+            
 
 
 
@@ -47,11 +64,6 @@ class NET_TYPE(CODE_DB):
         self.CLASS = 4
         self.NAME = "NET_TYPE"
 
-        self.FREE = self.get_id_val("FREE")
-        self.CORPORATE = self.get_id_val("CORPORATE")
-        self.UNKNOWN = self.get_id_val("UNKNOWN")
-
-
     def get_id_val(self,name):
         return super(NET_TYPE, self).get_id_val(self.CLASS, name)
 
@@ -68,11 +80,6 @@ class NET_PHASE_TYPE(CODE_DB):
         self.CLASS = 1
         self.NAME = "NET_PHASE_TYPE"
 
-        self.FUN = self.get_id_val("FUN")
-        self.PLANNED = self.get_id_val("PLANNED")
-        self.IN_PROGRESS = self.get_id_val("IN_PROGRESS")
-        self.ONLINE = self.get_id_val("ONLINE")
-
     def get_id_val(self,name):
         return super(NET_PHASE_TYPE,self).get_id_val(self.CLASS,name)
 
@@ -86,10 +93,6 @@ class POLARIZATION_TYPE(CODE_DB):
     def __init__(self):
         self.CLASS = 5
         self.NAME = "POLARIZATION_TYPE"
-
-        self.HORIZONTAL = self.get_id_val("HORIZONTAL")
-        self.VERTICAL = self.get_id_val("VERTICAL")
-        self.UNKNOWN = self.get_id_val("UNKNOWN")
 
     def get_id_val(self,name):
         return super(POLARIZATION_TYPE,self).get_id_val(self.CLASS,name)
@@ -105,8 +108,6 @@ class NODE_TYPE(CODE_DB):
         self.CLASS = 6
         self.NAME = "NODE_TYPE"
 
-        self.UNKNOWN = self.get_id_val("UNKNOWN")
-
     def get_id_val(self,name):
         return super(NODE_TYPE,self).get_id_val(self.CLASS,name)
 
@@ -121,9 +122,6 @@ class RELATION(CODE_DB):
     def __init__(self):
         self.CLASS = 2
         self.NAME = "RELATION"
-
-        self.A_NETWORK_B_PERSON = self.get_id_val("A_NETWORK_B_PERSON")
-        self.A_NETWORK_B_DEVICE = self.get_id_val("A_NETWORK_B_DEVICE")
 
     def get_id_val(self,name):
         return super(RELATION,self).get_id_val(self.CLASS,name)
@@ -141,8 +139,6 @@ class OBJECT_TYPE(CODE_DB):
         self.CLASS = 3
         self.NAME = "OBJECT_TYPE"
 
-        self.POLYGON = self.get_id_val("POLYGON")
-
     def get_id_val(self,name):
         return super(OBJECT_TYPE,self).get_id_val(self.CLASS,name)
 
@@ -157,8 +153,6 @@ class CONNECTION_TYPE(CODE_DB):
     def __init__(self):
         self.CLASS = 7
         self.NAME = "CONNECTION_TYPE"
-
-        self.UNKNOWN = self.get_id_val("UNKNOWN")
 
     def get_id_val(self,name):
         return super(CONNECTION_TYPE,self).get_id_val(self.CLASS,name)
@@ -179,10 +173,19 @@ class CODE_CLASS:
         self.POLARIZATION_TYPE = POLARIZATION_TYPE()
         self.CONNECTION_TYPE = CONNECTION_TYPE()
 
-        self.INTERNAL_CACHE = self.recache_all()
-        self.EXTERNAL_CACHE = self.recache_all_client()
+        self.I = self.recache_all()
+        self.E = self.recache_all_client()
 
         self.FUNC = CODE_DB()
+
+
+        self.VAL = self.cache_vals()
+
+    def get_id_val(self, class_name, value):
+        return self.I[class_name][value]
+
+    def get_name_val(self, id_val):
+        return self.VAL[id_val]
 
 
     def recache_all_client(self):
@@ -208,3 +211,7 @@ class CODE_CLASS:
             self.POLARIZATION_TYPE.NAME : self.POLARIZATION_TYPE.cache_class(),
             self.CONNECTION_TYPE.NAME : self.CONNECTION_TYPE.cache_class()
         }
+
+    def cache_vals(self):
+        return self.FUNC.cache_vals()
+

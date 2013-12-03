@@ -278,7 +278,7 @@ def explore():
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
             map_data=map_data, \
-            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
+            code_cache=json.dumps(g.CODE_CLASS.E), \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -295,7 +295,7 @@ def build():
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             map_data = map_data, \
-            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
+            code_cache=json.dumps(g.CODE_CLASS.E), \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 

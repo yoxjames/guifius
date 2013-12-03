@@ -59,16 +59,18 @@ class Map_db(Database):
         return self.query_db(
                 queries.get_networks_main, 
                 [
-                    g.CODE_CLASS.NET_PHASE_TYPE.PLANNED,
-                    g.CODE_CLASS.NET_PHASE_TYPE.IN_PROGRESS,
-                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE])
+                    g.CODE_CLASS.I['NET_PHASE_TYPE']['PLANNED'],
+                    g.CODE_CLASS.I['NET_PHASE_TYPE']['IN_PROGRESS'],
+                    g.CODE_CLASS.I['NET_PHASE_TYPE']['ONLINE']
+                ])
 
     def get_devices_json(self, network_id):
         return self.query_db(queries.get_devices_for_network_json, 
                 [
                     network_id,
-                    g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE,
-                    g.CODE_CLASS.NET_PHASE_TYPE.ONLINE],
+                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE'],
+                    g.CODE_CLASS.I['NET_PHASE_TYPE']['ONLINE']
+                ],
                 one=False)
 
 class Network_db(Database):
@@ -95,7 +97,7 @@ class Network_db(Database):
         # SQL
         network_id = \
         self.insert_db(queries.insert_network,[name, type_val, phase_type_val], True)
-        reltn_type_val = g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON
+        reltn_type_val = g.CODE_CLASS.I['RELATION']['A_NETWORK_B_PERSON']
         self.add_reltn(network_id, owner_id, reltn_type_val)
         return network_id
 
@@ -110,7 +112,7 @@ class Network_db(Database):
 
     def get_devices(self, id):
         devices = self.query_db(queries.get_devices,
-                [id, g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE])
+                [id, g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE']])
         return devices
 
     def get_network_polygon(self, id):
@@ -127,7 +129,7 @@ class Polygon_db(Database):
     def add_polygon(self, json):
         polygon_id = \
         self.insert_db('insert into object (type_val,data) values (?,?)',
-                [g.CODE_CLASS.OBJECT_TYPE.POLYGON, json], True)
+                [g.CODE_CLASS.I['OBJECT_TYPE']['POLYGON'], json], True)
         return polygon_id
 
 
@@ -226,7 +228,7 @@ class Device_db(Database):
         self.add_reltn(
                 network_id, 
                 device_id, 
-                g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE);
+                g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE']);
 
 
 
@@ -249,7 +251,7 @@ class Device_db(Database):
     def get_devices_for_network(self, network_id):
         return self.query_db(queries.get_devices_for_network, 
                 [
-                    g.CODE_CLASS.RELATION.A_NETWORK_B_DEVICE, 
+                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE'], 
                     network_id
                 ],
                 one=False)
@@ -478,7 +480,7 @@ class User_db(Database):
                 queries.get_my_networks, 
                 [
                     id,
-                    g.CODE_CLASS.RELATION.A_NETWORK_B_PERSON], 
+                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_PERSON']], 
                 one=False)
 
         for n in networks:
