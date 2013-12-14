@@ -42,7 +42,7 @@ connection_db = Connection_db()
 '''
 
 def sync():
-    networks=map_db.get_default_json()
+    online_networks=map_db.get_default_json()
     
     # Create JSON Template:
     map_data = \
@@ -57,12 +57,12 @@ def sync():
     # Populate Template:
     
 
-    for network in networks:
+    for network in online_networks:
         device_list = []
 
-        devices = map_db.get_devices_json(network['id'])
+        device_query = map_db.get_devices_json(network['id'])
         
-        for device in devices:
+        for device in device_query:
             connection_list = []
             connection_list = connection_db.get_device_connections(device['id'])
             device_list.append \
@@ -118,8 +118,7 @@ def add_network():
             request.json['name'],
             request.json['type_val'],
             request.json['phase_type_val'],
-            current_user.get_id() or 0),
-	session["current_net"] = request.json["name"]
+            current_user.get_id() or 0)
         return str(network_id);
     else:
         return ""
@@ -279,6 +278,7 @@ def explore():
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
             map_data=map_data, \
+            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -291,12 +291,11 @@ def build():
         current_username = "not logged in"
 
     map_data = sync()
- 
+    
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
-            map_data = map_data,
-	    current_network = session["current_net"],
-            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE),
+            map_data = map_data, \
+            code_cache=json.dumps(g.CODE_CLASS.EXTERNAL_CACHE), \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 
