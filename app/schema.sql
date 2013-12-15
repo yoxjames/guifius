@@ -74,7 +74,7 @@ create table type_val (
 	name string not null,
 	description string,
 	obj int,
-	class int not null,
+	class_name string not null,
 
 	foreign key(obj) REFERENCES object(id_obj)
 );

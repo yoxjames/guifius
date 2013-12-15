@@ -5,7 +5,11 @@ from code_val import * #Probably should make this a list? idk....
 from db import Database
 from flaskext.bcrypt import Bcrypt
 from app import app
-from flask import g
+
+import obj
+
+from werkzeug.contrib.cache import SimpleCache
+
 
 bcrypt = Bcrypt(app)
 
@@ -59,17 +63,18 @@ class Map_db(Database):
         return self.query_db(
                 queries.get_networks_main, 
                 [
-                    g.CODE_CLASS.I['NET_PHASE_TYPE']['PLANNED'],
-                    g.CODE_CLASS.I['NET_PHASE_TYPE']['IN_PROGRESS'],
-                    g.CODE_CLASS.I['NET_PHASE_TYPE']['ONLINE']
+                    obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE']['PLANNED'],
+                    obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE']['IN_PROGRESS'],
+                    obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE']['ONLINE']
                 ])
 
     def get_devices_json(self, network_id):
         return self.query_db(queries.get_devices_for_network_json, 
                 [
                     network_id,
-                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE'],
-                    g.CODE_CLASS.I['NET_PHASE_TYPE']['ONLINE']
+                    obj.cache.get('CODE_CLASS').I['RELATION']['A_NETWORK_B_DEVICE'],
+                    obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE']['ONLINE']
+                    
                 ],
                 one=False)
 
@@ -91,20 +96,20 @@ class Network_db(Database):
     def add_network(self, name, type_val, phase_type_val, owner_id):
 
         # Parse TYPES
-        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
-        phase_type_val= g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+        type_val = obj.cache.get('CODE_CLASS').I['NET_TYPE'][type_val]
+        phase_type_val = obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE'][phase_type_val]
 
         # SQL
         network_id = \
         self.insert_db(queries.insert_network,[name, type_val, phase_type_val], True)
-        reltn_type_val = g.CODE_CLASS.I['RELATION']['A_NETWORK_B_PERSON']
+        reltn_type_val = obj.cache.get('CODE_CLASS').I['RELATION']['A_NETWORK_B_PERSON']
         self.add_reltn(network_id, owner_id, reltn_type_val)
         return network_id
 
     def update_network(self, network_id, name, type_val, phase_type_val):
         # Parse TYPE VALS
-        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
-        phase_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(phase_type_val)
+        type_val = obj.cache.get('CODE_CLASS').I['NET_TYPE'][type_val]
+        phase_type_val = obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE'][phase_type_val]
 
         # Run SQL
         self.insert_db(queries.update_network, 
@@ -112,7 +117,7 @@ class Network_db(Database):
 
     def get_devices(self, id):
         devices = self.query_db(queries.get_devices,
-                [id, g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE']])
+                [id, obj.cache.get['CODE_CLASS'].I['RELATION']['A_NETWORK_B_DEVICE']])
         return devices
 
     def get_network_polygon(self, id):
@@ -129,7 +134,7 @@ class Polygon_db(Database):
     def add_polygon(self, json):
         polygon_id = \
         self.insert_db('insert into object (type_val,data) values (?,?)',
-                [g.CODE_CLASS.I['OBJECT_TYPE']['POLYGON'], json], True)
+                [obj.cache.get('CODE_CLASS').I['OBJECT']['POLYGON'], json], True)
         return polygon_id
 
 
@@ -148,7 +153,7 @@ class Connection_db(Database):
             device_b_id=None, 
             bandwidth=None):
 
-        type_val = g.CODE_CLASS.CONNECTION_TYPE.get_id_val(type_val)
+        type_val = obj.cache.get('CODE_CLASS').I['CONNECTION_TYPE'][type_val]
 
         connection_id = self.insert_db(
                 queries.connect_devices,
@@ -175,7 +180,7 @@ class Connection_db(Database):
                 [device_id],
                 one=False)
         for device in raw_output:
-            device['type_val'] = g.CODE_CLASS.FUNC.get_name_val(device['type_val'])
+            device['type_val'] = obj.cache.get('CODE_CLASS').VAL[device['type_val']]
 
         return raw_output
     
@@ -208,9 +213,9 @@ class Device_db(Database):
 
         # Parse Code Types
 
-        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
-        status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
-        polarization_type_val = g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
+        type_val = obj.cache.get('CODE_CLASS').I['NET_TYPE'][type_val]
+        status_type_val = obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE'][status_type_val]
+        polarization_type_val = obj.cache.get('CODE_CLASS').I['POLARIZATION_TYPE'][polarization_type_val]
 
         device_id = \
                 self.insert_db(
@@ -228,7 +233,7 @@ class Device_db(Database):
         self.add_reltn(
                 network_id, 
                 device_id, 
-                g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE']);
+                obj.cache.get('CODE_CLASS').I['RELATION']['A_NETWORK_B_DEVICE']);
 
 
 
@@ -251,7 +256,7 @@ class Device_db(Database):
     def get_devices_for_network(self, network_id):
         return self.query_db(queries.get_devices_for_network, 
                 [
-                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_DEVICE'], 
+                    obj.cache.get('CODE_CLASS').I['RELATION']['A_NETWORK_B_DEVICE'], 
                     network_id
                 ],
                 one=False)
@@ -273,9 +278,9 @@ class Device_db(Database):
 
     def get_device(self, id):
         device =  self.query_db(queries.get_device, [id], one=True)
-        device['type_val'] = g.CODE_CLASS.FUNC.get_name_val(device['type_val'])
+        device['type_val'] = obj.cache.get('CODE_CLASS').VAL[device['type_val']]
         device['polarization_type_val'] = \
-            g.CODE_CLASS.FUNC.get_name_val(device['polarization_type_val'])
+            obj.cache.get('CODE_CLASS').VAL[device['polarization_type_val']]
         # FIX: PHASE TYPE VAL NEEDED HERE!
 
         return device
@@ -294,10 +299,10 @@ class Device_db(Database):
             elevation=None):
 
         # Parse type vals
-        type_val = g.CODE_CLASS.NET_TYPE.get_id_val(type_val)
+        type_val = obj.cache.get('CODE_CLASS').I['NET_TYPE'][type_val]
         polarization_type_val = \
-            g.CODE_CLASS.POLARIZATION_TYPE.get_id_val(polarization_type_val)
-        status_type_val = g.CODE_CLASS.NET_PHASE_TYPE.get_id_val(status_type_val)
+            obj.cache.get('CODE_CLASS').I['POLARIZATION_TYPE'][polarization_type_val]
+        status_type_val = obj.cache.get('CODE_CLASS').I['NET_PHASE_TYPE'][status_type_val]
         
 
         # Perform SQL
@@ -479,13 +484,16 @@ class User_db(Database):
         networks = self.query_db(
                 queries.get_my_networks, 
                 [
-                    id,
-                    g.CODE_CLASS.I['RELATION']['A_NETWORK_B_PERSON']], 
+                    obj.cache.get('CODE_CLASS').I['RELATION']['A_NETWORK_B_PERSON'],
+                    id]
+                , 
                 one=False)
 
         for n in networks:
-            n['phase_type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['phase_type_val'])
-            n['type_val'] = g.CODE_CLASS.FUNC.get_name_val(n['type_val'])
+            n['phase_type_val'] = obj.cache.get('CODE_CLASS').VAL[n['phase_type_val']]
+            n['type_val'] = obj.cache.get('CODE_CLASS').VAL[n['type_val']]
+
+        print networks
         return networks
 
 

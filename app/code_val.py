@@ -1,7 +1,5 @@
 from db import Database
-
 class CODE_DB(Database):
-
     ## DEPRICATED
     # There should be no reason to use this function
     # when the cache can be used.
@@ -58,7 +56,7 @@ class CODE_DB(Database):
         }
         
         
-
+'''
 class NET_TYPE(CODE_DB):
     def __init__(self):
         self.CLASS = 4
@@ -162,24 +160,97 @@ class CONNECTION_TYPE(CODE_DB):
 
     def cache_class(self):
         return super(CONNECTION_TYPE, self).cache_class(self.CLASS,self.NAME)
+'''
+class CODE_DB(Database):
 
-class CODE_CLASS:
+    ## DEPRICATED
+    # There should be no reason to use this function
+    # when the cache can be used.
+    def get_id_val(self, class_name, name):
+        raw =  self.query_db('select * from type_val where class = ? and name = ?',
+                  [class_name,name],one=True)
+        return raw['id_val']
+
+    ## DEPRICATED
+    # There should be no reason to use this function
+    # when the cache can be used.
+    def get_name_val(self, id_val):
+        raw = self.query_db('select * from type_val where id_val = ?',
+                [id_val],one=True)
+        return raw['name']
+
+    def query_class_full(self):
+        resultant = {}
+        results = self.query_db('select distinct class_name from type_val',[],one=False)
+        
+        for r in results:
+            resultant[r['class_name']] = self.query_class_full_r(r['class_name'])
+        return resultant
+    
+    def query_class_full_r(self, class_name):
+        resultant = {}
+        results = self.query_db('select name,id_val from type_val where class_name = ?',
+                [class_name], one=False)
+        for r in results:
+            resultant[r['name']] = r['id_val']
+        return resultant
+    
+    def query_class_client(self):
+        resultant = {}
+        results = self.query_db(
+                'select distinct class_name from type_val',
+                [],
+                one=False)
+        for r in results:
+            resultant[r['class_name']] = self.query_class_client_r(r['class_name'])
+
+        return resultant
+
+    def query_class_client_r(self, class_name):
+        resultant = {}
+            
+        results = self.query_db('select name,description from type_val where class_name = ?',
+                [class_name], one=False)
+        for r in results:
+            resultant[r['name']] = r['description'] 
+
+        return resultant
+
+    def cache_vals(self):
+        vals = {}
+        results = self.query_db('select id_val,name from type_val order by id_val',[],one=False)
+
+        for r in results:
+            vals[r['id_val']] = r['name']
+
+        return vals
+            
+
+
+
+    def cache_class(self, class_val, name):
+        return self.query_class_full(class_val)
+
+    def cache_class_client(self, class_val, name):
+        return \
+        {
+            name : self.query_class_client(class_val)
+        }
+        
+        
+
+
+class CODE_CLASS(CODE_DB):
+
     def __init__(self):
-        self.NET_PHASE_TYPE = NET_PHASE_TYPE()
-        self.NET_TYPE = NET_TYPE()
-        self.RELATION = RELATION()
-        self.OBJECT_TYPE = OBJECT_TYPE()
-        self.NODE_TYPE = NODE_TYPE()
-        self.POLARIZATION_TYPE = POLARIZATION_TYPE()
-        self.CONNECTION_TYPE = CONNECTION_TYPE()
 
-        self.I = self.recache_all()
-        self.E = self.recache_all_client()
+        print "Initting"
 
-        self.FUNC = CODE_DB()
-
-
+        self.I = self.query_class_full()
+        self.E = self.query_class_client()
         self.VAL = self.cache_vals()
+
+        print self.query_class_full()
 
     def get_id_val(self, class_name, value):
         return self.I[class_name][value]
@@ -188,30 +259,5 @@ class CODE_CLASS:
         return self.VAL[id_val]
 
 
-    def recache_all_client(self):
-        return \
-        {
-            self.NET_PHASE_TYPE.NAME : self.NET_PHASE_TYPE.query_class(),
-            self.NET_TYPE.NAME : self.NET_TYPE.query_class(),
-            self.RELATION.NAME : self.RELATION.query_class(),
-            self.OBJECT_TYPE.NAME : self.OBJECT_TYPE.query_class(),
-            self.NODE_TYPE.NAME : self.NODE_TYPE.query_class(),
-            self.POLARIZATION_TYPE.NAME : self.POLARIZATION_TYPE.query_class(),
-            self.CONNECTION_TYPE.NAME : self.CONNECTION_TYPE.query_class()
-        }
 
-    def recache_all(self):
-        return \
-        {
-            self.NET_PHASE_TYPE.NAME : self.NET_PHASE_TYPE.cache_class(),
-            self.NET_TYPE.NAME : self.NET_TYPE.cache_class(),
-            self.RELATION.NAME : self.RELATION.cache_class(),
-            self.OBJECT_TYPE.NAME : self.OBJECT_TYPE.cache_class(),
-            self.NODE_TYPE.NAME : self.NODE_TYPE.cache_class(),
-            self.POLARIZATION_TYPE.NAME : self.POLARIZATION_TYPE.cache_class(),
-            self.CONNECTION_TYPE.NAME : self.CONNECTION_TYPE.cache_class()
-        }
-
-    def cache_vals(self):
-        return self.FUNC.cache_vals()
 

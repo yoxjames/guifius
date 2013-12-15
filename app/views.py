@@ -12,11 +12,13 @@ from app import app
 from models import *
 from flaskext.babel import Babel
 
+import obj
+
+from werkzeug.contrib.cache import SimpleCache
+
 ''' INITIALIZE ALL OBJECTS '''
 # Global
-@app.before_request
-def before_request():
-    g.CODE_CLASS = CODE_CLASS()
+obj.cache.set('CODE_CLASS',CODE_CLASS(), timeout=None)
 
 # Local
 login_manager = LoginManager()
@@ -278,7 +280,7 @@ def explore():
     # Mode: 1 is for EXPLORE mode.
     return render_template('explore.html', \
             map_data=map_data, \
-            code_cache=json.dumps(g.CODE_CLASS.E), \
+            code_cache=json.dumps(obj.cache.get('CODE_CLASS').E), \
             current_username=current_username, mode=1)
 
 @app.route('/build', methods=['POST', 'GET'])
@@ -295,7 +297,7 @@ def build():
     # Mode: 2 is for BUILD mode.
     return render_template('explore.html', \
             map_data = map_data, \
-            code_cache=json.dumps(g.CODE_CLASS.E), \
+            code_cache=json.dumps(obj.cache.get('CODE_CLASS').E), \
             networks=json.dumps(user_db.get_my_networks(current_user.get_id())), \
             current_username=current_username, mode=2) 
 

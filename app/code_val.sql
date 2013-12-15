@@ -1,23 +1,23 @@
 delete from type_val where id_val > 0;
 
-insert into type_val (name,class,description) values ("FUN",1, "Just For Fun");
-insert into type_val (name,class,description) values ("PLANNED",1, "Planned");
-insert into type_val (name,class,description) values ("IN_PROGRESS",1, "Build In Progress");
-insert into type_val (name,class,description) values ("ONLINE",1, "Online");
+insert into type_val (name,class_name,description) values ("FUN","NET_PHASE_TYPE", "Just For Fun");
+insert into type_val (name,class_name,description) values ("PLANNED","NET_PHASE_TYPE", "Planned");
+insert into type_val (name,class_name,description) values ("IN_PROGRESS","NET_PHASE_TYPE", "Build In Progress");
+insert into type_val (name,class_name,description) values ("ONLINE","NET_PHASE_TYPE", "Online");
 
-insert into type_val (name,class,description) values ("A_NETWORK_B_PERSON",2,"");
-insert into type_val (name,class,description) values ("A_NETWORK_B_DEVICE",2,"");
+insert into type_val (name,class_name,description) values ("A_NETWORK_B_PERSON","RELATION","");
+insert into type_val (name,class_name,description) values ("A_NETWORK_B_DEVICE","RELATION","");
 
-insert into type_val (name,class,description) values ("POLYGON",3,"");
+insert into type_val (name,class_name,description) values ("POLYGON","OBJECT","");
 
-insert into type_val (name,class,description) values ("FREE",4,"NCL Compliant");
-insert into type_val (name,class,description) values ("CORPORATE", 4,"For Profit");
-insert into type_val (name,class,description) values ("UNKNOWN",4, "Unknown");
+insert into type_val (name,class_name,description) values ("FREE","NET_TYPE","NCL Compliant");
+insert into type_val (name,class_name,description) values ("CORPORATE", "NET_TYPE","For Profit");
+insert into type_val (name,class_name,description) values ("UNKNOWN","NET_TYPE", "Unknown");
 
-insert into type_val (name,class,description) values ("HORIZONTAL",5,"Horizontal");
-insert into type_val (name,class,description) values ("VERTICAL",5,"Vertical");
-insert into type_val (name,class,description) values ("UNKNOWN",5,"Unknown");
+insert into type_val (name,class_name,description) values ("HORIZONTAL","POLARIZATION_TYPE","Horizontal");
+insert into type_val (name,class_name,description) values ("VERTICAL","POLARIZATION_TYPE","Vertical");
+insert into type_val (name,class_name,description) values ("UNKNOWN","POLARIZATION_TYPE","Unknown");
 
-insert into type_val (name,class,description) values ("UNKNOWN",6,"Unknown");
+insert into type_val (name,class_name,description) values ("UNKNOWN","NODE_TYPE","Unknown");
 
-insert into type_val (name,class,description) values ("UNKNOWN",7,"Unknown");
+insert into type_val (name,class_name,description) values ("UNKNOWN","CONNECTION_TYPE","Unknown");
