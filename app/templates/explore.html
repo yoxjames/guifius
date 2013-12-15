@@ -317,9 +317,9 @@ $(document).ready(function()
     a_device = current_device;
   });
   
-  code_cache = {{ code_cache |safe }};
+  code_cache = {{ code_cache |safe }}; 
   console.log(JSON.stringify(code_cache));
-
+  console.log({{ current_network | safe}});
 
   cnt = {{ networks|safe }}
   for (n in cnt)
@@ -596,7 +596,7 @@ $(document).ready(function()
   <div id="map-container" class="olMap"></div>
 </div>
 
-<div id="toggle-rpanel-on" class="toggle-rpanel"></div>
+<div id="toggle-rpanel-on" class="toggle-rpanel"><img class=nav_toggle_label width=15px src="{{ url_for('static',filename='navigation_right.png')}}"></div>
 <div id="explore-rpanel" class="rpanel">
   <h2>Location</h2>
   <hr />
@@ -628,13 +628,13 @@ $(document).ready(function()
     <dt><input type="checkbox" id="conceptual-networks-overlay">Conceptual Networks</input></dt>
   </dl>
 </div>
-<div id="toggle-rpanel-off" class="toggle-rpanel"></div>
-<div id="toggle-lpanel-on" class="toggle-lpanel"></div>
+<div id="toggle-rpanel-off" class="toggle-rpanel"><img class=nav_toggle_label width=15px src="{{ url_for('static',filename='navigation_left.png')}}"></div>
+<div id="toggle-lpanel-on" class="toggle-lpanel"><img class=info_toggle_label width=15px src="{{ url_for('static',filename='info_right.png')}}"></div>
 <div id="explore-lpanel" class="lpanel">
   <h2 align=center>Info</h2>
   <hr />
 </div>
-<div id="toggle-lpanel-off" class="toggle-lpanel"></div>
+<div id="toggle-lpanel-off" class="toggle-lpanel"><img class=info_toggle_label width=15px src="{{ url_for('static',filename='info_left.png')}}"></div>
 
 {% if mode==2 %} 
   <!-- Render the bottom build panel -->
@@ -729,8 +729,8 @@ $(document).ready(function()
   </div>
 -->
 </div>
-<div id="toggle-bpanel-off" class="toggle-bpanel"></div>
-<div id="toggle-bpanel-on" class="toggle-bpanel"></div>
+<div id="toggle-bpanel-off" class="toggle-bpanel"><img class=tools_toggle_label height=15px src="{{ url_for('static',filename='tools_down.png')}}"></div>
+<div id="toggle-bpanel-on" class="toggle-bpanel"><img class=tools_toggle_label height=15px src="{{ url_for('static',filename='tools_up.png')}}"></div>
 
 
 <!-- Net network -->
