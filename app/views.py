@@ -18,9 +18,10 @@ from werkzeug.contrib.cache import SimpleCache
 
 ''' INITIALIZE ALL OBJECTS '''
 # Global
-@app.before_first_request
+@app.before_request
 def cache_code_class():
-    obj.cache.set('CODE_CLASS',CODE_CLASS(), timeout=None)
+    if obj.cache.get('CODE_CLASS') is None:
+    	obj.cache.set('CODE_CLASS',CODE_CLASS(), timeout=None)
 
 # Local
 login_manager = LoginManager()
