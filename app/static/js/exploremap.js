@@ -139,10 +139,12 @@ function init()
   }
             
   var firstGeolocation = true;
+  /*
   map.addControl(new OpenLayers.Control.LayerSwitcher(
   {
     'div':OpenLayers.Util.getElement('layerswitcher')
   }));
+  */
 
   var options = 
   {

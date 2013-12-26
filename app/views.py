@@ -22,6 +22,11 @@ from werkzeug.contrib.cache import SimpleCache
 def cache_code_class():
     obj.cache.set('CODE_CLASS',CODE_CLASS(), timeout=None)
 
+@app.before_request
+def check_cache():
+    if obj.cache.get('CODE_CLASS') is None:
+        obj.cache.set('CODE_CLASS', CODE_CLASS(), timeout=None)
+
 # Local
 login_manager = LoginManager()
 login_manager.anonymous_user = Anonymous
@@ -288,6 +293,7 @@ def explore():
 @app.route('/build', methods=['POST', 'GET'])
 def build():
     curUser= ""
+
     if current_user.is_authenticated():
         current_username = user_db.get_username(current_user.get_id())
     else:

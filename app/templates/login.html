@@ -1,5 +1,7 @@
-{% extends "map.html" %}
+{% extends "base.html" %}
 {% block body %}
+<center>
+<div style="display:block;top:100px;position:relative">
   <h2>Login</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('login') }}" method="post" name="login">
@@ -13,4 +15,6 @@
 	<p><input type="submit" value="Sign In"></p>
 	<p><a class="button" href="/register">Register</a></p>
     </form>
+</div>
+</center>
 {% endblock %}  

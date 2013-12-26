@@ -1,36 +1,74 @@
+<!doctype html>
+<html lang="us">
+<head>
+<meta charset="utf-8">
 <script 
-src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}">
+  src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}">
 </script>
+
+<link 
+  rel=stylesheet 
+  type=text/css 
+  href="{{ url_for('static', filename='style.css') }}">
+
+<script
+  src="{{ url_for('static', filename='js/jquery-ui-1.10.3.custom.min.js') }}">
+</script>
+
+<link
+  rel=stylesheet
+  type=text/css
+  href="{{ url_for('static', filename='css/jquery-ui-1.10.3.custom.min.css') }}">
+
 
 <script>
 
+function ajax_req(url, req, success)
+{
+  $.ajax(
+  {
+    type: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    url: url,
+    data: req,
+    success: success,
+    dataType: 'json'
+  });
+}
+
 $(document).ready(function()
 {
-  $(".nav_item").hover(
-    function()
-    {
-      $(this).css("background-color","#c18686");
-    } ,
-    function()
-    {
-      $(this).css("background-color","#efefef");
-    }
-  );
+  $(".nav_item").hover(function()
+  {
+  	$(this).css("background-color","#c18686");
+  } ,
+  function()
+  {
+    $(this).css("background-color","#efefef");
+  }
+);
+  
+  {% block listeners %}{% endblock %}
+
 });
 
 </script>
-
-<!doctype html>
 <title>guifi.us</title>
 
 {% block head %}
 {% endblock %}
+</head>
 
-<link 
-rel=stylesheet 
-type=text/css 
-href="{{ url_for('static', filename='style.css') }}"
->
+<body>
+<div id="user-bar">
+  {{ current_username }} | 
+  {% if current_user.is_authenticated() %}
+    <a href="{{ url_for('logout') }}">logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">login</a> or 
+    <a href="{{ url_for('register') }}">register</a>
+  {% endif %}
+</div>
 
 <div class=tnavwrapper>
   <div class=tnav>
@@ -97,45 +135,8 @@ href="{{ url_for('static', filename='style.css') }}"
   {% block body %}{% endblock %}
 </div>
 
+</body>
+</html>
 
-<!--
-
-Removed in favor of the new UI where the map covers the entire page.
-Originally this was the bottom portion of the page where contact/about
-stuff was. There are no plans to reincorporate this with the exception
-of maybe the Creative Commons logo.
-
-<div class=bnavwrapper>
- <div class=bnav>
-  <div class=bnav_col>
-    <ul class=bnav_list>
-     <li class=bnav_header>General information</li>
-     <ul class=bnav_list>
-      <li class=bnav_item> About us</li>
-     </ul>
-    </ul>
-  </div>
-  <div class=bnav_col>
-    <ul class=bnav_list>
-     <li class=bnav_header>Security and privacy</li>
-     <ul class=bnav_list>
-      <li class=bnav_item> Terms of use</li>
-     </ul>
-    </ul>
-  </div>
-  <div class=bnav_col>
-    <ul class=bnav_list>
-     <li class=bnav_header>Shipping and returns</li>
-     <ul class=bnav_list>
-      <li class=bnav_item> Shipping fees</li>
-     </ul>
-    </ul>
-  </div>
-<div class=bnav_col>
-  <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0; margin:0.5em"   src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a>
-</div>
- 
-</div>
--->
 
 
