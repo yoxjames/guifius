@@ -1,0 +1,83 @@
+{% macro tnav_js() %}
+
+<script>
+
+$(document).ready(function()
+{
+  $(".nav_item").hover(
+    function()
+    {
+      $(this).css("background-color","#c18686");
+    } ,
+    function()
+    {
+      $(this).css("background-color","#efefef");
+    }
+  );
+});
+
+</script>
+
+{% endmacro %}
+
+
+
+{% macro tnav_html() %}
+
+<div class=tnavwrapper>
+  <div class=tnav>
+    {% if not current_user.is_authenticated() %}
+      <a href="{{ url_for('login') }}">Log in</a>
+      <div class=user_block></div>
+    {% else %}
+      <a href="{{ url_for('logout') }}">Log out</a>
+      <div class=user_block>{{ curUser }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class=masthead>
+  <div class=lnav>
+    <ul class=lnav_list>
+      <li 
+      {% if request.path == "/" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}> 
+        <a href="{{ url_for('explore') }}"> Explore </a>
+      </li>
+      <li 
+      {% if request.path == "/build" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}> 
+        <a href="{{ url_for('build') }}"> Build </a>
+      </li>
+    </ul>
+  </div>
+  <img class=logo src="{{ url_for('static',filename='guslogo.png')}}">
+  <div class=rnav>
+    <ul class=rnav_list>
+      {% if current_user.is_authenticated() %}  
+        <li class=nav_item>
+        <a href="{{ url_for('login') }}"> Account </a>
+      {% else %} 
+        <li class=nav_item>
+        <a href="{{ url_for('login') }}"> Log In </a>
+      {% endif %}
+      </li>
+      <li 
+      {% if request.path == "/about" %} 
+        class=cur_page 
+      {% else %} 
+        class=nav_item 
+      {% endif %}>
+        <a href="{{ url_for('about') }}"> About </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+{% endmacro %}

@@ -1,0 +1,94 @@
+<!-- Render the bottom build panel -->
+<div id="build-panel" class="bpanel">
+  <div id="net-panel" class="bpanel-sect">
+    <select id="network-select" class="main-select">
+      <option value="none" selected="selected">Select Network</option>
+    </select>
+    <input type="button" 
+      id="new-network-button" 
+      class="bpanel-sect-title" 
+      value="New" 
+      style="display:inline">
+    </input>
+    <hr />
+    Name: <input id="network-name" name="net-name" type="text" size="25"></input>
+    Type: 
+    <select id="network-type" class="main-select">
+    </select><br />
+    Phase:
+    <select id="network-phase-type" class="main-select">
+    </select>
+
+    <!--
+    <dl>
+      <dt><input type="radio" name="net-type" id="type-fun">Just For Fun</input></dt>
+      <dt><input type="radio" name="net-type" id="type-planned">Planned</input></dt>
+      <dt><input type="radio" name="net-type" id="type-inproc">Under Construction</input></dt>
+      <dt><input type="radio" name="net-type" id="type-online">Online!</input></dt>
+    </dl>a
+    -->
+    <dl class="left-bottom-btn">
+      <dt class="rlist"><input type="button" id="polygon-mode-btn" value="Polygon"></input></dt>
+      <dt class="rlist"><input type="button" id="profile-mode-btn" value="Profile"></input></dt>
+    </dl>
+    <input type="button" id="commit-network" class="right-bottom-btn" value="COMMIT"></input>
+  </div>
+  
+  <div id="node-panel" class="bpanel-sect">
+
+    <select id="node-select" class="main-select">
+      <option value="none" selected="selected">Select Node</option>
+    </select>
+    <input type="button" 
+      id="new-node-button" 
+      class="bpanel-sect-title" 
+      value="New" 
+      style="display:inline">
+    </input>
+    <input type="button"
+      id="redrop-node-button"
+      class="bpanel-sect-title"
+      value="Redrop"
+      style="display:inline">
+    </input>
+
+    <hr />
+    Name: <input id="node-name" name="node-name" type="text" size="12"></input>
+    <input type="button"
+      id="connect-node-button"
+      class="bpanel-sect-title"
+      value="Connect"
+      style="display:inline">
+    </input>
+
+    
+    lat:<input type="text" id="node-lat" size="13"></input> <br />
+    lon:<input type="text" id="node-lon" size="13"></input> <br />
+    type:<select id="node-type"></select><br />
+    polarization:<select id="polarization-type"></select> <br />
+    elevation:<input type="text" id="elevation-input" size="4"></input><br />
+    azimuth:<input type="text" id="azimuth-input" size="4"></input>
+      <!--
+      <dt class="rlist">type:<input type="text" id="node-type" size="10" value="DROP DOWN"></input></dt>
+      -->
+
+    <!--
+    <h2>About/Notes</h2>
+    <textarea id="nodes-about" rows="2" cols="40"></textarea>
+    -->
+
+    <input type="button" id="commit-node" class="right-bottom-btn" value="COMMIT"></input>
+  </div>
+<!--
+  <div id="info-panel" class="bpanel-sect">
+    <h2>Info</h2>
+    <hr />
+    <div id="info-panel-disp">
+      To be updated with relevant info as the user mouses over different elements of the build panel.
+    </div>
+    <input type="button" id="help-mode" class="right-bottom-btn" value="HELP"></input>
+  </div>
+-->
+</div>
+<div id="toggle-bpanel-off" class="toggle-bpanel"><img class=tools_toggle_label height=15px src="{{ url_for('static',filename='tools_down.png')}}"></div>
+<div id="toggle-bpanel-on" class="toggle-bpanel"><img class=tools_toggle_label height=15px src="{{ url_for('static',filename='tools_up.png')}}"></div>

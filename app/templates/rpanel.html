@@ -1,0 +1,55 @@
+<div id="toggle-rpanel-on" class="toggle-rpanel"><img class=nav_toggle_label width=15px src="{{ url_for('static',filename='navigation_right.png')}}"></div>
+<div id="explore-rpanel" class="rpanel">
+  <h2>Location</h2>
+  <hr />
+  Address:
+  <input id="addr-text-input" name="addr" type="text" size=20></input>
+  <input id="addr-text-btn" type="button" value="Go">
+  <input id="addr-ip-btn" type="button" value="Locate by IP">
+  <h2>Layers</h2>
+  <!--
+  <div id="layerswitcher" class="olContro lLayerSwitcher"></div>
+  -->
+  
+  <!--
+  <dl>
+  <dt><input type="radio" name="layers" id="street-layer">Street</input></dt>
+  <dt><input type="radio" name="layers" id="terrain-layer">Terrain</input></dt>
+  <dt><input type="radio" name="layers" id="image-layer">Image</input></dt>
+  </dl>
+
+  REMOVED. Went with embedding olControlLayerSwitcher inside the sidepanel
+  and overriding all the styles in olstyle.css.
+  -->
+
+
+  <h4>Networks</h4>
+  <dl>
+    <dt>
+      <input type="checkbox" 
+      id="existing-network-overlay" 
+      checked="true">
+        Existing Networks
+      </input>
+    </dt>
+    <dt>
+      <input type="checkbox" 
+      id="planned-networks-overlay">
+        Planned Networks
+      </input>
+    </dt>
+    <dt>
+      <input type="checkbox" 
+      id="conceptual-networks-overlay">
+        Conceptual Networks
+      </input>
+    </dt>
+  </dl>
+  <h4>Layers</h4>
+  <dl>
+    <dt><input type="checkbox" id="polygon-overlay" checked="true">Polygon</input></dt>
+    <dt><input type="checkbox" id="node-overlay" checked="true">Node</input></dt>
+    <dt><input type="checkbox" id="connection-overlay" checked="true">Connection</input>
+</dl>
+</div>
+<div id="toggle-rpanel-off" class="toggle-rpanel"><img class=nav_toggle_label width=15px src="{{ url_for('static',filename='navigation_left.png')}}"></div>
