@@ -1,9 +1,9 @@
 import queries
 
-from flask.ext.login import UserMixin, AnonymousUser
+from flask.ext.login import UserMixin 
 from code_val import * #Probably should make this a list? idk....
 from db import Database
-from flaskext.bcrypt import Bcrypt
+from flask.ext.bcrypt import Bcrypt
 from app import app
 
 import obj
@@ -42,9 +42,6 @@ class User(UserMixin):
 
     def __repr__(self):
         return '<User %r>' % (self.username)
-
-class Anonymous(AnonymousUser):
-    name = u"Anonymous"
 
 class Network:
     def __init__(self, id, name, type_val, phase_type_val, geometry_obj=None, nodes=[]):

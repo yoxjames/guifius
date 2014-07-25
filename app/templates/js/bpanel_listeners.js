@@ -60,11 +60,11 @@ var curNet = [];
 /*
  * jQuery UI setup
  */
-$("#new-node-button").button();
-$("#commit-network").button();
 $("#new-network-button").button();
-$("#redrop-node-button").button();
-$("#connect-node-button").button();
+
+$("#network-buttonset").buttonset();
+$("#node-buttonset").buttonset();
+$("#commit-node").button();
 
   $("#redrop-node-button").attr("disabled","disabled");
   $("#connect-node-button").attr("disabled","disabled");
@@ -138,6 +138,8 @@ $("#connect-node-button").button();
 
   $("#network-select").on('click','option', function()
   {
+    $("#network-type").empty(); // Prevent Duplicates
+    $("#network-phase-type").empty(); // Prevent Duplicates
     curNet = cnt[parseInt($(this).attr('id'))];
 
     console.log(curNet);
@@ -183,6 +185,8 @@ $("#connect-node-button").button();
     req = JSON.stringify(req);
 
     $("#node-select").empty();
+    $("#node-select").append("<option>Select Node</option>");
+
 
     $.ajax(
     {

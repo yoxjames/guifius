@@ -5,6 +5,10 @@ font-family: sans-serif;
 background: #fff;
 }
 
+p{
+margin:6px;
+}
+
 a, dt, h1, h2, h4{
 color: #470b0b;
 }
@@ -452,23 +456,67 @@ margin-left:-335px;
 left:50%;
 }
 
-.bpanel-sect{
+#node-panel{
 margin-top:15px;
 margin-left:15px;
 margin-bottom:10px;
 padding-right:15px;
 position: absolute;
 bottom -15px;
-width: 300px;
+width: 350px;
 height:225px;
 }
 
 
 #net-panel{
+margin-top:15px;
+margin-left:15px;
+margin-bottom:10px;
+padding-right:15px;
+position: absolute;
+bottom -15px;
+width: 250px;
+height:225px;
+}
+
+
+.bpanel-labels{
+width:60px;
+display:inline;
+right:0px;
+}
+.bpanel-field{
+display:inline;
+right:20px;
+position:relative;
+width:150px;
+float:right;
+}
+
+.bpanel-field-r{
+display:inline;
+right:90px;
+position:relative;
+width:150px;
+float:right;
+}
+
+
+#network-buttonset{
+right:15px;
+top:190px;
+position:absolute;
+}
+
+#node-buttonset{
+display:inline;
+}
+
+#net-panel{
 border-right:1px solid #000000;
 }
 #node-panel{
-left:331px;
+left:281px;
 }
 #info-panel{
 left:662px;
@@ -495,11 +543,15 @@ bottom:5px;
 margin:0px;
 }
 
-.right-bottom-btn{
+#commit-node{
 position:absolute;
 right:15px;
 font-weight:bold;
 bottom:5px;
+}
+
+#commit-network{
+font-weight:bold;
 }
 
 .bpanel-sect-title{

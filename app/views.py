@@ -6,11 +6,11 @@ from flask import Flask, request, session, g, redirect, url_for, \
 	abort, render_template, flash
 from forms import *
 from flask.ext.login import (LoginManager, current_user, login_required,
-                            login_user, logout_user, UserMixin, AnonymousUser,
+                            login_user, logout_user, UserMixin, 
                             confirm_login, fresh_login_required)
 from app import app
 from models import *
-from flaskext.babel import Babel
+from flask.ext.babel import Babel
 
 import obj
 
@@ -29,7 +29,6 @@ def check_cache():
 
 # Local
 login_manager = LoginManager()
-login_manager.anonymous_user = Anonymous
 login_manager.login_view = "login"
 login_manager.login_message = "Please log in to access this page."
 login_manager.refresh_view = "reauth"
